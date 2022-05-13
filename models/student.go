@@ -8,8 +8,8 @@ import (
 
 type Student struct {
 	gorm.Model
-	RollNo                string     `gorm:"uniqueIndex" json:"roll_no"`
-	Name                  string     `json:"name"`
+	RollNo string `gorm:"uniqueIndex" json:"roll_no"`
+	Name   string `json:"name"`
 	//!TODO: see alternative fuck legacy
 	ProgramID             uint       `gorm:"column:program_id" json:"program_id"`
 	Program               Program    `gorm:"foreignkey:ProgramID" json:"-"`
@@ -45,6 +45,7 @@ type Student struct {
 	PermanentAddress       string    `gorm:"type:longtext" json:"permanent_address"`
 	FriendName             string    `json:"friend_name"`
 	FriendPhone            string    `json:"friend_phone"`
+	IsEditable             bool      `json:"is_editable"`
 }
 
 type Program struct {
