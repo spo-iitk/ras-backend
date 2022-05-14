@@ -29,7 +29,7 @@ type JobProforma struct {
 
 // ELIGIBILITY MATRIX
 
-type JobApplicationQuestions struct {
+type JobApplicationQuestion struct {
 	gorm.Model
 	Type          RecruitmentCycleQuestionsType `json:"type"`
 	Question      string                        `json:"question"`
@@ -38,15 +38,15 @@ type JobApplicationQuestions struct {
 	Options       string                        `json:"options"` //csv
 }
 
-type JobApplicationQuestionsAnswers struct {
+type JobApplicationQuestionsAnswer struct {
 	gorm.Model
-	JobApplicationQuestionsID uint                    `gorm:"index" json:"job_application_questions_id"`
-	JobApplicationQuestions   JobApplicationQuestions `gorm:"foreignkey:JobApplicationQuestionsID" json:"-"`
-	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
-	Answer                    string                  `json:"answer"`
+	JobApplicationQuestionID  uint                   `gorm:"index" json:"job_application_question_id"`
+	JobApplicationQuestion    JobApplicationQuestion `gorm:"foreignkey:JobApplicationQuestionID" json:"-"`
+	StudentRecruitmentCycleID uint                   `gorm:"index" json:"student_recruitment_cycle_id"`
+	Answer                    string                 `json:"answer"`
 }
 
-type JobPerformaEvents struct {
+type JobPerformaEvent struct {
 	gorm.Model
 	JobPerformaID    uint        `gorm:"index" json:"job_performa_id"`
 	JobPerforma      JobProforma `gorm:"foreignkey:JobPerformaID" json:"-"`
@@ -60,18 +60,18 @@ type JobPerformaEvents struct {
 	RecordAttendance bool        `json:"record_attendance"`
 }
 
-type EventCordinators struct {
+type EventCordinator struct {
 	gorm.Model
-	JobPerformaEventsID uint              `gorm:"index" json:"job_performa_events_id"`
-	JobPerformaEvents   JobPerformaEvents `gorm:"foreignkey:JobPerformaEventsID" json:"-"`
-	CordinatorID        string            `json:"cordinator_id"`
-	CordinatorName      string            `json:"cordinator_name"`
+	JobPerformaEventID uint             `gorm:"index" json:"job_performa_event_id"`
+	JobPerformaEvent   JobPerformaEvent `gorm:"foreignkey:JobPerformaEventID" json:"-"`
+	CordinatorID       string           `json:"cordinator_id"`
+	CordinatorName     string           `json:"cordinator_name"`
 }
 
-type EventStudents struct {
+type EventStudent struct {
 	gorm.Model
-	JobPerformaEventsID       uint              `gorm:"index" json:"job_performa_events_id"`
-	JobPerformaEvents         JobPerformaEvents `gorm:"foreignkey:JobPerformaEventsID" json:"-"`
-	StudentRecruitmentCycleID uint              `gorm:"index" json:"student_recruitment_cycle_id"`
-	Present                   bool              `json:"present"`
+	JobPerformaEventID        uint             `gorm:"index" json:"job_performa_event_id"`
+	JobPerformaEvent          JobPerformaEvent `gorm:"foreignkey:JobPerformaEventID" json:"-"`
+	StudentRecruitmentCycleID uint             `gorm:"index" json:"student_recruitment_cycle_id"`
+	Present                   bool             `json:"present"`
 }

@@ -31,7 +31,7 @@ const (
 	BOOLEAN     RecruitmentCycleQuestionsType = "Boolean"
 )
 
-type RecruitmentCycleQuestions struct {
+type RecruitmentCycleQuestion struct {
 	gorm.Model
 	Type               RecruitmentCycleQuestionsType `json:"type"`
 	Question           string                        `json:"question"`
@@ -40,15 +40,15 @@ type RecruitmentCycleQuestions struct {
 	Options            string                        `json:"options"` //csv
 }
 
-type RecruitmentCycleQuestionsAnswers struct {
+type RecruitmentCycleQuestionsAnswer struct {
 	gorm.Model
-	RecruitmentCycleQuestionsID uint                      `gorm:"index" json:"recruitment_cycle_questions_id"`
-	RecruitmentCycleQuestions   RecruitmentCycleQuestions `gorm:"foreignkey:RecruitmentCycleQuestionsID" json:"-"`
-	StudentRecruitmentCycleID   uint                      `gorm:"index" json:"student_recruitment_cycle_id"`
-	StudentRecruitmentCycle     StudentRecruitmentCycle   `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
-	Answer                      string                    `json:"answer"`
-	Comments                    string                    `json:"comments"`
-	Status                      string                    `json:"status"`
+	RecruitmentCycleQuestionID uint                     `gorm:"index" json:"recruitment_cycle_question_id"`
+	RecruitmentCycleQuestion   RecruitmentCycleQuestion `gorm:"foreignkey:RecruitmentCycleQuestionID" json:"-"`
+	StudentRecruitmentCycleID  uint                     `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycle    StudentRecruitmentCycle  `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
+	Answer                     string                   `json:"answer"`
+	Comments                   string                   `json:"comments"`
+	Status                     string                   `json:"status"`
 }
 
 type CompanyRecruitmentCycle struct {
