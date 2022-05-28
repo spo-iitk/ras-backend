@@ -41,7 +41,7 @@ func (mail *Mail) BuildMessage() []byte {
 	header += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
 	header += "\r\n" + mail.Body
 
-	header += "\r\n\r\n This is an auto-generated email. Please do not reply."
+	header += "\r\n\r\n Best Recruitment Automation Team \r\n This is an auto-generated email. Please do not reply."
 
 	return []byte(header)
 }
