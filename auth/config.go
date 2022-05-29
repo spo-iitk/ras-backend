@@ -12,20 +12,22 @@ var db *gorm.DB
 func OpenConnection() {
 	host := viper.GetString("DATABASE.HOST")
 	port := viper.GetString("DATABASE.PORT")
-	user := viper.GetString("AUTH.DATABASE.USER")
-	password := viper.GetString("AUTH.DATABASE.PASSWORD")
-	dbName := viper.GetString("AUTH.DATABASE.NAME")
+	password := viper.GetString("DATABASE.PASSWORD")
+
+	dbName := viper.GetString("AUTH.DBNAME")
+	user := dbName + viper.GetString("DATABASE.USER")
 
 	dsn := "host=" + host + " user=" + user + " password=" + password
 	dsn += " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Kolkata"
 
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to database: ", err)
+		log.Fatal("Failed to connect to auth database: ", err)
+		panic(err)
 	}
 
 	db = database
 	db.AutoMigrate(&User{}, &Role{}, &OTP{})
 
-	log.Info("Connected to database")
+	log.Info("Connected to auth database")
 }

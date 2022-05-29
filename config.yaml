@@ -4,3 +4,11 @@ MAIL:
   HOST: ""
   PORT: ""
   WEBTEAM: "spowebteam@gmail.com"
+DATABASE:
+  HOST: "localhost"
+  PORT: "5432"
+  PASSWORD: "b2Led2ke"
+  USER: "admin"
+AUTH:
+  PORT: "8010"
+  DBNAME: "auth"
