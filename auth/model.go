@@ -34,3 +34,12 @@ type OTP struct {
 	OTP     string `gorm:"column:otp"`
 	Expires uint   `gorm:"column:expires"`
 }
+
+type CompanySignUpRequest struct {
+	gorm.Model
+	CompanyName string `json:"company_name"`
+	Name        string `json:"name"`
+	Designation string `json:"designation"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+}

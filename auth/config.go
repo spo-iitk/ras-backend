@@ -29,7 +29,7 @@ func openConnection() {
 
 	db = database
 
-	err = db.AutoMigrate(&User{}, &OTP{})
+	err = db.AutoMigrate(&User{}, &OTP{}, &CompanySignUpRequest{})
 	if err != nil {
 		log.Fatal("Failed to migrate auth database: ", err)
 		panic(err)

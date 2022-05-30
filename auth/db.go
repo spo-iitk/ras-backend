@@ -39,3 +39,8 @@ func cleanupOTP() {
 		db.Delete(OTP{}, "expires > ?", time.Now().Add(-24*time.Hour).UnixMilli())
 	}
 }
+
+func createCompany(ctx *gin.Context, company *CompanySignUpRequest) (uint, error) {
+	tx := db.WithContext(ctx).Create(company)
+	return company.ID, tx.Error
+}

@@ -4,12 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthRouter(r *gin.Engine) {
-	api := r.Group("/api/auth")
+func Router(r *gin.Engine) {
+	auth := r.Group("/api/auth")
 	{
-		api.GET("/login", loginHandler)
-		api.POST("/signup", signUpHandler)
-		api.POST("/otp", otpHandler)
-		api.POST("/reset-password", resetPasswordHandler)
+		auth.POST("/login", loginHandler)
+		auth.POST("/signup", signUpHandler)
+		auth.POST("/otp", otpHandler)
+		auth.POST("/reset-password", resetPasswordHandler)
+		auth.POST("/company-signup", companySignUpHandler)
 	}
 }
