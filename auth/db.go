@@ -11,10 +11,10 @@ func createUser(ctx *gin.Context, user *User) (uint, error) {
 	return user.ID, tx.Error
 }
 
-func getPassword(ctx *gin.Context, userID string) (string, error) {
+func getPasswordAndRole(ctx *gin.Context, userID string) (string, Role, error) {
 	var user User
 	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
-	return user.Password, tx.Error
+	return user.Password, user.RoleID, tx.Error
 }
 
 func saveOTP(ctx *gin.Context, otp *OTP) error {
@@ -31,4 +31,11 @@ func verifyOTP(ctx *gin.Context, userID string, otp string) (bool, error) {
 func updatePassword(ctx *gin.Context, userID string, password string) error {
 	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ?", userID).Update("password", password)
 	return tx.Error
+}
+
+func cleanupOTP() {
+	for {
+		time.Sleep(time.Hour * 24)
+		db.Delete(OTP{}, "expires > ?", time.Now().Add(-24*time.Hour).UnixMilli())
+	}
 }
