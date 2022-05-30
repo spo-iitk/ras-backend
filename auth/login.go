@@ -6,22 +6,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type login struct {
-	User     string `json:"user" binding:"required"`
+type loginRequest struct {
+	UserID   string `json:"user_id" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func loginHandler(c *gin.Context) {
-	var json login
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var loginReq loginRequest
+	if err := c.ShouldBindJSON(&loginReq); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if json.User != "manu" || json.Password != "123" {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
+	hashedPwd, role, err := getPasswordAndRole(c, loginReq.UserID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
+	if !comparePasswords(loginReq.Password, hashedPwd) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Credentials"})
+		return
+	}
+
+	token, err := generateToken(loginReq.UserID, role)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.SetCookie("token", token, 0, "", "", true, true)
+
+	c.JSON(http.StatusOK, gin.H{"status": "Successfully logged in"})
 }
