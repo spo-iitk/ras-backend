@@ -19,7 +19,6 @@ func OpenConnection() {
 
 	dsn := "host=" + host + " user=" + user + " password=" + password
 	dsn += " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Kolkata"
-
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to auth database: ", err)
@@ -27,7 +26,7 @@ func OpenConnection() {
 	}
 
 	db = database
-	db.AutoMigrate(&User{}, &Role{}, &OTP{})
+	db.AutoMigrate(&User{}, &OTP{})
 
 	log.Info("Connected to auth database")
 }
