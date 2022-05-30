@@ -4,6 +4,12 @@ MAIL:
   HOST: ""
   PORT: ""
   WEBTEAM: "spowebteam@gmail.com"
+JWT:
+  EXPIRATION: 15
+  PRIVATE_KEY: "pretty-big-seceret"
+OTP:
+  EXPIRATION: 20
+  SIZE: 6
 DATABASE:
   HOST: "localhost"
   PORT: "5432"
