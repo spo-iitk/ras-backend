@@ -2,16 +2,28 @@ package main
 
 import (
 	"log"
+	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/router"
+	"golang.org/x/sync/errgroup"
+)
+
+const (
+	readTimeout  = 5 * time.Second
+	writeTimeout = 10 * time.Second
 )
 
 func main() {
-	r := gin.Default()
-	router.RASRouter(r)
+	var g errgroup.Group
 
-	if err := r.Run(); err != nil {
-		log.Fatalln("[ERROR] Could not start the server: ", err.Error())
+	g.Go(func() error {
+		return authRouter().ListenAndServe()
+	})
+
+	g.Go(func() error {
+		return rasRouter().ListenAndServe()
+	})
+
+	if err := g.Wait(); err != nil {
+		log.Fatal(err)
 	}
 }
