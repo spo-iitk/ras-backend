@@ -16,7 +16,7 @@ func Authenticator() gin.HandlerFunc {
 
 		userID, roleID, err := validateToken(cookie.Value)
 		if err != nil {
-			handleExpiredJWT(ctx, err, cookie.Value)
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Cookies"})
 			return
 		}
 

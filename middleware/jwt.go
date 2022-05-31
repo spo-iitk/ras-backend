@@ -2,12 +2,9 @@ package middleware
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -50,45 +47,4 @@ func validateToken(encodedToken string) (string, uint, error) {
 	}
 
 	return claims.UserID, claims.RoleID, nil
-}
-
-func handleExpiredJWT(ctx *gin.Context, err error, cookieValue string) {
-	jwtError, ok := err.(*jwt.ValidationError)
-	if !ok {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	logrus.Infoln("ddsfsafasfdgfsafsgdsf")
-
-	if jwtError.Errors&jwt.ValidationErrorMalformed != 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
-		return
-	} else if jwtError.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) == 0 {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	logrus.Infoln("dsf")
-	token, _, err := new(jwt.Parser).ParseUnverified(cookieValue, CustomClaims{})
-	if err != nil {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	logrus.Infoln("dssdff")
-
-	claims, ok := token.Claims.(CustomClaims)
-	if !ok {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	logrus.Infoln("dsfasdfdsaf")
-
-	tokenValue, err := GenerateToken(claims.UserID, claims.RoleID)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.SetCookie("token", tokenValue, 0, "", "", true, true)
-
-	ctx.Next()
 }
