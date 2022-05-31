@@ -16,11 +16,11 @@ func main() {
 	var g errgroup.Group
 
 	g.Go(func() error {
-		return authRouter().ListenAndServe()
+		return authServer().ListenAndServe()
 	})
 
 	g.Go(func() error {
-		return rasRouter().ListenAndServe()
+		return rasServer().ListenAndServe()
 	})
 
 	if err := g.Wait(); err != nil {

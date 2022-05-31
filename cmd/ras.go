@@ -7,7 +7,7 @@ import (
 	"github.com/spo-iitk/ras-backend/router"
 )
 
-func rasRouter() *http.Server {
+func rasServer() *http.Server {
 	PORT := "8080"
 	r := gin.New()
 	router.RASRouter(r)

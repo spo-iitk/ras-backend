@@ -8,7 +8,7 @@ import (
 	"github.com/spo-iitk/ras-backend/auth"
 )
 
-func authRouter() *http.Server {
+func authServer() *http.Server {
 	PORT := viper.GetString("AUTH.PORT")
 	r := gin.New()
 	auth.Router(r)
