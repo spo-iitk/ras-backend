@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/middleware"
 )
 
 type loginRequest struct {
@@ -29,7 +30,7 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	token, err := generateToken(loginReq.UserID, role)
+	token, err := middleware.GenerateToken(loginReq.UserID, uint(role))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
