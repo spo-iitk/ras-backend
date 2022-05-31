@@ -14,24 +14,24 @@ type loginRequest struct {
 func loginHandler(c *gin.Context) {
 	var loginReq loginRequest
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	hashedPwd, role, err := getPasswordAndRole(c, loginReq.UserID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if !comparePasswords(loginReq.Password, hashedPwd) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Credentials"})
+	if !comparePasswords(hashedPwd, loginReq.Password) {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Credentials"})
 		return
 	}
 
 	token, err := generateToken(loginReq.UserID, role)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -30,7 +30,7 @@ func generateOTP() string {
 func otpHandler(ctx *gin.Context) {
 	var otpReq otpRequest
 	if err := ctx.ShouldBindJSON(&otpReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -42,7 +42,7 @@ func otpHandler(ctx *gin.Context) {
 		Expires: uint(time.Now().Add(time.Duration(otpExpiration) * time.Minute).UnixMilli()),
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

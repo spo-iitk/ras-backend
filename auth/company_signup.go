@@ -11,14 +11,14 @@ func companySignUpHandler(ctx *gin.Context) {
 	var signupReq CompanySignUpRequest
 
 	if err := ctx.ShouldBindJSON(&signupReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	id, err := createCompany(ctx, &signupReq)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

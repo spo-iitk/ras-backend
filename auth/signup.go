@@ -18,18 +18,18 @@ func signUpHandler(ctx *gin.Context) {
 	var signupReq signUpRequest
 
 	if err := ctx.ShouldBindJSON(&signupReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	verified, err := verifyOTP(ctx, signupReq.UserID, signupReq.OTP)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if !verified {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid OTP"})
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid OTP"})
 		return
 	}
 
@@ -42,7 +42,7 @@ func signUpHandler(ctx *gin.Context) {
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

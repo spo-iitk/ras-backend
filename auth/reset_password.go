@@ -17,18 +17,18 @@ func resetPasswordHandler(ctx *gin.Context) {
 	var resetPasswordReq resetPasswordRequest
 
 	if err := ctx.ShouldBindJSON(&resetPasswordReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	verified, err := verifyOTP(ctx, resetPasswordReq.UserID, resetPasswordReq.OTP)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if !verified {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid OTP"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid OTP"})
 		return
 	}
 
@@ -36,7 +36,7 @@ func resetPasswordHandler(ctx *gin.Context) {
 
 	err = updatePassword(ctx, resetPasswordReq.UserID, hashedPwd)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
