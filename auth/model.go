@@ -42,4 +42,6 @@ type CompanySignUpRequest struct {
 	Designation string `json:"designation"`
 	Email       string `json:"email"`
 	Phone       string `json:"phone"`
+	IsReviewed  bool   `json:"is_reviewed"`
+	Comments    string `json:"comments"`
 }
