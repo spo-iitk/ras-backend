@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func createUser(ctx *gin.Context, user *User) (uint, error) {
@@ -24,8 +25,16 @@ func saveOTP(ctx *gin.Context, otp *OTP) error {
 
 func verifyOTP(ctx *gin.Context, userID string, otp string) (bool, error) {
 	var otpObj OTP
-	tx := db.WithContext(ctx).Where("user_id = ? AND otp = ? AND expires <", userID, otp, time.Now().UnixMilli()).First(&otpObj)
-	return tx.RowsAffected > 0, tx.Error
+	tx := db.WithContext(ctx).Where("user_id = ? AND otp = ? AND expires > ?", userID, otp, time.Now().UnixMilli()).First(&otpObj)
+	switch tx.Error {
+	case nil:
+		db.WithContext(ctx).Delete(&otpObj)
+		return true, nil
+	case gorm.ErrRecordNotFound:
+		return false, nil
+	default:
+		return false, tx.Error
+	}
 }
 
 func updatePassword(ctx *gin.Context, userID string, password string) error {
@@ -36,7 +45,7 @@ func updatePassword(ctx *gin.Context, userID string, password string) error {
 func cleanupOTP() {
 	for {
 		time.Sleep(time.Hour * 24)
-		db.Delete(OTP{}, "expires > ?", time.Now().Add(-24*time.Hour).UnixMilli())
+		db.Unscoped().Delete(OTP{}, "expires > ?", time.Now().Add(-24*time.Hour).UnixMilli())
 	}
 }
 
