@@ -35,5 +35,5 @@ func updateStudentHandler(ctx *gin.Context) {
 
 	logrus.Infof("A student with id %d is updated", id)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
+	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }

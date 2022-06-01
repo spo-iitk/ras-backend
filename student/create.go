@@ -24,6 +24,6 @@ func createStudentHandler(ctx *gin.Context) {
 
 	logrus.Infof("A student %s is created with id %d", createStudentRequest.Name, createStudentRequest.ID)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "Success"})
+	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully created"})
 
 }
