@@ -1,25 +1,20 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
 	log "github.com/sirupsen/logrus"
 )
 
-// func caller() func(*runtime.Frame) (function string, file string) {
-// 	return func(f *runtime.Frame) (function string, file string) {
-// 		p, _ := os.Getwd()
-
-// 		return "", fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line)
-// 	}
-// }
-
 func logrusConfig() {
+	f, err := os.OpenFile("raslog.json", os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
+	if err != nil {
+		fmt.Printf("error opening file: %v", err)
+		panic(err)
+	}
 
-	// log.SetFormatter(&log.TextFormatter{
-	// 	CallerPrettyfier: caller(),
-	// 	FieldMap: log.FieldMap{
-	// 		log.FieldKeyFile: "caller",
-	// 	},
-	// })
-	log.SetFormatter(&log.TextFormatter{})
+	log.SetOutput(f)
+	log.SetFormatter(&log.JSONFormatter{})
 	log.SetReportCaller(true)
 }
