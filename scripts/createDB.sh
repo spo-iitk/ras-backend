@@ -10,3 +10,4 @@ CreateDB () {
 
 sudo service postgresql start
 CreateDB auth
+CreateDB student
