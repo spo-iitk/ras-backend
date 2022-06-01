@@ -8,7 +8,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-var jwtExpiration = viper.GetInt("JWT.EXPIRATION")
+var (
+	jwtExpirationLong  = viper.GetInt("JWT.EXPIRATION.LONG")
+	jwtExpirationShort = viper.GetInt("JWT.EXPIRATION.SHORT")
+)
 var signingKey = []byte(viper.GetString("JWT.PRIVATE_KEY"))
 
 type CustomClaims struct {
@@ -17,7 +20,14 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(userID string, roleID uint) (string, error) {
+func GenerateToken(userID string, roleID uint, long bool) (string, error) {
+	var jwtExpiration int
+	if long {
+		jwtExpiration = jwtExpirationLong
+	} else {
+		jwtExpiration = jwtExpirationShort
+	}
+
 	claims := CustomClaims{
 		userID,
 		roleID,

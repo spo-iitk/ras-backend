@@ -5,7 +5,9 @@ MAIL:
   PORT: ""
   WEBTEAM: "spowebteam@gmail.com"
 JWT:
-  EXPIRATION: 15
+  EXPIRATION:
+    LONG: 100
+    SHORT: 1500
   PRIVATE_KEY: "pretty-big-seceret"
 OTP:
   EXPIRATION: 20

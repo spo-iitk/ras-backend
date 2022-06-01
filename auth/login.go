@@ -8,8 +8,9 @@ import (
 )
 
 type loginRequest struct {
-	UserID   string `json:"user_id" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	UserID     string `json:"user_id" binding:"required"`
+	Password   string `json:"password" binding:"required"`
+	RememberMe bool   `json:"remember_me"`
 }
 
 func loginHandler(c *gin.Context) {
@@ -30,7 +31,7 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	token, err := middleware.GenerateToken(loginReq.UserID, uint(role))
+	token, err := middleware.GenerateToken(loginReq.UserID, uint(role), bool(loginReq.RememberMe))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
