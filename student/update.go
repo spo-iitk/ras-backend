@@ -16,7 +16,7 @@ func updateStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	id, err := strconv.ParseUint(ctx.Params.ByName("id"), 10, 64)
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
