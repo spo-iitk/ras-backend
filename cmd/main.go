@@ -23,6 +23,10 @@ func main() {
 		return rasServer().ListenAndServe()
 	})
 
+	g.Go(func() error {
+		return studentServer().ListenAndServe()
+	})
+
 	if err := g.Wait(); err != nil {
 		log.Fatal(err)
 	}

@@ -20,3 +20,6 @@ DATABASE:
 AUTH:
   PORT: "8010"
   DBNAME: "auth"
+STUDENT:
+  PORT: "8015"
+  DBNAME: "student"
