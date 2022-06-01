@@ -5,14 +5,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/middleware"
-	"github.com/spo-iitk/ras-backend/router"
+	"github.com/spo-iitk/ras-backend/ras"
 )
 
 func rasServer() *http.Server {
 	PORT := "8080"
 	engine := gin.New()
 	engine.Use(middleware.Authenticator())
-	router.RASRouter(engine)
+	ras.RASRouter(engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,
