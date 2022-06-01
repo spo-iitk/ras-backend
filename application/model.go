@@ -1,6 +1,7 @@
-package models
+package application
 
 import (
+	"database/sql"
 	"time"
 
 	"gorm.io/gorm"
@@ -8,34 +9,40 @@ import (
 
 type JobProforma struct {
 	gorm.Model
-	CompanyID                 uint      `gorm:"index" json:"company_id"`
-	CompanyRecruitmentCycleID uint      `gorm:"index" json:"company_recruitment_cycle_id"`
-	RecruitmentCycleID        uint      `gorm:"index" json:"recruitment_cycle_id"`
-	IsApproved                bool      `json:"is_approved"`
-	ActionTakenBy             string    `json:"action_taken_by"`
-	SetDeadline               time.Time `json:"set_deadline"`
-	HideDetails               bool      `json:"hide_details"` //gorm default value is false
-	ActiveHRID                string    `json:"active_hr_id"`
-	NatureOfBusiness          string    `json:"nature_of_business"`
-	TentativeJobLocation      string    `json:"tentative_job_location"`
-	JobDescription            string    `json:"job_description"`
-	CostToCompany             string    `json:"cost_to_company"`
-	PackageDetails            string    `json:"package_details"`
-	BondDetails               string    `json:"bond_details"`
-	MedicalRequirements       string    `json:"medical_requirements"`
-	AdditionalEligibility     string    `json:"additional_eligibility"`
-	MessageForCordinator      string    `json:"message_for_cordinator"`
+	CompanyID                 uint          `gorm:"index" json:"company_id"`
+	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
+	RecruitmentCycleID        uint          `gorm:"index" json:"recruitment_cycle_id"`
+	IsApproved                bool          `json:"is_approved"`
+	ActionTakenBy             string        `json:"action_taken_by"`
+	SetDeadline               sql.NullInt64 `json:"set_deadline"` // NULL implies unpublished
+	HideDetails               bool          `gorm:"default:false" json:"hide_details"`
+	ActiveHRID                string        `json:"active_hr_id"`
+	NatureOfBusiness          string        `json:"nature_of_business"`
+	TentativeJobLocation      string        `json:"tentative_job_location"`
+	JobDescription            string        `json:"job_description"`
+	CostToCompany             string        `json:"cost_to_company"`
+	PackageDetails            string        `json:"package_details"`
+	BondDetails               string        `json:"bond_details"`
+	MedicalRequirements       string        `json:"medical_requirements"`
+	AdditionalEligibility     string        `json:"additional_eligibility"`
+	MessageForCordinator      string        `json:"message_for_cordinator"`
 }
 
-// ELIGIBILITY MATRIX
+type ApplicationQuestionsType string
+
+const (
+	MCQ         ApplicationQuestionsType = "MCQ"
+	SHORTANSWER ApplicationQuestionsType = "ShortAnswer"
+	BOOLEAN     ApplicationQuestionsType = "Boolean"
+)
 
 type JobApplicationQuestion struct {
 	gorm.Model
-	Type          RecruitmentCycleQuestionsType `json:"type"`
-	Question      string                        `json:"question"`
-	JobPerformaID uint                          `gorm:"index" json:"job_performa_id"`
-	JobPerforma   JobProforma                   `gorm:"foreignkey:JobPerformaID" json:"-"`
-	Options       string                        `json:"options"` //csv
+	Type          ApplicationQuestionsType `json:"type"`
+	Question      string                   `json:"question"`
+	JobPerformaID uint                     `gorm:"index" json:"job_performa_id"`
+	JobPerforma   JobProforma              `gorm:"foreignkey:JobPerformaID" json:"-"`
+	Options       string                   `json:"options"` //csv
 }
 
 type JobApplicationQuestionsAnswer struct {

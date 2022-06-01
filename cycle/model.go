@@ -1,4 +1,4 @@
-package models
+package cycle
 
 import (
 	"time"
@@ -75,7 +75,7 @@ type Notice struct {
 type StudentRecruitmentCycleType string
 
 const (
-	PIOPPO    StudentRecruitmentCycleType = "PIO or PPO"
+	PIOPPO    StudentRecruitmentCycleType = "PIO-PPO"
 	RECRUITED StudentRecruitmentCycleType = "Recruited"
 	AVAILABLE StudentRecruitmentCycleType = "Available"
 )
