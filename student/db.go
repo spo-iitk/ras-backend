@@ -21,4 +21,3 @@ func getAllStudents(ctx *gin.Context, students *[]Student) error {
 	tx := db.WithContext(ctx).Find(students)
 	return tx.Error
 }
-

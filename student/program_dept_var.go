@@ -35,7 +35,7 @@ const (
 
 var (
 	BS_MTH ProgramDepartment = ProgramDepartment{ID: 0, Prog: BS, Dept: MTH}
-	BT_CSE ProgramDepartment = ProgramDepartment{ID : 1, Prog: BT, Dept: CSE}
+	BT_CSE ProgramDepartment = ProgramDepartment{ID: 1, Prog: BT, Dept: CSE}
 )
 
 func GetProgram(program ProgramID) string {
