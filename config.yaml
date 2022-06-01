@@ -17,9 +17,18 @@ DATABASE:
   PORT: "5432"
   PASSWORD: "b2Led2ke"
   USER: "admin"
-AUTH:
+APPLICATION:
   PORT: "8010"
-  DBNAME: "auth"
-STUDENT:
+  DBNAME: "application"
+AUTH:
   PORT: "8015"
+  DBNAME: "auth"
+COMPANY:
+  PORT: "8020"
+  DBNAME: "company"
+CYCLE:
+  PORT: "8025"
+  DBNAME: "cycle"
+STUDENT:
+  PORT: "8030"
   DBNAME: "student"
