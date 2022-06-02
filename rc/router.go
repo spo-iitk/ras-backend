@@ -43,15 +43,13 @@ func AdminRouter(r *gin.Engine) {
 }
 
 func StudentRouter(r *gin.Engine) {
-	student := r.Group("/api/student")
+	student := r.Group("/api/student/rc")
 	{
-		student.POST("/create", ras.PlaceHolderController)
-		student.PUT("/:id", ras.PlaceHolderController)
-		student.GET("/:id", ras.PlaceHolderController)
-		student.GET("/all", ras.PlaceHolderController)
-		student.GET("/programs", ras.PlaceHolderController)
-		student.GET("/departments", ras.PlaceHolderController)
-		student.GET("/program-departments", ras.PlaceHolderController)
+		student.GET("", ras.PlaceHolderController)                 // get registered rc
+		student.POST("/:id/enrollment", ras.PlaceHolderController) // enrolment question
+		student.GET("/:id/notice", ras.PlaceHolderController)      // cache
+		student.GET("/:id/resume", ras.PlaceHolderController)
+		student.POST("/:id/resume/new", ras.PlaceHolderController)
 	}
 }
 
