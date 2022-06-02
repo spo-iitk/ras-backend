@@ -49,3 +49,19 @@ func StudentRouter(r *gin.Engine) {
 
 	}
 }
+func CompanyRouter(r *gin.Engine) {
+	company := r.Group("/api/student/rc/:id") // abhishek will sort this
+	{
+		company.GET("/:id/proforma", ras.PlaceHolderController)        // enrolment question
+		company.GET("/:id/proforma/:id", ras.PlaceHolderController)    // enrolment question
+		company.PUT("/:id/proforma/:id", ras.PlaceHolderController)    // if ownwr
+		company.DELETE("/:id/proforma/:id", ras.PlaceHolderController) // if ownwr
+
+		company.GET("/:id/proforma/:id/event", ras.PlaceHolderController)        // all envents
+		company.GET("/:id/proforma/:id/event/:id", ras.PlaceHolderController)    // 1 envents
+		company.PUT("/:id/proforma/:id/event/:id", ras.PlaceHolderController)    // 1 envents
+		company.DELETE("/:id/proforma/:id/event/:id", ras.PlaceHolderController) // 1 envents
+
+		company.GET("/:id/proforma/:id/event/:id/students", ras.PlaceHolderController) // students of event
+	}
+}

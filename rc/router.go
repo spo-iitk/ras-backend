@@ -54,14 +54,8 @@ func StudentRouter(r *gin.Engine) {
 }
 
 func CompanyRouter(r *gin.Engine) {
-	student := r.Group("/api/student")
+	company := r.Group("/api/company/rc")
 	{
-		student.POST("/create", ras.PlaceHolderController)
-		student.PUT("/:id", ras.PlaceHolderController)
-		student.GET("/:id", ras.PlaceHolderController)
-		student.GET("/all", ras.PlaceHolderController)
-		student.GET("/programs", ras.PlaceHolderController)
-		student.GET("/departments", ras.PlaceHolderController)
-		student.GET("/program-departments", ras.PlaceHolderController)
+		company.GET("", ras.PlaceHolderController) // get registered rc
 	}
 }
