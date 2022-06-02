@@ -8,13 +8,12 @@ import (
 )
 
 func logrusConfig() {
-	f, err := os.OpenFile("raslog.json", os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
+	log.SetLevel(log.DebugLevel)
+	log.SetReportCaller(true)
+	f, err := os.OpenFile("raslog.log", os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		fmt.Printf("error opening file: %v", err)
 		panic(err)
 	}
-
 	log.SetOutput(f)
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetReportCaller(true)
 }

@@ -2,6 +2,7 @@ package student
 
 import (
 	log "github.com/sirupsen/logrus"
+
 	"github.com/spf13/viper"
 	_ "github.com/spo-iitk/ras-backend/config"
 	"gorm.io/driver/postgres"

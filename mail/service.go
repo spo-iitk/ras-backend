@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/smtp"
 	"strings"
@@ -18,24 +19,24 @@ type Mail struct {
 	Subject string
 	Body    string
 }
+type SMTPServer struct {
+	Host      string
+	Port      string
+	TLSConfig *tls.Config
+}
 
-type MailEntity struct {
-	// From the docs Sending "Bcc" messages is accomplished by including an email address in the to parameter but not including it in the msg headers.
-	to  []string //NOTE: list of emails seperated by comma
-	Msg []byte
+// ServerName ...
+func (s *SMTPServer) ServerName() string {
+	return s.Host + ":" + s.Port
 }
 
 func (mail *Mail) BuildMessage() []byte {
 	header := ""
-	header += fmt.Sprintf("From: %s\r\n", mail.Sender)
-	if len(mail.To) > 0 {
-		header += fmt.Sprintf("To: %s\r\n", strings.Join(mail.To, ";"))
-	}
+	header += fmt.Sprintf("From: %s\r\n", viper.GetString("MAIL.USER")+"@iitk.ac.in")
+	header += fmt.Sprintf("To: %s\r\n", viper.GetStringSlice("MAIL.WEBTEAM"))
+
 	if len(mail.Cc) > 0 {
 		header += fmt.Sprintf("Cc: %s\r\n", strings.Join(mail.Cc, ";"))
-	}
-	if len(mail.Bcc) > 0 {
-		header += fmt.Sprintf("Bcc: %s\r\n", strings.Join(mail.Bcc, ";"))
 	}
 
 	header += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
@@ -46,23 +47,37 @@ func (mail *Mail) BuildMessage() []byte {
 	return []byte(header)
 }
 
-func MailerService(mail_channel chan MailEntity) {
+func MailerService(mail_channel chan Mail) {
+	log.Info("Hello mailer")
 	user := viper.GetString("MAIL.USER")
 	pass := viper.GetString("MAIL.PASS")
 	host := viper.GetString("MAIL.HOST")
 	port := viper.GetString("MAIL.PORT")
-	address := fmt.Sprintf("%s:%s", host, port)
+
+	smtpServer := SMTPServer{Host: host, Port: port}
+	smtpServer.TLSConfig = &tls.Config{InsecureSkipVerify: true, ServerName: smtpServer.Host}
 
 	auth := smtp.PlainAuth("", user, pass, host)
-	to := []string{viper.GetString("MAIL.WEBTEAM")}
+	to := viper.GetStringSlice("MAIL.WEBTEAM")
 
 	for u := range mail_channel {
-		err := smtp.SendMail(address, auth, user, to, u.Msg)
+		mail := Mail{}
+		mail.Sender = viper.GetString("MAIL.USER") + "@iitk.ac.in"
+		mail.To = to
+		mail.Cc = u.Cc
+		mail.Bcc = u.Bcc
+		mail.Subject = u.Subject
+		mail.Body = u.Body
+
+		messageBody := mail.BuildMessage()
+
+		err := smtp.SendMail(smtpServer.ServerName(), auth, mail.Sender, to, messageBody)
+
 		if err != nil {
-			log.Printf("ERROR: while mailing users %v\n", u.to)
-			log.Println(err)
+			log.Info("ERROR: while mailing users\n")
+			log.Error(err)
 		} else {
-			log.Printf("Mailed %v\n", u.to)
+			log.Info("Mailed successfully\n")
 		}
 	}
 }

@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	_ "github.com/spo-iitk/ras-backend/config"
+	"github.com/spo-iitk/ras-backend/mail"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -12,20 +14,26 @@ const (
 	writeTimeout = 10 * time.Second
 )
 
+var mail_channel chan mail.Mail
+
 func main() {
 	var g errgroup.Group
 
-	g.Go(func() error {
-		return authServer().ListenAndServe()
-	})
+	// g.Go(func() error {
+	// 	return authServer().ListenAndServe()
+	// })
+
+	mail_channel = make(chan mail.Mail)
+
+	go mail.MailerService(mail_channel)
 
 	g.Go(func() error {
-		return rasServer().ListenAndServe()
+		return rasServer(mail_channel).ListenAndServe()
 	})
 
-	g.Go(func() error {
-		return studentServer().ListenAndServe()
-	})
+	// g.Go(func() error {
+	// 	return studentServer().ListenAndServe()
+	// })
 
 	if err := g.Wait(); err != nil {
 		log.Fatal(err)
