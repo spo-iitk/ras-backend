@@ -1,4 +1,4 @@
-package cycle // will be reanamed later
+package rc // will be reanamed later
 
 import (
 	"github.com/sirupsen/logrus"

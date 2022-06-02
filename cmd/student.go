@@ -13,7 +13,7 @@ func studentServer() *http.Server {
 	PORT := viper.GetString("STUDENT.PORT")
 	engine := gin.New()
 	engine.Use(middleware.Authenticator())
-	student.Router(engine)
+	student.StudentRouter(engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,
