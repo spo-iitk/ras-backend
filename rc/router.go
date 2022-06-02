@@ -6,22 +6,22 @@ import (
 )
 
 func AdminRouter(r *gin.Engine) {
-	r.GET("", ras.PlaceHolderController)      // return all RC
-	r.POST("/new", ras.PlaceHolderController) // new RC
+	r.GET("/api/admin/rc", ras.PlaceHolderController)      // return all RC
+	r.POST("/api/admin/rc/new", ras.PlaceHolderController) // new RC
 	admin := r.Group("/api/admin/rc/:rid")
 	{
-		admin.GET("", ras.PlaceHolderController)  // get RC just overview details
+		admin.GET("", ras.PlaceHolderController) // get RC just overview details
 
 		// NOtice, events, new company must have an all query param
-		admin.GET("/notice", ras.PlaceHolderController)               // all notices in details
-		admin.POST("/notice/new", ras.PlaceHolderController)          // new notice
+		admin.GET("/notice", ras.PlaceHolderController)                // all notices in details
+		admin.POST("/notice/new", ras.PlaceHolderController)           // new notice
 		admin.POST("/notice/:nid/reminder", ras.PlaceHolderController) // reminder: send mail to all
 		admin.DELETE("/notice/:nid", ras.PlaceHolderController)        // delete notice
 
 		admin.GET("/new-company", ras.PlaceHolderController) // Company signup request from auth
 
-		admin.GET("/company", ras.PlaceHolderController)              // all registerd compnay
-		admin.POST("/company/new", ras.PlaceHolderController)         // add compnay to RC from master
+		admin.GET("/company", ras.PlaceHolderController)               // all registerd compnay
+		admin.POST("/company/new", ras.PlaceHolderController)          // add compnay to RC from master
 		admin.GET("/company/:cid", ras.PlaceHolderController)          // get company
 		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
 
@@ -45,11 +45,11 @@ func AdminRouter(r *gin.Engine) {
 func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student/rc")
 	{
-		student.GET("", ras.PlaceHolderController)                 // get registered rc
-		student.POST("/:id/enrollment", ras.PlaceHolderController) // enrolment question
-		student.GET("/:id/notice", ras.PlaceHolderController)      // cache
-		student.GET("/:id/resume", ras.PlaceHolderController)
-		student.POST("/:id/resume/new", ras.PlaceHolderController)
+		student.GET("", ras.PlaceHolderController)                  // get registered rc
+		student.POST("/:rid/enrollment", ras.PlaceHolderController) // enrolment question
+		student.GET("/:rid/notice", ras.PlaceHolderController)      // cache
+		student.GET("/:rid/resume", ras.PlaceHolderController)
+		student.POST("/:rid/resume/new", ras.PlaceHolderController)
 	}
 }
 

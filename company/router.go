@@ -26,6 +26,5 @@ func AdminRouter(r *gin.Engine) {
 		admin.GET("/:cid/history", ras.PlaceHolderController)
 		admin.PUT("/:cid/history/:hid", ras.PlaceHolderController)
 		admin.DELETE("/:cid/history/:hid", ras.PlaceHolderController)
-
 	}
 }
