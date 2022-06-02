@@ -6,38 +6,38 @@ import (
 )
 
 func AdminRouter(r *gin.Engine) {
-	admin := r.Group("/api/admin/rc")
+	r.GET("", ras.PlaceHolderController)      // return all RC
+	r.POST("/new", ras.PlaceHolderController) // new RC
+	admin := r.Group("/api/admin/rc/:rid")
 	{
-		admin.GET("", ras.PlaceHolderController)      // return all RC
-		admin.POST("/new", ras.PlaceHolderController) // new RC
-		admin.GET("/:id", ras.PlaceHolderController)  // get RC just overview details
+		admin.GET("", ras.PlaceHolderController)  // get RC just overview details
 
 		// NOtice, events, new company must have an all query param
-		admin.GET("/:id/notice", ras.PlaceHolderController)               // all notices in details
-		admin.POST("/:id/notice/new", ras.PlaceHolderController)          // new notice
-		admin.POST("/:id/notice/:id/reminder", ras.PlaceHolderController) // reminder: send mail to all
-		admin.DELETE("/:id/notice/:id", ras.PlaceHolderController)        // delete notice
+		admin.GET("/notice", ras.PlaceHolderController)               // all notices in details
+		admin.POST("/notice/new", ras.PlaceHolderController)          // new notice
+		admin.POST("/notice/:nid/reminder", ras.PlaceHolderController) // reminder: send mail to all
+		admin.DELETE("/notice/:nid", ras.PlaceHolderController)        // delete notice
 
-		admin.GET("/:id/new-company", ras.PlaceHolderController) // Company signup request from auth
+		admin.GET("/new-company", ras.PlaceHolderController) // Company signup request from auth
 
-		admin.GET("/:id/company", ras.PlaceHolderController)              // all registerd compnay
-		admin.POST("/:id/company/new", ras.PlaceHolderController)         // add compnay to RC from master
-		admin.GET("/:id/company/:id", ras.PlaceHolderController)          // get company
-		admin.GET("/:id/company/:id/proforma", ras.PlaceHolderController) // all proforma
+		admin.GET("/company", ras.PlaceHolderController)              // all registerd compnay
+		admin.POST("/company/new", ras.PlaceHolderController)         // add compnay to RC from master
+		admin.GET("/company/:cid", ras.PlaceHolderController)          // get company
+		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
 
-		admin.POST("/:id/ppo-pio", ras.PlaceHolderController) // add ppo-pio
+		admin.POST("/ppo-pio", ras.PlaceHolderController) // add ppo-pio
 
-		admin.GET("/:id/student", ras.PlaceHolderController) // get all students of rc
-		admin.GET("/:id/student/:id", ras.PlaceHolderController)
-		admin.PUT("/:id/student/:id", ras.PlaceHolderController)
-		admin.POST("/:id/student", ras.PlaceHolderController)       // bulk post/ enroll in RC
-		admin.POST("/:id/student/stats", ras.PlaceHolderController) // query branch wise stats
+		admin.GET("/student", ras.PlaceHolderController) // get all students of rc
+		admin.GET("/student/:sid", ras.PlaceHolderController)
+		admin.PUT("/student/:sid", ras.PlaceHolderController)
+		admin.POST("/student", ras.PlaceHolderController)       // bulk post/ enroll in RC
+		admin.POST("/student/stats", ras.PlaceHolderController) // query branch wise stats
 
-		admin.GET("/:id/student/:id/questions", ras.PlaceHolderController)
-		admin.PUT("/:id/student/:id/questions/:id", ras.PlaceHolderController)
+		admin.GET("/student/:sid/questions", ras.PlaceHolderController)
+		admin.PUT("/student/:sid/questions/:qid", ras.PlaceHolderController)
 
-		admin.GET("/:id/resume", ras.PlaceHolderController)
-		admin.POST("/:id/resume", ras.PlaceHolderController) // bulk accept/reject
+		admin.GET("/resume", ras.PlaceHolderController)
+		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
 	}
 }
