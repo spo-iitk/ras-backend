@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	_ "github.com/spo-iitk/ras-backend/config"
+	"github.com/spo-iitk/ras-backend/mail"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -14,13 +16,16 @@ const (
 
 func main() {
 	var g errgroup.Group
+	mail_channel := make(chan mail.Mail)
+
+	go mail.Service(mail_channel)
 
 	g.Go(func() error {
-		return authServer().ListenAndServe()
+		return authServer(mail_channel).ListenAndServe()
 	})
 
 	g.Go(func() error {
-		return rasServer().ListenAndServe()
+		return rasServer(mail_channel).ListenAndServe()
 	})
 
 	g.Go(func() error {

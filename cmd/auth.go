@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/auth"
+	"github.com/spo-iitk/ras-backend/mail"
 )
 
-func authServer() *http.Server {
+func authServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := viper.GetString("AUTH.PORT")
 	r := gin.New()
-	auth.Router(r)
+	auth.Router(mail_channel, r)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,

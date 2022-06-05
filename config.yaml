@@ -1,9 +1,10 @@
 MAIL:
-  USER: ""
+  USER: "ias"
   PASS: ""
-  HOST: ""
-  PORT: ""
+  HOST: "smtp.cc.iitk.ac.in"
+  PORT: "25"
   WEBTEAM: "spowebteam@gmail.com"
+  BATCH: 200
 JWT:
   EXPIRATION:
     LONG: 100

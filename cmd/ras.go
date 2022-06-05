@@ -4,15 +4,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/middleware"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/ras"
 )
 
-func rasServer() *http.Server {
+func rasServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := "8080"
 	engine := gin.New()
-	engine.Use(middleware.Authenticator())
-	ras.RASRouter(engine)
+	// engine.Use(middleware.Authenticator())
+	ras.RASRouter(mail_channel, engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,

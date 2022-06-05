@@ -3,66 +3,53 @@ package mail
 import (
 	"fmt"
 	"net/smtp"
-	"strings"
 
-	log "github.com/sirupsen/logrus"
-
-	"github.com/spf13/viper"
+	"github.com/sirupsen/logrus"
 )
 
 type Mail struct {
-	Sender  string
 	To      []string
-	Cc      []string
-	Bcc     []string
 	Subject string
 	Body    string
 }
 
-type MailEntity struct {
-	// From the docs Sending "Bcc" messages is accomplished by including an email address in the to parameter but not including it in the msg headers.
-	to  []string //NOTE: list of emails seperated by comma
-	Msg []byte
-}
-
 func (mail *Mail) BuildMessage() []byte {
-	header := ""
-	header += fmt.Sprintf("From: %s\r\n", mail.Sender)
-	if len(mail.To) > 0 {
-		header += fmt.Sprintf("To: %s\r\n", strings.Join(mail.To, ";"))
-	}
-	if len(mail.Cc) > 0 {
-		header += fmt.Sprintf("Cc: %s\r\n", strings.Join(mail.Cc, ";"))
-	}
-	if len(mail.Bcc) > 0 {
-		header += fmt.Sprintf("Bcc: %s\r\n", strings.Join(mail.Bcc, ";"))
+	message := fmt.Sprintf("From: Recruitment Automation Portal IITK<%s>\r\n", sender)
+	message += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
+
+	// If mass mailing, BCC all the users
+	if len(mail.To) == 1 {
+		message += fmt.Sprintf("To: %s\r\n\r\n", mail.To[0])
+	} else {
+		message += fmt.Sprintf("To: Undisclosed Recipients<%s>\r\n\r\n", webteam)
 	}
 
-	header += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
-	header += "\r\n" + mail.Body
+	message += mail.Body
+	message += "\r\n\r\nBest\r\nRecruitment Automation Team\r\n"
+	message += "Indian Institute of Technology Kanpur\r\n\r\n"
+	message += "This is an auto-generated email. Please do not reply."
 
-	header += "\r\n\r\n Best Recruitment Automation Team \r\n This is an auto-generated email. Please do not reply."
-
-	return []byte(header)
+	return []byte(message)
 }
 
-func MailerService(mail_channel chan MailEntity) {
-	user := viper.GetString("MAIL.USER")
-	pass := viper.GetString("MAIL.PASS")
-	host := viper.GetString("MAIL.HOST")
-	port := viper.GetString("MAIL.PORT")
-	address := fmt.Sprintf("%s:%s", host, port)
-
+func Service(mailQueue chan Mail) {
+	addr := fmt.Sprintf("%s:%s", host, port)
 	auth := smtp.PlainAuth("", user, pass, host)
-	to := []string{viper.GetString("MAIL.WEBTEAM")}
 
-	for u := range mail_channel {
-		err := smtp.SendMail(address, auth, user, to, u.Msg)
-		if err != nil {
-			log.Printf("ERROR: while mailing users %v\n", u.to)
-			log.Println(err)
-		} else {
-			log.Printf("Mailed %v\n", u.to)
+	for mail := range mailQueue {
+		message := mail.BuildMessage()
+
+		for i := 0; i < len(mail.To); i += batch {
+			end := i + batch
+			if end > len(mail.To) {
+				end = len(mail.To)
+			}
+
+			to := append(mail.To[i:end], webteam)
+
+			if err := smtp.SendMail(addr, auth, sender, to, message); err != nil {
+				logrus.Errorf("Error sending mail: %v", to, err)
+			}
 		}
 	}
 }
