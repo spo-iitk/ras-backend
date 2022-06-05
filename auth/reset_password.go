@@ -10,7 +10,7 @@ import (
 
 type resetPasswordRequest struct {
 	UserID      string `json:"user_id" binding:"required"`
-	NewPassword string `json:"New_password" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required"`
 	OTP         string `json:"otp" binding:"required"`
 }
 
