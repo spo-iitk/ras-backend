@@ -8,6 +8,9 @@ CreateDB() {
    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $1 TO $1admin;"
 }
 
-sudo service postgresql start
+sudo systemctl start postgresql
+CreateDB application
 CreateDB auth
+CreateDB company
+CreateDB cycle
 CreateDB student
