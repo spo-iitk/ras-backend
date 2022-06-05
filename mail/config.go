@@ -8,10 +8,11 @@ import (
 )
 
 var (
-	user string
-	pass string
-	host string
-	port string
+	user  string
+	pass  string
+	host  string
+	port  string
+	batch int
 
 	sender string
 	auth   smtp.Auth
@@ -24,6 +25,7 @@ func init() {
 	pass = viper.GetString("MAIL.PASS")
 	host = viper.GetString("MAIL.HOST")
 	port = viper.GetString("MAIL.PORT")
+	batch = viper.GetInt("MAIL.BATCH")
 
 	sender = user + "@iitk.ac.in"
 	auth = smtp.PlainAuth("", user, pass, host)
