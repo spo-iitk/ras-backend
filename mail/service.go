@@ -1,83 +1,50 @@
 package mail
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/smtp"
-	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 )
 
 type Mail struct {
-	Sender  string
 	To      []string
-	Cc      []string
-	Bcc     []string
 	Subject string
 	Body    string
 }
-type SMTPServer struct {
-	Host      string
-	Port      string
-	TLSConfig *tls.Config
-}
-
-// ServerName ...
-func (s *SMTPServer) ServerName() string {
-	return s.Host + ":" + s.Port
-}
 
 func (mail *Mail) BuildMessage() []byte {
-	header := ""
-	header += fmt.Sprintf("From: %s\r\n", viper.GetString("MAIL.USER")+"@iitk.ac.in")
-	header += fmt.Sprintf("To: %s\r\n", viper.GetStringSlice("MAIL.WEBTEAM"))
+	message := fmt.Sprintf("From: Recruitment Automation Portal IITK<%s>\r\n", sender)
+	message += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
 
-	if len(mail.Cc) > 0 {
-		header += fmt.Sprintf("Cc: %s\r\n", strings.Join(mail.Cc, ";"))
+	// If mass mailing, BCC all the users
+	if len(mail.To) == 1 {
+		message += fmt.Sprintf("To: %s\r\n\r\n", mail.To[0])
+	} else {
+		message += fmt.Sprintf("To: Undisclosed Recipients<%s>\r\n\r\n", viper.GetStringSlice("MAIL.WEBTEAM"))
 	}
 
-	header += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
-	header += "\r\n" + mail.Body
+	message += mail.Body
+	message += "\r\n\r\n Best \r\n Recruitment Automation Team \r\n"
+	message += "This is an auto-generated email. Please do not reply."
 
-	header += "\r\n\r\n Best Recruitment Automation Team \r\n This is an auto-generated email. Please do not reply."
-
-	return []byte(header)
+	return []byte(message)
 }
 
-func MailerService(mail_channel chan Mail) {
-	log.Info("Hello mailer")
-	user := viper.GetString("MAIL.USER")
-	pass := viper.GetString("MAIL.PASS")
-	host := viper.GetString("MAIL.HOST")
-	port := viper.GetString("MAIL.PORT")
+func Service(mailQueue chan Mail) {
+	addr := fmt.Sprintf("%s:%s", host, port)
 
-	smtpServer := SMTPServer{Host: host, Port: port}
-	smtpServer.TLSConfig = &tls.Config{InsecureSkipVerify: true, ServerName: smtpServer.Host}
+	for mail := range mailQueue {
+		message := mail.BuildMessage()
 
-	auth := smtp.PlainAuth("", user, pass, host)
-	to := viper.GetStringSlice("MAIL.WEBTEAM")
-
-	for u := range mail_channel {
-		mail := Mail{}
-		mail.Sender = viper.GetString("MAIL.USER") + "@iitk.ac.in"
-		mail.To = to
-		mail.Cc = u.Cc
-		mail.Bcc = u.Bcc
-		mail.Subject = u.Subject
-		mail.Body = u.Body
-
-		messageBody := mail.BuildMessage()
-
-		err := smtp.SendMail(smtpServer.ServerName(), auth, mail.Sender, to, messageBody)
+		err := smtp.SendMail(addr, auth, sender, mail.To, message)
 
 		if err != nil {
-			log.Info("ERROR: while mailing users\n")
-			log.Error(err)
+			logrus.Error(err)
 		} else {
-			log.Info("Mailed successfully\n")
+			logrus.Infoln("Mailed successfully")
 		}
 	}
 }

@@ -20,17 +20,15 @@ func PlaceHolderController(c *gin.Context) {
 	})
 }
 
-func MailController(mail_channel chan mail.Mail) gin.HandlerFunc {
+func MailController(mailQueue chan mail.Mail) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		m := mail.Mail{
-			Sender:  viper.GetString("MAIL.USER") + "@iitk.ac.in",
-			To:      viper.GetStringSlice("MAIL.WEBTEAM"),
-			Bcc:     []string{"shreea20@iitk.ac.in"},
-			Subject: "Hi vro",
-			Body:    "Test",
+			To:      []string{viper.GetString("MAIL.WEBTEAM")},
+			Subject: "It Works!",
+			Body:    "Hello World!",
 		}
 		go func(mail mail.Mail) {
-			mail_channel <- m
+			mailQueue <- m
 			log.Info("Sending mail now")
 		}(m)
 		c.JSON(200, gin.H{
