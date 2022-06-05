@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/constants"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,7 @@ func createUser(ctx *gin.Context, user *User) (uint, error) {
 	return user.ID, tx.Error
 }
 
-func getPasswordAndRole(ctx *gin.Context, userID string) (string, Role, error) {
+func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role, error) {
 	var user User
 	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
 	return user.Password, user.RoleID, tx.Error
