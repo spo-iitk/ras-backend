@@ -5,8 +5,6 @@ import (
 	"net/smtp"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/spf13/viper"
 )
 
 type Mail struct {
@@ -23,11 +21,12 @@ func (mail *Mail) BuildMessage() []byte {
 	if len(mail.To) == 1 {
 		message += fmt.Sprintf("To: %s\r\n\r\n", mail.To[0])
 	} else {
-		message += fmt.Sprintf("To: Undisclosed Recipients<%s>\r\n\r\n", viper.GetStringSlice("MAIL.WEBTEAM"))
+		message += fmt.Sprintf("To: Undisclosed Recipients<%s>\r\n\r\n", webteam)
 	}
 
 	message += mail.Body
-	message += "\r\n\r\n Best \r\n Recruitment Automation Team \r\n"
+	message += "\r\n\r\nBest\r\nRecruitment Automation Team\r\n"
+	message += "Indian Institute of Technology Kanpur\r\n\r\n"
 	message += "This is an auto-generated email. Please do not reply."
 
 	return []byte(message)
@@ -35,16 +34,22 @@ func (mail *Mail) BuildMessage() []byte {
 
 func Service(mailQueue chan Mail) {
 	addr := fmt.Sprintf("%s:%s", host, port)
+	auth := smtp.PlainAuth("", user, pass, host)
 
 	for mail := range mailQueue {
 		message := mail.BuildMessage()
 
-		err := smtp.SendMail(addr, auth, sender, mail.To, message)
+		for i := 0; i < len(mail.To); i += batch {
+			end := i + batch
+			if end > len(mail.To) {
+				end = len(mail.To)
+			}
 
-		if err != nil {
-			logrus.Error(err)
-		} else {
-			logrus.Infoln("Mailed successfully")
+			to := append(mail.To[i:end], webteam)
+
+			if err := smtp.SendMail(addr, auth, sender, to, message); err != nil {
+				logrus.Errorf("Error sending mail: %v", to, err)
+			}
 		}
 	}
 }

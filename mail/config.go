@@ -1,32 +1,30 @@
 package mail
 
 import (
-	"net/smtp"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 var (
-	user  string
-	pass  string
-	host  string
-	port  string
-	batch int
-
-	sender string
-	auth   smtp.Auth
+	user    string
+	pass    string
+	host    string
+	port    string
+	webteam string
+	batch   int
+	sender  string
 )
 
 func init() {
 	logrus.Info("Initializing mailer")
 
 	user = viper.GetString("MAIL.USER")
+	sender = user + "@iitk.ac.in"
+
 	pass = viper.GetString("MAIL.PASS")
 	host = viper.GetString("MAIL.HOST")
 	port = viper.GetString("MAIL.PORT")
-	batch = viper.GetInt("MAIL.BATCH")
+	webteam = viper.GetString("MAIL.WEBTEAM")
 
-	sender = user + "@iitk.ac.in"
-	auth = smtp.PlainAuth("", user, pass, host)
+	batch = viper.GetInt("MAIL.BATCH")
 }
