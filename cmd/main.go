@@ -16,14 +16,13 @@ const (
 
 func main() {
 	var g errgroup.Group
-
-	g.Go(func() error {
-		return authServer().ListenAndServe()
-	})
-
 	mail_channel := make(chan mail.Mail)
 
 	go mail.Service(mail_channel)
+
+	g.Go(func() error {
+		return authServer(mail_channel).ListenAndServe()
+	})
 
 	g.Go(func() error {
 		return rasServer(mail_channel).ListenAndServe()
