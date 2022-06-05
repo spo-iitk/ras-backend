@@ -14,8 +14,6 @@ const (
 	writeTimeout = 10 * time.Second
 )
 
-var mailQueue chan mail.Mail
-
 func main() {
 	var g errgroup.Group
 
@@ -23,12 +21,12 @@ func main() {
 		return authServer().ListenAndServe()
 	})
 
-	mailQueue = make(chan mail.Mail)
+	mail_channel := make(chan mail.Mail)
 
-	go mail.Service(mailQueue)
+	go mail.Service(mail_channel)
 
 	g.Go(func() error {
-		return rasServer(mailQueue).ListenAndServe()
+		return rasServer(mail_channel).ListenAndServe()
 	})
 
 	g.Go(func() error {
