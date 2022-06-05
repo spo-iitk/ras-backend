@@ -1,4 +1,4 @@
-package student
+package constants
 
 type ProgramID uint
 

@@ -12,9 +12,6 @@ func StudentRouter(r *gin.Engine) {
 		student.PUT("/:sid", updateStudentHandler)
 		student.GET("/:sid", getStudentHandler)
 		student.GET("/all", getAllStudentsHandler)
-		student.GET("/programs", getPrograms)                       // delte this move to /ras
-		student.GET("/departments", getDepartments)                 // delte this move to /ras
-		student.GET("/program-departments", getProgramsDepartments) // delte this move to /ras
 	}
 }
 
