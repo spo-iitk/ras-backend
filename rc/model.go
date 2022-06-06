@@ -37,7 +37,10 @@ type RecruitmentCycleQuestion struct {
 	Question           string                        `json:"question"`
 	RecruitmentCycleID uint                          `gorm:"index" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle              `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
-	Options            string                        `json:"options"` //csv
+	// TODO: Question can vary from student to student???
+	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycle   StudentRecruitmentCycle `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
+	Options                   string                  `json:"options"` //csv
 }
 
 type RecruitmentCycleQuestionsAnswer struct {
