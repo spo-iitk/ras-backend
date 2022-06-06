@@ -28,6 +28,11 @@ func postRC(ctx *gin.Context) {
 	ctx.JSON(201, gin.H{"status": "created", "data": id})
 }
 
+//! TODO: Add more response data
+type getRCResponse struct {
+	RecruitmentCycle
+}
+
 func getRC(ctx *gin.Context) {
 	id := ctx.Param("rid")
 	var rc RecruitmentCycle
@@ -36,5 +41,5 @@ func getRC(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(200, rc)
+	ctx.JSON(200, getRCResponse{rc})
 }
