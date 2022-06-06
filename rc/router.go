@@ -6,11 +6,12 @@ import (
 )
 
 func AdminRouter(r *gin.Engine) {
-	r.GET("/api/admin/rc", ras.PlaceHolderController)      // return all RC
-	r.POST("/api/admin/rc/new", ras.PlaceHolderController) // new RC
+	r.GET("/api/admin/rc", getAllRC)
+	r.POST("/api/admin/rc/new", postRC)
+
 	admin := r.Group("/api/admin/rc/:rid")
 	{
-		admin.GET("", ras.PlaceHolderController) // get RC just overview details
+		admin.GET("", getRC)
 
 		// NOtice, events, new company must have an all query param
 		admin.GET("/notice", ras.PlaceHolderController)                // all notices in details

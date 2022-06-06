@@ -15,12 +15,12 @@ const (
 
 type RecruitmentCycle struct {
 	gorm.Model
-	IsActive            bool                 `json:"is_active"`
-	AcademicYear        string               `json:"academic_year"`
-	Type                RecruitmentCycleType `json:"type"`
-	StartDate           time.Time            `json:"start_date"`
-	Phase               uint                 `json:"phase"`
-	ApplicationCountCap uint                 `json:"application_count_cap"`
+	IsActive            bool                 `json:"is_active" gorm:"default:true"`
+	AcademicYear        string               `json:"academic_year" binding:"required"`
+	Type                RecruitmentCycleType `json:"type" binding:"required"`
+	StartDate           uint                 `json:"start_date" binding:"required"`
+	Phase               uint                 `json:"phase" binding:"required"`
+	ApplicationCountCap uint                 `json:"application_count_cap" binding:"required"`
 }
 
 type RecruitmentCycleQuestionsType string
