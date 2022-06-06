@@ -32,6 +32,22 @@ func main() {
 		return studentServer().ListenAndServe()
 	})
 
+	g.Go(func() error {
+		return companyServer().ListenAndServe()
+	})
+
+	g.Go(func() error {
+		return adminRCServer().ListenAndServe()
+	})
+
+	g.Go(func() error {
+		return adminStudentServer().ListenAndServe()
+	})
+
+	g.Go(func() error {
+		return adminCompanyServer().ListenAndServe()
+	})
+
 	if err := g.Wait(); err != nil {
 		log.Fatal(err)
 	}
