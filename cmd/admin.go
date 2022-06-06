@@ -16,6 +16,7 @@ func adminRCServer() *http.Server {
 	PORT := viper.GetString("PORT.ADMIN.RC")
 	engine := gin.New()
 	engine.Use(middleware.Authenticator())
+	engine.Use(middleware.EnsureAdmin())
 
 	rc.AdminRouter(engine)
 	application.AdminRouter(engine)
@@ -34,6 +35,7 @@ func adminCompanyServer() *http.Server {
 	PORT := viper.GetString("PORT.ADMIN.COMPANY")
 	engine := gin.New()
 	engine.Use(middleware.Authenticator())
+	engine.Use(middleware.EnsureAdmin())
 
 	company.AdminRouter(engine)
 
@@ -51,6 +53,7 @@ func adminStudentServer() *http.Server {
 	PORT := viper.GetString("PORT.ADMIN.STUDENT")
 	engine := gin.New()
 	engine.Use(middleware.Authenticator())
+	engine.Use(middleware.EnsureAdmin())
 
 	student.AdminRouter(engine)
 
