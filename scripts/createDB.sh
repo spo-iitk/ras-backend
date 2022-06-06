@@ -12,5 +12,5 @@ sudo systemctl start postgresql
 CreateDB application
 CreateDB auth
 CreateDB company
-CreateDB cycle
+CreateDB rc
 CreateDB student

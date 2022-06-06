@@ -9,7 +9,7 @@ JWT:
   EXPIRATION:
     LONG: 100
     SHORT: 1500
-  PRIVATE_KEY: "pretty-big-seceret"
+  PRIVATE_KEY: "pretty-big-secret"
 OTP:
   EXPIRATION: 20
   SIZE: 6
@@ -18,18 +18,18 @@ DATABASE:
   PORT: "5432"
   PASSWORD: "b2Led2ke"
   USER: "admin"
-APPLICATION:
-  PORT: "8010"
-  DBNAME: "application"
-AUTH:
-  PORT: "8015"
-  DBNAME: "auth"
-COMPANY:
-  PORT: "8020"
-  DBNAME: "company"
-CYCLE:
-  PORT: "8025"
-  DBNAME: "cycle"
-STUDENT:
-  PORT: "8030"
-  DBNAME: "student"
+DBNAME:
+  APPLICATION: "application"
+  COMPANY: "company"
+  RC: "rc"
+  STUDENT: "student"
+  AUTH: "auth"
+PORT:
+  RAS: 3470
+  AUTH: 3475
+  STUDENT: 3480
+  COMPANY: 3485
+  ADMIN:
+    RC: 3490
+    COMPANY: 3495
+    STUDENT: 3500
