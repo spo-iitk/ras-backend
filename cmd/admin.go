@@ -7,18 +7,19 @@ import (
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/application"
 	"github.com/spo-iitk/ras-backend/company"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/student"
 )
 
-func adminRCServer() *http.Server {
+func adminRCServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := viper.GetString("PORT.ADMIN.RC")
 	engine := gin.New()
 	engine.Use(middleware.Authenticator())
 	engine.Use(middleware.EnsureAdmin())
 
-	rc.AdminRouter(engine)
+	rc.AdminRouter(mail_channel, engine)
 	application.AdminRouter(engine)
 
 	server := &http.Server{
