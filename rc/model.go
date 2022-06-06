@@ -82,9 +82,13 @@ const (
 
 type StudentRecruitmentCycle struct {
 	gorm.Model
-	StudentID uint                        `gorm:"index" json:"student_id"`
-	Email     string                      `grom:"index" json:"email"`
-	Type      StudentRecruitmentCycleType `json:"type"`
-	IsFrozen  bool                        `json:"is_frozen"`
-	Comment   string                      `json:"comment"`
+	StudentID                    uint                        `gorm:"index" json:"student_id"`
+	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
+	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
+	CurrentCPI                   float64                     `json:"current_cpi"`
+	UGCPI                        float64                     `json:"ug_cpi"`
+	Email                        string                      `grom:"index" json:"email"`
+	Type                         StudentRecruitmentCycleType `json:"type"`
+	IsFrozen                     bool                        `json:"is_frozen"`
+	Comment                      string                      `json:"comment"`
 }
