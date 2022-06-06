@@ -1,19 +1,19 @@
 FROM golang:1.18-bullseye
 
-# Set the Current Working Directory inside the container
-WORKDIR $GOPATH/go/src/github.com/spo-iitk/ras-backend
+# # Set the Current Working Directory inside the container
+# WORKDIR $GOPATH/go/src/github.com/spo-iitk/ras-backend
 
-# Copy everything from the current directory to the PWD (Present Working Directory) inside the container
-COPY .. .
+# # Copy everything from the current directory to the PWD (Present Working Directory) inside the container
+# COPY .. .
 
-# Download all the dependencies
-RUN go get -d -v ./...
+# # Download all the dependencies
+# RUN go get -d -v ./...
 
-# Install the package
-RUN go install -v ./...
+# # Install the package
+# RUN go install -v ./...
 
-# This container exposes port 8080 to the outside world
-EXPOSE 8080
+# # This container exposes port 8080 to the outside world
+# EXPOSE 8080
 
-# Run the executable
-CMD ["go-sample-app"]
+# # Run the executable
+# CMD ["go-sample-app"]
