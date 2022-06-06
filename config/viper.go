@@ -1,7 +1,7 @@
 package config
 
 import (
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 )
@@ -14,7 +14,7 @@ func viperConfig() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatalf("Fatal error config file: %s \n", err)
+		logrus.Fatalf("Fatal error config file: %s \n", err)
 		panic(err)
 	}
 }
