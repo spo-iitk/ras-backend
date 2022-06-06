@@ -53,7 +53,7 @@ func validateToken(encodedToken string) (string, uint, error) {
 	})
 
 	if err != nil {
-		return "", 12, err
+		return "", 20, err
 	}
 
 	return claims.UserID, claims.RoleID, nil

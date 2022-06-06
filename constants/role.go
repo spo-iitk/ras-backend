@@ -11,5 +11,5 @@ const (
 	STAFF   Role = 5
 	COMPANY Role = 11
 	STUDENT Role = 10
-	// NONE    Role = 12
+	NONE    Role = 20
 )
