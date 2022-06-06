@@ -20,10 +20,9 @@ func AdminRouter(r *gin.Engine) {
 
 		admin.GET("/new-company", ras.PlaceHolderController) // Company signup request from auth
 
-		admin.GET("/company", ras.PlaceHolderController)               // all registerd compnay
-		admin.POST("/company/new", ras.PlaceHolderController)          // add compnay to RC from master
-		admin.GET("/company/:cid", ras.PlaceHolderController)          // get company
-		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
+		admin.GET("/company", ras.PlaceHolderController)      // all registerd compnay
+		admin.POST("/company/new", ras.PlaceHolderController) // add compnay to RC from master
+		admin.GET("/company/:cid", ras.PlaceHolderController) // get company
 
 		admin.POST("/ppo-pio", ras.PlaceHolderController) // add ppo-pio
 

@@ -3,6 +3,7 @@ package application
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	_ "github.com/spo-iitk/ras-backend/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -14,7 +15,7 @@ func openConnection() {
 	port := viper.GetString("DATABASE.PORT")
 	password := viper.GetString("DATABASE.PASSWORD")
 
-	dbName := viper.GetString("APPLICATION.DBNAME")
+	dbName := viper.GetString("DBNAME.APPLICATION")
 	user := dbName + viper.GetString("DATABASE.USER")
 
 	dsn := "host=" + host + " user=" + user + " password=" + password

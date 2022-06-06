@@ -10,7 +10,7 @@ import (
 )
 
 func authServer(mail_channel chan mail.Mail) *http.Server {
-	PORT := viper.GetString("AUTH.PORT")
+	PORT := viper.GetString("PORT.AUTH")
 	r := gin.New()
 	auth.Router(mail_channel, r)
 

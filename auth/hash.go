@@ -1,7 +1,7 @@
 package auth
 
 import (
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -9,7 +9,7 @@ import (
 func hashAndSalt(password string) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Info(err)
+		logrus.Info(err)
 	}
 	return string(hash)
 }

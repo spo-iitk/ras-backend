@@ -1,7 +1,7 @@
 package auth
 
 import (
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 	_ "github.com/spo-iitk/ras-backend/config"
@@ -16,7 +16,7 @@ func openConnection() {
 	port := viper.GetString("DATABASE.PORT")
 	password := viper.GetString("DATABASE.PASSWORD")
 
-	dbName := viper.GetString("AUTH.DBNAME")
+	dbName := viper.GetString("DBNAME.AUTH")
 	user := dbName + viper.GetString("DATABASE.USER")
 
 	dsn := "host=" + host + " user=" + user + " password=" + password
@@ -24,7 +24,7 @@ func openConnection() {
 
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to auth database: ", err)
+		logrus.Fatal("Failed to connect to auth database: ", err)
 		panic(err)
 	}
 
@@ -32,11 +32,11 @@ func openConnection() {
 
 	err = db.AutoMigrate(&User{}, &OTP{}, &CompanySignUpRequest{})
 	if err != nil {
-		log.Fatal("Failed to migrate auth database: ", err)
+		logrus.Fatal("Failed to migrate auth database: ", err)
 		panic(err)
 	}
 
-	log.Info("Connected to auth database")
+	logrus.Info("Connected to auth database")
 }
 
 func init() {
