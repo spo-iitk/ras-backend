@@ -14,10 +14,10 @@ func AdminRouter(r *gin.Engine) {
 		admin.GET("", getRC)
 
 		// NOtice, events, new company must have an all query param
-		admin.GET("/notice", ras.PlaceHolderController)                // all notices in details
-		admin.POST("/notice/new", ras.PlaceHolderController)           // new notice
-		admin.POST("/notice/:nid/reminder", ras.PlaceHolderController) // reminder: send mail to all
-		admin.DELETE("/notice/:nid", ras.PlaceHolderController)        // delete notice
+		admin.GET("/notice", getAllNotices)
+		admin.POST("/notice/new", postNotice)
+		admin.POST("/notice/:nid/reminder", ) // reminder: send mail to all
+		admin.DELETE("/notice/:nid", deleteNotice)        // delete notice
 
 		admin.GET("/new-company", ras.PlaceHolderController) // Company signup request from auth
 
