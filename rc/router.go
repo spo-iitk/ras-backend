@@ -52,7 +52,7 @@ func StudentRouter(r *gin.Engine) {
 	{
 		student.GET("", getStudent) // get registered rc
 
-		student.GET("/enrollment", getStudentEnrollment)              // enrolment question
+		student.GET("/enrollment", getStudentEnrollment)              // enrolment question + answers
 		student.POST("/enrollment/:qid/answer", postEnrollmentAnswer) // enrolment answer
 
 		student.GET("/resume", ras.PlaceHolderController)

@@ -69,8 +69,8 @@ func fetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitme
 	return tx.Error
 }
 
-func fetchStudent(ctx *gin.Context, rid string, sid string, student *StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND student_id = ?", rid, sid).First(&student)
+func fetchStudent(ctx *gin.Context, sid string, student *StudentRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Where("id = ?", sid).First(&student)
 	return tx.Error
 }
 
@@ -134,7 +134,7 @@ func updateStudentType(ctx *gin.Context, r *pioppoRequest, newType StudentRecrui
 		return tx.Error
 	}
 
-	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("student_id IN ?", sid).Updates(
+	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("id IN ?", sid).Updates(
 		StudentRecruitmentCycle{
 			Type:     newType,
 			IsFrozen: true,
