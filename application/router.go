@@ -14,6 +14,9 @@ func AdminRouter(r *gin.Engine) {
 		admin.POST("/student/stats", ras.PlaceHolderController)        // query branch wise stats
 		admin.POST("/pio-ppo", ras.PlaceHolderController)              // add ppo-pio, to events
 
+		admin.GET("/resume", ras.PlaceHolderController)
+		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
+
 		performa := admin.Group("/proforma/:pid")
 		{
 			performa.GET("", ras.PlaceHolderController) // 1 proforma
@@ -37,6 +40,7 @@ func AdminRouter(r *gin.Engine) {
 			performa.POST("/event/:eid/student", ras.PlaceHolderController)     // 1 proforma add students to event i.e. pass to next stage
 			performa.GET("/event/:eid/coordinator", ras.PlaceHolderController)  // 1 proforma add students to event i.e. pass to next stage
 			performa.POST("/event/:eid/coordinator", ras.PlaceHolderController) // 1 proforma add students to event i.e. pass to next stage
+
 		}
 	}
 }
