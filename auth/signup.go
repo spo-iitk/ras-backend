@@ -14,6 +14,7 @@ type signUpRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Password string `json:"password" binding:"required"`
 	OTP      string `json:"otp" binding:"required"`
+	RollNo   string `json:"roll_no" binding:"required"`
 }
 
 func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
@@ -50,8 +51,9 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		}
 
 		var createStudent = student.Student{
-			IITKEmail : signupReq.UserID,
-			Name : signupReq.Name,
+			IITKEmail: signupReq.UserID,
+			Name:      signupReq.Name,
+			RollNo:    signupReq.RollNo,
 		}
 
 		err = student.CreateStudent(ctx, &createStudent)
