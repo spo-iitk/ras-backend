@@ -11,16 +11,16 @@ func StudentRouter(r *gin.Engine) {
 		student.POST("/new", createStudentHandler)
 		student.PUT("/:sid", updateStudentHandler)
 		student.GET("/:sid", getStudentHandler)
-		student.GET("/all", getAllStudentsHandler)
 	}
 }
 
 func AdminRouter(r *gin.Engine) {
 	admin := r.Group("/api/admin/student")
 	{
-		admin.GET("", ras.PlaceHolderController)              // dump all
-		admin.GET("/:sid", ras.PlaceHolderController)         // dump all
-		admin.PUT("/:sid", ras.PlaceHolderController)         // dump all
-		admin.GET("/:sid/history", ras.PlaceHolderController) // mass dump
+		//create student
+		admin.GET("", getAllStudentsHandler)              
+		admin.GET("/:sid", getStudentHandler)         
+		admin.PUT("/:sid", updateStudentHandler)        
+		admin.GET("/:sid/history", ras.PlaceHolderController) 
 	}
 }
