@@ -84,8 +84,8 @@ func createStudents(ctx *gin.Context, students *[]StudentRecruitmentCycle) error
 	return tx.Error
 }
 
-func fetchStudentQuestions(ctx *gin.Context, rid string, sid string, questions *[]RecruitmentCycleQuestion) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND student_recruitment_cycle_id = ?", rid, sid).Find(&questions)
+func fetchStudentQuestions(ctx *gin.Context, rid string, questions *[]RecruitmentCycleQuestion) error {
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(&questions)
 	return tx.Error
 }
 

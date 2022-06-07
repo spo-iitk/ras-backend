@@ -16,7 +16,7 @@ type RecruitmentCycle struct {
 	IsActive            bool                 `json:"is_active" gorm:"default:true"`
 	AcademicYear        string               `json:"academic_year" binding:"required"`
 	Type                RecruitmentCycleType `json:"type" binding:"required"`
-	StartDate           int64                 `json:"start_date" binding:"required"`
+	StartDate           int64                `json:"start_date" binding:"required"`
 	Phase               uint                 `json:"phase" binding:"required"`
 	ApplicationCountCap uint                 `json:"application_count_cap" binding:"required"`
 }
@@ -35,10 +35,8 @@ type RecruitmentCycleQuestion struct {
 	Question           string                        `json:"question"`
 	RecruitmentCycleID uint                          `gorm:"index" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle              `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
-	// TODO: Question can vary from student to student???
-	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
-	StudentRecruitmentCycle   StudentRecruitmentCycle `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
-	Options                   string                  `json:"options"` //csv
+	Mandatory          bool                          `json:"mandatory" gorm:"default:false"`
+	Options            string                        `json:"options"` //csv
 }
 
 type RecruitmentCycleQuestionsAnswer struct {
