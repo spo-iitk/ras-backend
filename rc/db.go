@@ -124,7 +124,21 @@ func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
 	return tx.Error
 }
 
-func updateStudentType(ctx *gin.Context, sid string, newType StudentRecruitmentCycleType) error {
-	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("student_id = ?", sid).Update("type", newType)
+func updateStudentType(ctx *gin.Context, r *pioppoRequest, newType StudentRecruitmentCycleType) error {
+	cid := r.cid
+	sid := r.sid
+
+	var c CompanyRecruitmentCycle
+	tx := db.WithContext(ctx).Where("id = ?", cid).First(&c)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("student_id IN ?", sid).Updates(
+		StudentRecruitmentCycle{
+			Type:     newType,
+			IsFrozen: true,
+			Comment:  "PIO/PPO by " + c.CompanyName,
+		})
 	return tx.Error
 }

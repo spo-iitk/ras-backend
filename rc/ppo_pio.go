@@ -2,10 +2,21 @@ package rc
 
 import "github.com/gin-gonic/gin"
 
-func putPPOPIO(ctx *gin.Context) {
-	sid := ctx.Param("sid")
+type pioppoRequest struct {
+	cid string
+	sid []string
+}
 
-	err := updateStudentType(ctx, sid, PIOPPO)
+func postPPOPIO(ctx *gin.Context) {
+	var req pioppoRequest
+
+	err := ctx.BindJSON(&req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = updateStudentType(ctx, &req, PIOPPO)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
