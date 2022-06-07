@@ -8,10 +8,9 @@ import (
 
 func getStudentAnswers(ctx *gin.Context) {
 	sid := ctx.Param("sid")
-	qid := ctx.Param("qid")
 	var answer RecruitmentCycleQuestionsAnswer
 
-	err := fetchStudentAnswer(ctx, qid, sid, &answer)
+	err := fetchStudentAnswers(ctx, sid, &answer)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

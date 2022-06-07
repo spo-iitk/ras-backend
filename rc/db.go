@@ -104,8 +104,8 @@ func deleteStudentQuestion(ctx *gin.Context, qid string) error {
 	return tx.Error
 }
 
-func fetchStudentAnswer(ctx *gin.Context, qid string, sid string, answer *RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_id = ?", qid, sid).Find(&answer)
+func fetchStudentAnswers(ctx *gin.Context, sid string, answer *RecruitmentCycleQuestionsAnswer) error {
+	tx := db.WithContext(ctx).Where("student_id = ?", sid).Find(&answer)
 	return tx.Error
 }
 

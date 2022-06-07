@@ -33,12 +33,12 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.POST("/student/stats", ras.PlaceHolderController) // query branch wise stats, clarity needed.
 
-		admin.GET("/student/:sid/questions", getStudentQuestions)
-		admin.POST("/student/:sid/question", postStudentQuestion)
-		admin.PUT("/student/:sid/questions/:qid", putStudentQuestion)
-		admin.DELETE("/student/:sid/questions/:qid", deleteStudentQuestionHandler)
+		admin.GET("/student/questions", getStudentQuestions)
+		admin.POST("/student/question", postStudentQuestion)
+		admin.PUT("/student/questions/:qid", putStudentQuestion)
+		admin.DELETE("/student/questions/:qid", deleteStudentQuestionHandler)
 
-		admin.GET("/student/:sid/questions/:qid/answer", getStudentAnswers)      //get answer
+		admin.GET("/student/:sid/questions/answer", getStudentAnswers)           //get answer
 		admin.PUT("/student/:sid/questions/:qid", putStudentAnswer)              // edit answer
 		admin.DELETE("/student/:sid/questions/:qid", deleteStudentAnswerHandler) // delete answer
 
