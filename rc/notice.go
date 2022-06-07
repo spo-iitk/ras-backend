@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 )
 
@@ -61,27 +62,41 @@ func deleteNotice(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"status": "success"})
 }
 
-func postReminder(ctx *gin.Context) {
-	// rid := ctx.Param("rid")
-	nid := ctx.Param("nid")
+func postReminder(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		rid := ctx.Param("rid")
+		nid := ctx.Param("nid")
 
-	var notice Notice
-	err := fetchNotice(ctx, nid, &notice)
-	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
-		return
+		var notice Notice
+		err := fetchNotice(ctx, nid, &notice)
+		if err != nil {
+			ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		notice.LastReminderAt = time.Now().UnixMilli()
+		err = updateNotice(ctx, &notice)
+		if err != nil {
+			ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		var students []StudentRecruitmentCycle
+
+		err = fetchAllStudents(ctx, rid, &students)
+		if err != nil {
+			ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		var emails []string
+
+		for _, student := range students {
+			emails = append(emails, student.Email)
+		}
+
+		mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, notice.Description)
+
+		ctx.JSON(200, gin.H{"status": "mail send"})
 	}
-
-	notice.LastReminderAt = time.Now().UnixMilli()
-	err = updateNotice(ctx, &notice)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	// !TODO: send email
-	// get all student
-	// mial then
-
-	ctx.JSON(200, gin.H{"status": "mail send"})
 }

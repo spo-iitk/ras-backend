@@ -8,7 +8,7 @@ import (
 	"github.com/spo-iitk/ras-backend/mail"
 )
 
-func CompanySignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
+func companySignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var signupReq CompanySignUpRequest
 

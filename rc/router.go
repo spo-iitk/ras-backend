@@ -2,12 +2,11 @@ package rc
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/auth"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/ras"
 )
 
-func AdminRouter(r *gin.Engine) {
+func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	r.GET("/api/admin/rc", getAllRC)
 	r.POST("/api/admin/rc/new", postRC)
 
@@ -18,10 +17,8 @@ func AdminRouter(r *gin.Engine) {
 		// NOtice, events, new company must have an all query param
 		admin.GET("/notice", getAllNotices)
 		admin.POST("/notice/new", postNotice)
-		admin.POST("/notice/:nid/reminder", ) // reminder: send mail to all
-		admin.DELETE("/notice/:nid", deleteNotice)        // delete notice
-
-		admin.GET("/new-company", auth.CompanySignUpHandler(mail_channel)) // Company signup request from auth, need some middleware?
+		admin.POST("/notice/:nid/reminder", postNotice)
+		admin.DELETE("/notice/:nid", deleteNotice)
 
 		admin.GET("/company", getAllCompanies)     // all registerd compnay
 		admin.POST("/company/new", postNewCompany) // add compnay to RC from master
