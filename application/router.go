@@ -56,6 +56,8 @@ func StudentRouter(r *gin.Engine) {
 		student.GET("/events", ras.PlaceHolderController)     // all events by date
 		student.GET("/event/:eid", ras.PlaceHolderController) // all events by date
 		student.GET("/stats", ras.PlaceHolderController)      // all events by date
+		student.GET("/resume", ras.PlaceHolderController)
+		student.POST("/resume/new", ras.PlaceHolderController)
 
 	}
 }

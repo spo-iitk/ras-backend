@@ -69,8 +69,8 @@ func fetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitme
 	return tx.Error
 }
 
-func fetchStudent(ctx *gin.Context, sid string, student *StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Where("id = ?", sid).First(student)
+func fetchStudent(ctx *gin.Context, email string, student *StudentRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Where("email = ?", email).First(student)
 	return tx.Error
 }
 

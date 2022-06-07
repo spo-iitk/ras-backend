@@ -3,7 +3,6 @@ package rc
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/mail"
-	"github.com/spo-iitk/ras-backend/ras"
 )
 
 func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
@@ -39,27 +38,24 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/student/:sid/questions/answer", getStudentAnswers)           //get answer
 		admin.PUT("/student/:sid/questions", putStudentAnswer)                   // edit answer
 		admin.DELETE("/student/:sid/questions/:qid", deleteStudentAnswerHandler) // delete answer
-
 	}
 }
 
 func StudentRouter(r *gin.Engine) {
-	r.GET("/api/rc/:rid/student/notice", ras.PlaceHolderController) // cache
-	student := r.Group("/api/rc/:rid/student/:sid")
+	r.GET("/api/student/rc", getStudentRC)
+	student := r.Group("/api/student/rc/:rid")
 	{
-		student.GET("", getStudent) // get registered rc
+		student.GET("/notice", getAllNotices) // cache
+		student.GET("", getStudent)           // get registered rc
 
 		student.GET("/enrollment", getStudentEnrollment)              // enrolment question + answers
 		student.POST("/enrollment/:qid/answer", postEnrollmentAnswer) // enrolment answer
-
-		student.GET("/resume", ras.PlaceHolderController)
-		student.POST("/resume/new", ras.PlaceHolderController)
 	}
 }
 
 func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company/rc")
 	{
-		company.GET("", ras.PlaceHolderController) // get registered rc
+		company.GET("", getCompanyRecruitmentCycle) // get registered rc
 	}
 }
