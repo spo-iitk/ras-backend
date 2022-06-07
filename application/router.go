@@ -6,10 +6,16 @@ import (
 )
 
 func AdminRouter(r *gin.Engine) {
-	admin := r.Group("/api/admin/rc/:rid")
+
+	admin := r.Group("/api/admin/application/rc/:rid")
 	{
 		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
 		admin.GET("/events", ras.PlaceHolderController)                // all events by date by schedule/not schedule
+		admin.POST("/student/stats", ras.PlaceHolderController)        // query branch wise stats
+		admin.POST("/pio-ppo", ras.PlaceHolderController)              // add ppo-pio, to events
+
+		admin.GET("/resume", ras.PlaceHolderController)
+		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
 		performa := admin.Group("/proforma/:pid")
 		{
@@ -34,26 +40,29 @@ func AdminRouter(r *gin.Engine) {
 			performa.POST("/event/:eid/student", ras.PlaceHolderController)     // 1 proforma add students to event i.e. pass to next stage
 			performa.GET("/event/:eid/coordinator", ras.PlaceHolderController)  // 1 proforma add students to event i.e. pass to next stage
 			performa.POST("/event/:eid/coordinator", ras.PlaceHolderController) // 1 proforma add students to event i.e. pass to next stage
+
 		}
 	}
 }
 
 func StudentRouter(r *gin.Engine) {
-	student := r.Group("/api/student/rc/:rid") // abhishek will sort this
+	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
 	{
 		student.GET("/proforma", ras.PlaceHolderController)
 		student.GET("/proforma/:pid", ras.PlaceHolderController)
-		student.POST("/application/proforma/:pid/new", ras.PlaceHolderController) // question post isme hi honge
-		student.DELETE("/application/:aid", ras.PlaceHolderController)
-		student.GET("/application", ras.PlaceHolderController)
+		student.POST("/proforma/:pid/new", ras.PlaceHolderController) // question post isme hi honge
+		student.DELETE("/:aid", ras.PlaceHolderController)
+		student.GET("", ras.PlaceHolderController)
 		student.GET("/events", ras.PlaceHolderController)     // all events by date
 		student.GET("/event/:eid", ras.PlaceHolderController) // all events by date
 		student.GET("/stats", ras.PlaceHolderController)      // all events by date
+		student.GET("/resume", ras.PlaceHolderController)
+		student.POST("/resume/new", ras.PlaceHolderController)
 
 	}
 }
 func CompanyRouter(r *gin.Engine) {
-	company := r.Group("/api/student/rc/:rid/performa")
+	company := r.Group("/api/application/company/rc/:rid/performa")
 	{
 		company.GET("", ras.PlaceHolderController)         // enrolment question
 		company.GET("/:pid", ras.PlaceHolderController)    // enrolment question

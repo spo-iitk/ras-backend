@@ -37,7 +37,7 @@ func main() {
 	})
 
 	g.Go(func() error {
-		return adminRCServer().ListenAndServe()
+		return adminRCServer(mail_channel).ListenAndServe()
 	})
 
 	g.Go(func() error {

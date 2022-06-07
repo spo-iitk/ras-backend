@@ -10,8 +10,6 @@ type Student struct {
 	gorm.Model
 	RollNo                       string    `gorm:"uniqueIndex" json:"roll_no"`
 	Name                         string    `json:"name"`
-	ProgramDepartmentID          uint      `gorm:"index" json:"program_department_id"`
-	SecondaryProgramDepartmentID uint      `gorm:"index" json:"secondary_program_department_id"`
 	Specialization               string    `json:"specialization"`
 	Preference                   string    `json:"preference"`
 	Gender                       string    `json:"gender"`
@@ -23,6 +21,8 @@ type Student struct {
 	Phone                        string    `json:"phone"`
 	AlternatePhone               string    `json:"alternate_phone"`
 	WhatsappNumber               string    `json:"whatsapp_number"`
+	ProgramDepartmentID          uint      `gorm:"index" json:"program_department_id"`
+	SecondaryProgramDepartmentID uint      `gorm:"index" json:"secondary_program_department_id"`
 	CurrentCPI                   float64   `json:"current_cpi"`
 	UGCPI                        float64   `json:"ug_cpi"`
 	TenthBoard                   string    `json:"tenth_board"`

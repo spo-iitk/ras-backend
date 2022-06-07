@@ -2,59 +2,60 @@ package rc
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/ras"
+	"github.com/spo-iitk/ras-backend/mail"
 )
 
-func AdminRouter(r *gin.Engine) {
-	r.GET("/api/admin/rc", ras.PlaceHolderController)      // return all RC
-	r.POST("/api/admin/rc/new", ras.PlaceHolderController) // new RC
+func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
+	r.GET("/api/admin/rc", getAllRC)
+	r.POST("/api/admin/rc/new", postRC)
+
 	admin := r.Group("/api/admin/rc/:rid")
 	{
-		admin.GET("", ras.PlaceHolderController) // get RC just overview details
+		admin.GET("", getRC)
 
 		// NOtice, events, new company must have an all query param
-		admin.GET("/notice", ras.PlaceHolderController)                // all notices in details
-		admin.POST("/notice/new", ras.PlaceHolderController)           // new notice
-		admin.POST("/notice/:nid/reminder", ras.PlaceHolderController) // reminder: send mail to all
-		admin.DELETE("/notice/:nid", ras.PlaceHolderController)        // delete notice
+		admin.GET("/notice", getAllNotices)
+		admin.POST("/notice/new", postNotice)
+		admin.POST("/notice/:nid/reminder", postReminder(mail_channel))
+		admin.DELETE("/notice/:nid", deleteNotice)
 
-		admin.GET("/new-company", ras.PlaceHolderController) // Company signup request from auth
+		admin.GET("/company", getAllCompanies)     // all registerd compnay
+		admin.POST("/company/new", postNewCompany) // add compnay to RC from master
+		admin.GET("/company/:cid", getCompany)     // get company
 
-		admin.GET("/company", ras.PlaceHolderController)      // all registerd compnay
-		admin.POST("/company/new", ras.PlaceHolderController) // add compnay to RC from master
-		admin.GET("/company/:cid", ras.PlaceHolderController) // get company
+		admin.POST("/pio-ppo", postPPOPIO) // add ppo-pio
 
-		admin.POST("/ppo-pio", ras.PlaceHolderController) // add ppo-pio
+		admin.GET("/student", getAllStudents) // get all students of rc
+		admin.GET("/student/:sid", getStudent)
+		admin.PUT("/student", putStudent)
+		admin.POST("/student", postStudents) // bulk post/ enroll in RC
 
-		admin.GET("/student", ras.PlaceHolderController) // get all students of rc
-		admin.GET("/student/:sid", ras.PlaceHolderController)
-		admin.PUT("/student/:sid", ras.PlaceHolderController)
-		admin.POST("/student", ras.PlaceHolderController)       // bulk post/ enroll in RC
-		admin.POST("/student/stats", ras.PlaceHolderController) // query branch wise stats
+		admin.GET("/student/questions", getStudentQuestions)
+		admin.POST("/student/question", postStudentQuestion)
+		admin.PUT("/student/question", putStudentQuestion)
+		admin.DELETE("/student/question/:qid", deleteStudentQuestionHandler)
 
-		admin.GET("/student/:sid/questions", ras.PlaceHolderController)
-		admin.PUT("/student/:sid/questions/:qid", ras.PlaceHolderController)
-
-		admin.GET("/resume", ras.PlaceHolderController)
-		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
-
+		admin.GET("/student/:sid/question/answers", getStudentAnswers)          //get answer
+		admin.PUT("/student/:sid/question", putStudentAnswer)                   // edit answer
+		admin.DELETE("/student/:sid/question/:qid", deleteStudentAnswerHandler) // delete answer
 	}
 }
 
 func StudentRouter(r *gin.Engine) {
-	student := r.Group("/api/student/rc")
+	r.GET("/api/student/rc", getStudentRC)
+	student := r.Group("/api/student/rc/:rid")
 	{
-		student.GET("", ras.PlaceHolderController)                  // get registered rc
-		student.POST("/:rid/enrollment", ras.PlaceHolderController) // enrolment question
-		student.GET("/:rid/notice", ras.PlaceHolderController)      // cache
-		student.GET("/:rid/resume", ras.PlaceHolderController)
-		student.POST("/:rid/resume/new", ras.PlaceHolderController)
+		student.GET("/notice", getAllNotices) // cache
+		student.GET("", getStudent)           // get registered rc
+
+		student.GET("/enrollment", getStudentEnrollment)              // enrolment question + answers
+		student.POST("/enrollment/:qid/answer", postEnrollmentAnswer) // enrolment answer
 	}
 }
 
 func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company/rc")
 	{
-		company.GET("", ras.PlaceHolderController) // get registered rc
+		company.GET("", getCompanyRecruitmentCycle) // get registered rc
 	}
 }
