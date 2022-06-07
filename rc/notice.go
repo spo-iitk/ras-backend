@@ -74,6 +74,11 @@ func postReminder(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
+		if notice.LastReminderAt > time.Now().Add(-6*time.Hour).UnixMilli() {
+			ctx.JSON(400, gin.H{"error": "Reminder already sent"})
+			return
+		}
+
 		notice.LastReminderAt = time.Now().UnixMilli()
 		err = updateNotice(ctx, &notice)
 		if err != nil {
@@ -97,6 +102,6 @@ func postReminder(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, notice.Description)
 
-		ctx.JSON(200, gin.H{"status": "mail send"})
+		ctx.JSON(200, gin.H{"status": "mail sent"})
 	}
 }

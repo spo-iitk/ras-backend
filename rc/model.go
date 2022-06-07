@@ -57,6 +57,7 @@ type CompanyRecruitmentCycle struct {
 	RecruitmentCycleID uint             `gorm:"index" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	Comments           string           `json:"comments"`
+	// Some more fields
 }
 
 type Notice struct {
@@ -82,6 +83,8 @@ const (
 type StudentRecruitmentCycle struct {
 	gorm.Model
 	StudentID                    uint                        `gorm:"index" json:"student_id"`
+	RecruitmentCycleID           uint                        `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycle             RecruitmentCycle            `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
 	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
 	CurrentCPI                   float64                     `json:"current_cpi"`
