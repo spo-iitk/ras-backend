@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/mail"
+	"github.com/spo-iitk/ras-backend/student"
 )
 
 type signUpRequest struct {
@@ -42,6 +43,18 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			Name:     signupReq.Name,
 			Password: hashedPwd,
 		})
+
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		var createStudent = student.Student{
+			IITKEmail : signupReq.UserID,
+			Name : signupReq.Name,
+		}
+
+		err = student.CreateStudent(ctx, &createStudent)
 
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

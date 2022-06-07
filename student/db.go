@@ -2,7 +2,7 @@ package student
 
 import "github.com/gin-gonic/gin"
 
-func createStudent(ctx *gin.Context, student *Student) error {
+func CreateStudent(ctx *gin.Context, student *Student) error {
 	tx := db.WithContext(ctx).Create(student)
 	return tx.Error
 }
