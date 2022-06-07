@@ -1,0 +1,60 @@
+package rc
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/middleware"
+)
+
+func getStudentAnswers(ctx *gin.Context) {
+	sid := ctx.Param("sid")
+	qid := ctx.Param("qid")
+	var answer RecruitmentCycleQuestionsAnswer
+
+	err := fetchStudentAnswer(ctx, qid, sid, &answer)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, answer)
+}
+
+func putStudentAnswer(ctx *gin.Context) {
+	var answer RecruitmentCycleQuestionsAnswer
+
+	err := ctx.BindJSON(&answer)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = updateStudentAnswer(ctx, &answer)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v updated a student answer with id %d", user, answer.ID)
+
+	ctx.JSON(200, gin.H{"status": "updated student answer"})
+}
+
+func deleteStudentAnswerHandler(ctx *gin.Context) {
+	sid := ctx.Param("sid")
+	qid := ctx.Param("qid")
+
+	err := deleteStudentAnswer(ctx, qid, sid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v deleted a student answer with id %d", user, sid)
+
+	ctx.JSON(200, gin.H{"status": "deleted student answer"})
+}

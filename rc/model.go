@@ -35,7 +35,10 @@ type RecruitmentCycleQuestion struct {
 	Question           string                        `json:"question"`
 	RecruitmentCycleID uint                          `gorm:"index" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle              `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
-	Options            string                        `json:"options"` //csv
+	// TODO: Question can vary from student to student???
+	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycle   StudentRecruitmentCycle `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
+	Options                   string                  `json:"options"` //csv
 }
 
 type RecruitmentCycleQuestionsAnswer struct {
@@ -80,9 +83,13 @@ const (
 
 type StudentRecruitmentCycle struct {
 	gorm.Model
-	StudentID uint                        `gorm:"index" json:"student_id"`
-	Email     string                      `grom:"index" json:"email"`
-	Type      StudentRecruitmentCycleType `json:"type"`
-	IsFrozen  bool                        `json:"is_frozen"`
-	Comment   string                      `json:"comment"`
+	StudentID                    uint                        `gorm:"index" json:"student_id"`
+	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
+	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
+	CurrentCPI                   float64                     `json:"current_cpi"`
+	UGCPI                        float64                     `json:"ug_cpi"`
+	Email                        string                      `grom:"index" json:"email"`
+	Type                         StudentRecruitmentCycleType `json:"type"`
+	IsFrozen                     bool                        `json:"is_frozen"`
+	Comment                      string                      `json:"comment"`
 }
