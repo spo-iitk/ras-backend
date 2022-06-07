@@ -6,10 +6,9 @@ import (
 
 func getStudentEnrollment(ctx *gin.Context) {
 	rid := ctx.Param("rid")
-	sid := ctx.Param("sid")
 	var questions []RecruitmentCycleQuestion
 
-	err := fetchStudentQuestions(ctx, rid, sid, &questions)
+	err := fetchStudentQuestions(ctx, rid, &questions)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
