@@ -22,8 +22,8 @@ func getAllStudents(ctx *gin.Context, students *[]Student) error {
 	return tx.Error
 }
 
-func updateStudentByID(ctx *gin.Context, student *Student, id uint) (bool, error) {
-	tx := db.WithContext(ctx).Model(&Student{}).Where("id = ?", id).Updates(student)
+func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
+	tx := db.WithContext(ctx).Save(student)
 	return tx.RowsAffected > 0, tx.Error
 }
 
