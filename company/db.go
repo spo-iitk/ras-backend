@@ -14,8 +14,8 @@ func getCompany(ctx *gin.Context, company *Company, id uint) error {
 	return tx.Error
 }
 
-func updateCompany(ctx *gin.Context, company *Company, id uint) (bool, error) {
-	tx := db.WithContext(ctx).Model(&Company{}).Where("id = ?", id).Updates(company)
+func updateCompany(ctx *gin.Context, company *Company) (bool, error) {
+	tx := db.WithContext(ctx).Save(company)
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -24,8 +24,8 @@ func newCompany(ctx *gin.Context, company *Company) error {
 	return tx.Error
 }
 
-func deleteCompany(ctx *gin.Context, company *Company, id uint) error {
-	tx := db.WithContext(ctx).Where("id = ?", id).Delete(company)
+func deleteCompany(ctx *gin.Context, id uint) error {
+	tx := db.WithContext(ctx).Where("id = ?", id).Delete(Company{})
 	return tx.Error
 }
 
@@ -44,7 +44,12 @@ func getHR(ctx *gin.Context, HR *CompanyHR, id uint) error {
 	return tx.Error
 }
 
+func updateHR(ctx *gin.Context, HR *CompanyHR) (bool, error) {
+	tx := db.WithContext(ctx).Save(HR)
+	return tx.RowsAffected > 0, tx.Error
+}
+
 func deleteHR(ctx *gin.Context, id uint) error {
-	tx := db.WithContext(ctx).Delete(CompanyHR{} , "id = ?", id)
+	tx := db.WithContext(ctx).Delete(CompanyHR{}, "id = ?", id)
 	return tx.Error
 }

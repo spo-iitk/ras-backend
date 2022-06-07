@@ -37,13 +37,11 @@ func updateCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 64)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if updateCompanyRequest.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter Company ID"})
 		return
 	}
-
-	updated, err := updateCompany(ctx, &updateCompanyRequest, uint(cid))
+	updated, err := updateCompany(ctx, &updateCompanyRequest)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -54,27 +52,26 @@ func updateCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	logrus.Infof("A company with id %d is updated", cid)
+	logrus.Infof("A company with id %d is updated", updateCompanyRequest.ID)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
 
 func deleteCompanyHandler(ctx *gin.Context) {
-	var deleteCompanyRequest Company
 
-	id, err := strconv.ParseUint(ctx.Param("hrid"), 10, 64)
+	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 64)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = deleteCompany(ctx, &deleteCompanyRequest, uint(id))
+	err = deleteCompany(ctx, uint(cid))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	logrus.Infof("A company with id %d is deleted", id)
+	logrus.Infof("A company with id %d is deleted", cid)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted"})
 

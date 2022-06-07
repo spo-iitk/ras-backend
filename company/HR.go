@@ -48,21 +48,19 @@ func getHRHandler(ctx *gin.Context) {
 
 func deleteHRHandler(ctx *gin.Context) {
 
-	// var deleteHRRequest CompanyHR
-
-	id, err := strconv.ParseUint(ctx.Param("hrid"), 10, 64)
+	hrid, err := strconv.ParseUint(ctx.Param("hrid"), 10, 64)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = deleteHR(ctx, uint(id))
+	err = deleteHR(ctx, uint(hrid))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	logrus.Infof("An HR with id %d is deleted", id)
+	logrus.Infof("An HR with id %d is deleted", hrid)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted"})
 }
@@ -70,20 +68,12 @@ func deleteHRHandler(ctx *gin.Context) {
 func addHRHandler(ctx *gin.Context) {
 	var addHRRequest CompanyHR
 
-	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 64)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	if err := ctx.ShouldBindJSON(&addHRRequest); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	addHRRequest.CompanyID = uint(cid)
-
-	err = addHR(ctx, &addHRRequest)
+	err := addHR(ctx, &addHRRequest)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -94,4 +84,33 @@ func addHRHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully added"})
 
+}
+
+func updateHRHandler(ctx *gin.Context) {
+	var updateHRRequest CompanyHR
+
+	if err := ctx.ShouldBindJSON(&updateHRRequest); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if updateHRRequest.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter HR ID"})
+		return
+	}
+
+	updated, err := updateHR(ctx, &updateHRRequest)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !updated {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "HR not found"})
+		return
+	}
+
+	logrus.Infof("An HR with id %d is updated", updateHRRequest.ID)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
