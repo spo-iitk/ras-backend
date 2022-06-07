@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
+	"github.com/spo-iitk/ras-backend/student"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getAllStudents(ctx *gin.Context) {
@@ -54,13 +56,41 @@ func putStudent(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"status": "updated student"})
 }
 
-func postStudents(ctx *gin.Context) {
-	var students []StudentRecruitmentCycle
+type bulkPostStudentRequest struct {
+	Email []string `json:"email"`
+}
 
-	err := ctx.BindJSON(&students)
+func postStudents(ctx *gin.Context) {
+	rid := ctx.Param("rid")
+	var emails bulkPostStudentRequest
+
+	err := ctx.BindJSON(&emails)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
+	}
+
+	emailArr := emails.Email
+	var students []StudentRecruitmentCycle
+	var studentsGlobal []student.Student
+
+	err = student.FetchStudents(ctx, &studentsGlobal, emailArr)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	for _, student := range studentsGlobal {
+		students = append(students, StudentRecruitmentCycle{
+			RecruitmentCycleID:           util.ToUint(rid),
+			StudentID:                    student.ID,
+			Email:                        student.IITKEmail,
+			Name:                         student.Name,
+			CurrentCPI:                   student.CurrentCPI,
+			UGCPI:                        student.UGCPI,
+			ProgramDepartmentID:          student.ProgramDepartmentID,
+			SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID,
+		})
 	}
 
 	err = createStudents(ctx, &students)

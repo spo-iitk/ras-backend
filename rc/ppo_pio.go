@@ -3,8 +3,8 @@ package rc
 import "github.com/gin-gonic/gin"
 
 type pioppoRequest struct {
-	cid string
-	sid []string
+	cid   string
+	email []string
 }
 
 func postPPOPIO(ctx *gin.Context) {

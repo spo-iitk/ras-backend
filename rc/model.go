@@ -90,7 +90,8 @@ type StudentRecruitmentCycle struct {
 	CurrentCPI                   float64                     `json:"current_cpi"`
 	UGCPI                        float64                     `json:"ug_cpi"`
 	Email                        string                      `grom:"index" json:"email"`
-	Type                         StudentRecruitmentCycleType `json:"type"`
-	IsFrozen                     bool                        `json:"is_frozen"`
+	Name                         string                      `json:"name"`
+	Type                         StudentRecruitmentCycleType `json:"type" gorm:"default:Available"`
+	IsFrozen                     bool                        `json:"is_frozen" gorm:"default:false"`
 	Comment                      string                      `json:"comment"`
 }

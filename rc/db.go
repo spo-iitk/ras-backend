@@ -7,7 +7,7 @@ import (
 )
 
 func fetchAllRCs(ctx *gin.Context, rc *[]RecruitmentCycle) error {
-	tx := db.WithContext(ctx).Find(&rc)
+	tx := db.WithContext(ctx).Find(rc)
 	return tx.Error
 }
 
@@ -22,7 +22,7 @@ func fetchRC(ctx *gin.Context, rid string, rc *RecruitmentCycle) error {
 }
 
 func fetchAllNotices(ctx *gin.Context, rid string, notices *[]Notice) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(&notices)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(notices)
 	return tx.Error
 }
 
@@ -50,91 +50,91 @@ func fetchNotice(ctx *gin.Context, nid string, notice *Notice) error {
 }
 
 func fetchAllCompanies(ctx *gin.Context, rid string, companies *[]CompanyRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(&companies)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(companies)
 	return tx.Error
 }
 
 func fetchCompany(ctx *gin.Context, rid string, cid string, company *CompanyRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, cid).First(&company)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, cid).First(company)
 	return tx.Error
 }
 
 func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Create(&company)
+	tx := db.WithContext(ctx).Create(company)
 	return tx.Error
 }
 
 func fetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(&students)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(students)
 	return tx.Error
 }
 
 func fetchStudent(ctx *gin.Context, sid string, student *StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Where("id = ?", sid).First(&student)
+	tx := db.WithContext(ctx).Where("id = ?", sid).First(student)
 	return tx.Error
 }
 
 func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Save(&student)
+	tx := db.WithContext(ctx).Save(student)
 	return tx.Error
 }
 
 func createStudents(ctx *gin.Context, students *[]StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Create(&students)
+	tx := db.WithContext(ctx).Create(students)
 	return tx.Error
 }
 
 func fetchStudentQuestions(ctx *gin.Context, rid string, questions *[]RecruitmentCycleQuestion) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(&questions)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(questions)
 	return tx.Error
 }
 
 func createStudentQuestion(ctx *gin.Context, question *RecruitmentCycleQuestion) error {
-	tx := db.WithContext(ctx).Create(&question)
+	tx := db.WithContext(ctx).Create(question)
 	return tx.Error
 }
 
 func updateStudentQuestion(ctx *gin.Context, question *RecruitmentCycleQuestion) error {
-	tx := db.WithContext(ctx).Save(&question)
+	tx := db.WithContext(ctx).Save(question)
 	return tx.Error
 }
 
 func deleteStudentQuestion(ctx *gin.Context, qid string) error {
-	tx := db.WithContext(ctx).Where("id = ?", qid).Delete(&RecruitmentCycleQuestion{})
+	tx := db.WithContext(ctx).Where("id = ?", qid).Delete(RecruitmentCycleQuestion{})
 	return tx.Error
 }
 
 func fetchStudentAnswers(ctx *gin.Context, sid string, answers *[]RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Where("student_recruitment_cycle_id = ?", sid).Find(&answers)
+	tx := db.WithContext(ctx).Where("student_recruitment_cycle_id = ?", sid).Find(answers)
 	return tx.Error
 }
 
 func createStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Create(&answer)
+	tx := db.WithContext(ctx).Create(answer)
 	return tx.Error
 }
 
 func updateStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Save(&answer)
+	tx := db.WithContext(ctx).Save(answer)
 	return tx.Error
 }
 
 func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&RecruitmentCycleQuestionsAnswer{})
+	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(RecruitmentCycleQuestionsAnswer{})
 	return tx.Error
 }
 
 func updateStudentType(ctx *gin.Context, r *pioppoRequest, newType StudentRecruitmentCycleType) error {
 	cid := r.cid
-	sid := r.sid
+	emails := r.email
 
 	var c CompanyRecruitmentCycle
-	tx := db.WithContext(ctx).Where("id = ?", cid).First(&c)
+	tx := db.WithContext(ctx).Where("id = ?", cid).First(c)
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("id IN ?", sid).Updates(
+	tx = db.WithContext(ctx).Model(StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND email IN ?", c.RecruitmentCycleID, emails).Updates(
 		StudentRecruitmentCycle{
 			Type:     newType,
 			IsFrozen: true,
