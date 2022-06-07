@@ -17,7 +17,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		// NOtice, events, new company must have an all query param
 		admin.GET("/notice", getAllNotices)
 		admin.POST("/notice/new", postNotice)
-		admin.POST("/notice/:nid/reminder", postNotice)
+		admin.POST("/notice/:nid/reminder", postReminder(mail_channel))
 		admin.DELETE("/notice/:nid", deleteNotice)
 
 		admin.GET("/company", getAllCompanies)     // all registerd compnay
