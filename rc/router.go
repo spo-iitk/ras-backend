@@ -32,12 +32,12 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.GET("/student/questions", getStudentQuestions)
 		admin.POST("/student/question", postStudentQuestion)
-		admin.PUT("/student/questions", putStudentQuestion)
-		admin.DELETE("/student/questions/:qid", deleteStudentQuestionHandler)
+		admin.PUT("/student/question", putStudentQuestion)
+		admin.DELETE("/student/question/:qid", deleteStudentQuestionHandler)
 
-		admin.GET("/student/:sid/questions/answer", getStudentAnswers)           //get answer
-		admin.PUT("/student/:sid/questions", putStudentAnswer)                   // edit answer
-		admin.DELETE("/student/:sid/questions/:qid", deleteStudentAnswerHandler) // delete answer
+		admin.GET("/student/:sid/question/answers", getStudentAnswers)          //get answer
+		admin.PUT("/student/:sid/question", putStudentAnswer)                   // edit answer
+		admin.DELETE("/student/:sid/question/:qid", deleteStudentAnswerHandler) // delete answer
 	}
 }
 

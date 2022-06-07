@@ -46,7 +46,7 @@ func AdminRouter(r *gin.Engine) {
 }
 
 func StudentRouter(r *gin.Engine) {
-	student := r.Group("/api/application/student/rc/:rid") // abhishek will sort this
+	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
 	{
 		student.GET("/proforma", ras.PlaceHolderController)
 		student.GET("/proforma/:pid", ras.PlaceHolderController)
