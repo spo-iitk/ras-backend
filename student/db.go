@@ -15,6 +15,7 @@ func getStudentByID(ctx *gin.Context, student *Student, id uint) error {
 func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 	tx := db.WithContext(ctx).Where("iitk_email =?", email).First(student)
 	return tx.Error
+}
 
 func FetchStudents(ctx *gin.Context, students *[]Student, emails []string) error {
 	tx := db.WithContext(ctx).Where("email IN ?", emails).Find(students)
