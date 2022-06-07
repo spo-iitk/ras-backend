@@ -31,8 +31,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/student/:sid", putStudent)
 		admin.POST("/student", postStudents) // bulk post/ enroll in RC
 
-		admin.POST("/student/stats", ras.PlaceHolderController) // query branch wise stats, clarity needed.
-
 		admin.GET("/student/questions", getStudentQuestions)
 		admin.POST("/student/question", postStudentQuestion)
 		admin.PUT("/student/questions/:qid", putStudentQuestion)

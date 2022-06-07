@@ -6,7 +6,10 @@ import (
 
 func getStudentEnrollment(ctx *gin.Context) {
 	rid := ctx.Param("rid")
+	sid := ctx.Param("sid")
+
 	var questions []RecruitmentCycleQuestion
+	var answers []RecruitmentCycleQuestionsAnswer
 
 	err := fetchStudentQuestions(ctx, rid, &questions)
 	if err != nil {
@@ -14,7 +17,13 @@ func getStudentEnrollment(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, questions)
+	err = fetchStudentAnswers(ctx, sid, &answers)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, gin.H{"questions": questions, "answers": answers})
 }
 
 func postEnrollmentAnswer(ctx *gin.Context) {

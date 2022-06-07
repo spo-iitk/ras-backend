@@ -8,15 +8,15 @@ import (
 
 func getStudentAnswers(ctx *gin.Context) {
 	sid := ctx.Param("sid")
-	var answer RecruitmentCycleQuestionsAnswer
+	var answers []RecruitmentCycleQuestionsAnswer
 
-	err := fetchStudentAnswers(ctx, sid, &answer)
+	err := fetchStudentAnswers(ctx, sid, &answers)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, answer)
+	ctx.JSON(200, answers)
 }
 
 func putStudentAnswer(ctx *gin.Context) {

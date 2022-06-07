@@ -10,6 +10,7 @@ func AdminRouter(r *gin.Engine) {
 	{
 		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
 		admin.GET("/events", ras.PlaceHolderController)                // all events by date by schedule/not schedule
+		admin.POST("/student/stats", ras.PlaceHolderController)        // query branch wise stats
 
 		performa := admin.Group("/proforma/:pid")
 		{

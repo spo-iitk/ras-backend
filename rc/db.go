@@ -104,8 +104,8 @@ func deleteStudentQuestion(ctx *gin.Context, qid string) error {
 	return tx.Error
 }
 
-func fetchStudentAnswers(ctx *gin.Context, sid string, answer *RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Where("student_id = ?", sid).Find(&answer)
+func fetchStudentAnswers(ctx *gin.Context, sid string, answers *[]RecruitmentCycleQuestionsAnswer) error {
+	tx := db.WithContext(ctx).Where("student_recruitment_cycle_id = ?", sid).Find(&answers)
 	return tx.Error
 }
 
@@ -120,7 +120,7 @@ func updateStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnsw
 }
 
 func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_id = ?", qid, sid).Delete(&RecruitmentCycleQuestionsAnswer{})
+	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&RecruitmentCycleQuestionsAnswer{})
 	return tx.Error
 }
 
