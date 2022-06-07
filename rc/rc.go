@@ -43,3 +43,11 @@ func getRC(ctx *gin.Context) {
 	}
 	ctx.JSON(200, getRCResponse{rc})
 }
+
+func getStudentRC(ctx *gin.Context) {
+
+}
+
+func getCompanyRecruitmentCycle(ctx *gin.Context) {
+
+}

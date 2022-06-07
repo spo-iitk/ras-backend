@@ -10,7 +10,7 @@ import (
 func getStudentEnrollment(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 
-	sid, err := GetStudentRecruitmentCycleID(ctx)
+	sid, err := GetStudentRecruitmentCycleID(ctx, rid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -34,12 +34,12 @@ func getStudentEnrollment(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"questions": questions, "answers": answers})
 }
 
-func GetStudentRecruitmentCycleID(ctx *gin.Context) (uint, error) {
+func GetStudentRecruitmentCycleID(ctx *gin.Context, rid string) (uint, error) {
 	var student StudentRecruitmentCycle
 
 	email := middleware.GetUserID(ctx)
 
-	err := fetchStudent(ctx, email, &student)
+	err := fetchStudent(ctx, email, rid, &student)
 	if err != nil {
 		return 0, err
 	}
@@ -48,6 +48,7 @@ func GetStudentRecruitmentCycleID(ctx *gin.Context) (uint, error) {
 }
 
 func postEnrollmentAnswer(ctx *gin.Context) {
+	rid := ctx.Param("rid")
 	var answer RecruitmentCycleQuestionsAnswer
 
 	err := ctx.BindJSON(&answer)
@@ -56,7 +57,7 @@ func postEnrollmentAnswer(ctx *gin.Context) {
 		return
 	}
 
-	answer.StudentRecruitmentCycleID, err = GetStudentRecruitmentCycleID(ctx)
+	answer.StudentRecruitmentCycleID, err = GetStudentRecruitmentCycleID(ctx, rid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
