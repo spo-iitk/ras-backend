@@ -5,9 +5,25 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/middleware"
 )
 
 func getStudentHandler(ctx *gin.Context) {
+	var student Student
+	email := middleware.GetUserID(ctx)
+
+	err := getStudentByEmail(ctx, &student, email)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": student})
+
+}
+
+func getStudentByIDHandler(ctx *gin.Context) {
 	var student Student
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
@@ -16,7 +32,7 @@ func getStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = getStudent(ctx, &student, uint(id))
+	err = getStudentByID(ctx, &student, uint(id))
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

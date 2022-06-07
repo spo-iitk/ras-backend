@@ -8,17 +8,17 @@ import (
 func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student")
 	{
-		student.PUT("/:sid", updateStudentHandler)
-		student.GET("/:sid", getStudentHandler)
+		student.PUT("", updateStudentHandler)
+		student.GET("", getStudentHandler)
 	}
 }
 
 func AdminRouter(r *gin.Engine) {
 	admin := r.Group("/api/admin/student")
 	{
-		admin.GET("", getAllStudentsHandler)              
-		admin.GET("/:sid", getStudentHandler)         
-		admin.PUT("/:sid", updateStudentHandler)        
-		admin.GET("/:sid/history", ras.PlaceHolderController) 
+		admin.GET("", getAllStudentsHandler)
+		admin.GET("/:sid", getStudentByIDHandler)
+		admin.PUT("/:sid", updateStudentByIDHandler)
+		admin.GET("/:sid/history", ras.PlaceHolderController)
 	}
 }

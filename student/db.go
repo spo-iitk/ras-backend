@@ -7,17 +7,27 @@ func CreateStudent(ctx *gin.Context, student *Student) error {
 	return tx.Error
 }
 
-func getStudent(ctx *gin.Context, student *Student, id uint) error {
+func getStudentByID(ctx *gin.Context, student *Student, id uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", id).First(student)
 	return tx.Error
 }
 
-func updateStudent(ctx *gin.Context, student *Student, id uint) (bool, error) {
-	tx := db.WithContext(ctx).Model(&Student{}).Where("id = ?", id).Updates(student)
-	return tx.RowsAffected > 0, tx.Error
+func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
+	tx := db.WithContext(ctx).Where("iitk_email =?", email).First(student)
+	return tx.Error
 }
 
 func getAllStudents(ctx *gin.Context, students *[]Student) error {
 	tx := db.WithContext(ctx).Find(students)
 	return tx.Error
+}
+
+func updateStudentByID(ctx *gin.Context, student *Student, id uint) (bool, error) {
+	tx := db.WithContext(ctx).Model(&Student{}).Where("id = ?", id).Updates(student)
+	return tx.RowsAffected > 0, tx.Error
+}
+
+func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (bool, error) {
+	tx := db.WithContext(ctx).Model(&Student{}).Where("iitk_email = ?", email).Updates(student)
+	return tx.RowsAffected > 0, tx.Error
 }
