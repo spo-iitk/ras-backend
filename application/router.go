@@ -2,10 +2,11 @@ package application
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/ras"
 )
 
-func AdminRouter(r *gin.Engine) {
+func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{

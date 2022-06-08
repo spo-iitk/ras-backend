@@ -20,7 +20,7 @@ func adminRCServer(mail_channel chan mail.Mail) *http.Server {
 	engine.Use(middleware.EnsureAdmin())
 
 	rc.AdminRouter(mail_channel, engine)
-	application.AdminRouter(engine)
+	application.AdminRouter(mail_channel, engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,
