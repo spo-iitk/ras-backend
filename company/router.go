@@ -11,18 +11,17 @@ func AdminRouter(r *gin.Engine) {
 		admin.GET("", getAllCompaniesHandler)
 		admin.GET("/:cid", getCompanyHandler)
 
-		admin.PUT("/:cid", updateCompanyHandler)
+		admin.PUT("", updateCompanyHandler)
 		admin.POST("/new", addNewHandler)
 
 		admin.DELETE("/:cid", deleteCompanyHandler)
 
 		admin.GET("/:cid/hr", getAllHRHandler)
-		admin.POST("/:cid/hr/new", addHRHandler)
+		admin.POST("/hr", addHRHandler)
 		admin.POST("/:cid/hr/:hrid/new-auth", ras.PlaceHolderController) //will move to auth
 		admin.GET("/:cid/hr/:hrid", getHRHandler)
-		admin.PUT("/:cid/hr/:hrid", updateHRHandler)
-
-		admin.DELETE("/:cid/hr/:hrid", deleteHRHandler)
+		admin.PUT("/hr", updateHRHandler)
+		admin.DELETE("/hr/:hrid", deleteHRHandler)
 
 		admin.GET("/:cid/past-hires", ras.PlaceHolderController)
 

@@ -30,7 +30,7 @@ func deleteCompany(ctx *gin.Context, id uint) error {
 }
 
 func getAllHR(ctx *gin.Context, HRs *[]CompanyHR, cid uint) error {
-	tx := db.WithContext(ctx).Where("id = ?", cid).Find(HRs) //check if works
+	tx := db.WithContext(ctx).Where("company_id = ?", cid).Find(HRs)
 	return tx.Error
 }
 
@@ -50,6 +50,6 @@ func updateHR(ctx *gin.Context, HR *CompanyHR) (bool, error) {
 }
 
 func deleteHR(ctx *gin.Context, id uint) error {
-	tx := db.WithContext(ctx).Delete(CompanyHR{}, "id = ?", id)
+	tx := db.WithContext(ctx).Delete(&CompanyHR{}, "id = ?", id)
 	return tx.Error
 }

@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/constants"
@@ -23,7 +22,7 @@ func Authenticator() gin.HandlerFunc {
 		}
 
 		ctx.Set("userID", userID)
-		ctx.Set("roleID", roleID)
+		ctx.Set("roleID", int(roleID))
 
 		ctx.Next()
 	}
@@ -34,10 +33,6 @@ func GetUserID(ctx *gin.Context) string {
 }
 
 func GetRoleID(ctx *gin.Context) constants.Role {
-	role, err := strconv.ParseUint(ctx.GetString("roleID"), 10, 8)
-	if err != nil {
-		return constants.NONE
-	}
 
-	return constants.Role(role)
+	return constants.Role(ctx.GetInt("roleID"))
 }
