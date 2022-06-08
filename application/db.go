@@ -49,6 +49,7 @@ func updatePerformaQuestion(ctx *gin.Context, question *JobApplicationQuestion) 
 
 func createPerformaQuestion(ctx *gin.Context, question *JobApplicationQuestion) error {
 	tx := db.WithContext(ctx).Create(question)
+	return tx.Error
 }
 
 func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]JobProformaEvent) error {
@@ -73,5 +74,10 @@ func createEvent(ctx *gin.Context, event *JobProformaEvent) error {
 
 func createStudentEvents(ctx *gin.Context, eventStudents *[]EventStudent) error {
 	tx := db.WithContext(ctx).Create(eventStudents)
+	return tx.Error
+}
+
+func getRecruitmentStats(ctx *gin.Context, rid uint, stats *[]EventStudent) error {
+	tx := db.WithContext(ctx).Joins("job_proforma_event", db.Where("name IN", []EventType{Recruited, PIOPPOACCEPTED})).Where("recruitment_cycle_id = ?", rid).Find(stats)
 	return tx.Error
 }
