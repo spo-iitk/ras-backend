@@ -10,23 +10,23 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
-		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
-		admin.GET("/events", ras.PlaceHolderController)                // all events by date by schedule/not schedule
-		admin.POST("/student/stats", ras.PlaceHolderController)        // query branch wise stats
-		admin.POST("/pio-ppo", ras.PlaceHolderController)              // add ppo-pio, to events
+		admin.GET("/company/:cid/proforma", getPerformaByCompanyID) // all proforma
+		admin.GET("/events", ras.PlaceHolderController)             // all events by date by schedule/not schedule
+		admin.POST("/student/stats", ras.PlaceHolderController)     // query branch wise stats
+		admin.POST("/pio-ppo", ras.PlaceHolderController)           // add ppo-pio, to events
 
 		admin.GET("/resume", ras.PlaceHolderController)
 		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
 		performa := admin.Group("/proforma/:pid")
 		{
-			performa.GET("", ras.PlaceHolderController) // 1 proforma
-			performa.PUT("", ras.PlaceHolderController) // edit proforma
+			performa.GET("", getPerformaByPID) // 1 proforma
+			performa.PUT("", putPerforma)      // edit proforma
 
-			performa.GET("/question", ras.PlaceHolderController)      // all proforma
-			performa.GET("/question/:qid", ras.PlaceHolderController) // all proforma
-			performa.PUT("/question/:qid", ras.PlaceHolderController) // all proforma
-			performa.POST("/question/new", ras.PlaceHolderController) // all proforma
+			performa.GET("/question", getQuestionsByPID)      // all proforma
+			performa.GET("/question/:qid", getQuestionsByQID) // all proforma
+			performa.PUT("/question/:qid", putQuestion)       // all proforma
+			performa.POST("/question/new", postQuestion)      // all proforma
 
 			performa.POST("/email", ras.PlaceHolderController) // edit proforma
 			// excel and resume pending
@@ -49,9 +49,10 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
 	{
-		student.GET("/proforma", ras.PlaceHolderController)
-		student.GET("/proforma/:pid", ras.PlaceHolderController)
-		student.POST("/proforma/:pid/new", ras.PlaceHolderController) // question post isme hi honge
+		student.GET("/proforma", getPerformaByRID)
+		student.GET("/proforma/:pid", getPerformaByPID)
+
+		student.POST("/proforma/new", ras.PlaceHolderController) // question post isme hi honge
 		student.DELETE("/:aid", ras.PlaceHolderController)
 		student.GET("", ras.PlaceHolderController)
 		student.GET("/events", ras.PlaceHolderController)     // all events by date
@@ -63,12 +64,13 @@ func StudentRouter(r *gin.Engine) {
 	}
 }
 func CompanyRouter(r *gin.Engine) {
-	company := r.Group("/api/application/company/rc/:rid/performa")
+	company := r.Group("/api/application/company/:cid/rc/:rid/performa")
 	{
-		company.GET("", ras.PlaceHolderController)         // enrolment question
-		company.GET("/:pid", ras.PlaceHolderController)    // enrolment question
-		company.PUT("/:pid", ras.PlaceHolderController)    // if ownwr
-		company.DELETE("/:pid", ras.PlaceHolderController) // if ownwr
+		company.GET("", getPerformaByCompanyID)            // all perfroma by company id
+		company.POST("/new", postPerformaByCompanyID)      // add new proforma
+		company.GET("/:pid", getPerformaByPID)             // 1 performa by id
+		company.PUT("", putPerformaByCompanyID)            // if ownwr
+		company.DELETE("/:pid", deletePerformaByCompanyID) // if ownwr
 
 		company.GET("/:pid/event", ras.PlaceHolderController)         // all envents
 		company.GET("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents
