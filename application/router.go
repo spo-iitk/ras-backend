@@ -11,7 +11,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
 		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
-		admin.GET("/events", ras.PlaceHolderController)                // all events by date by schedule/not schedule
+		admin.GET("/events", getAllEventsByRCHandler)                // all events by date by schedule/not schedule
 		admin.POST("/student/stats", ras.PlaceHolderController)        // query branch wise stats
 		admin.POST("/pio-ppo", ras.PlaceHolderController)              // add ppo-pio, to events
 
