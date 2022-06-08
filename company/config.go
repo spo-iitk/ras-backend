@@ -28,8 +28,7 @@ func openConnection() {
 
 	db = database
 
-	//! TODO : Fix this
-	err = db.AutoMigrate()
+	err = db.AutoMigrate(&Company{}, &CompanyHR{})
 	if err != nil {
 		logrus.Fatal("Failed to migrate company database: ", err)
 		panic(err)
