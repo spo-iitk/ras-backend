@@ -2,7 +2,6 @@ package application
 
 import (
 	"database/sql"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -38,10 +37,10 @@ const (
 
 type JobApplicationQuestion struct {
 	gorm.Model
-	Type          ApplicationQuestionsType `json:"type"`
-	Question      string                   `json:"question"`
 	JobPerformaID uint                     `gorm:"index" json:"job_performa_id"`
 	JobPerforma   JobProforma              `gorm:"foreignkey:JobPerformaID" json:"-"`
+	Type          ApplicationQuestionsType `json:"type"`
+	Question      string                   `json:"question"`
 	Options       string                   `json:"options"` //csv
 }
 
@@ -60,8 +59,8 @@ type JobPerformaEvent struct {
 	Name             string      `json:"name"`
 	Duration         string      `json:"duration"`
 	Venue            string      `json:"venue"`
-	StartTime        time.Time   `json:"start_time"`
-	EndTime          time.Time   `json:"end_time"`
+	StartTime        int64       `json:"start_time"`
+	EndTime          int64       `json:"end_time"`
 	Description      string      `json:"description"`
 	MainPOC          string      `json:"main_poc"`
 	RecordAttendance bool        `json:"record_attendance"`
