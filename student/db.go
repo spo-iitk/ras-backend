@@ -33,7 +33,7 @@ func getAllStudents(ctx *gin.Context, students *[]Student) error {
 }
 
 func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
-	tx := db.WithContext(ctx).Save(student)
+	tx := db.WithContext(ctx).Where("id = ?", student.ID).Updates(student)
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -43,6 +43,6 @@ func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (boo
 }
 
 func deleteStudent(ctx *gin.Context, id uint) error {
-	tx := db.WithContext(ctx).Where("id = ?", id).Delete(Student{})
+	tx := db.WithContext(ctx).Where("id = ?", id).Delete(&Student{})
 	return tx.Error
 }

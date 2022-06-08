@@ -15,7 +15,7 @@ func getCompany(ctx *gin.Context, company *Company, id uint) error {
 }
 
 func updateCompany(ctx *gin.Context, company *Company) (bool, error) {
-	tx := db.WithContext(ctx).Save(company)
+	tx := db.WithContext(ctx).Where("id = ?", company.ID).Updates(company)
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -25,12 +25,12 @@ func newCompany(ctx *gin.Context, company *Company) error {
 }
 
 func deleteCompany(ctx *gin.Context, id uint) error {
-	tx := db.WithContext(ctx).Where("id = ?", id).Delete(Company{})
+	tx := db.WithContext(ctx).Where("id = ?", id).Delete(&Company{})
 	return tx.Error
 }
 
 func getAllHR(ctx *gin.Context, HRs *[]CompanyHR, cid uint) error {
-	tx := db.WithContext(ctx).Where("company_id = ?", cid).Find(HRs) //check if works
+	tx := db.WithContext(ctx).Where("id = ?", cid).Find(HRs) //check if works
 	return tx.Error
 }
 
@@ -45,7 +45,7 @@ func getHR(ctx *gin.Context, HR *CompanyHR, id uint) error {
 }
 
 func updateHR(ctx *gin.Context, HR *CompanyHR) (bool, error) {
-	tx := db.WithContext(ctx).Save(HR)
+	tx := db.WithContext(ctx).Where("id = ?", HR.ID).Updates(HR)
 	return tx.RowsAffected > 0, tx.Error
 }
 
