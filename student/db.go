@@ -41,3 +41,8 @@ func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (boo
 	tx := db.WithContext(ctx).Model(&Student{}).Where("iitk_email = ?", email).Updates(student)
 	return tx.RowsAffected > 0, tx.Error
 }
+
+func deleteStudent(ctx *gin.Context, id uint) error {
+	tx := db.WithContext(ctx).Where("id = ?", id).Delete(Student{})
+	return tx.Error
+}

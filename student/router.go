@@ -16,6 +16,7 @@ func StudentRouter(r *gin.Engine) {
 func AdminRouter(r *gin.Engine) {
 	admin := r.Group("/api/admin/student")
 	{
+		admin.DELETE("/:sid", deleteStudentHandler)
 		admin.GET("", getAllStudentsHandler)
 		admin.GET("/:sid", getStudentByIDHandler)
 		admin.PUT("/:sid", updateStudentByIDHandler)
