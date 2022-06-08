@@ -11,7 +11,7 @@ type JobProforma struct {
 	CompanyID                 uint          `gorm:"index" json:"company_id"`
 	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
 	RecruitmentCycleID        uint          `gorm:"index" json:"recruitment_cycle_id"`
-	IsApproved                bool          `json:"is_approved"`
+	IsApproved                sql.NullBool  `json:"is_approved" gorm:"default:false"`
 	ActionTakenBy             string        `json:"action_taken_by"`
 	SetDeadline               sql.NullInt64 `json:"set_deadline"` // NULL implies unpublished
 	HideDetails               bool          `gorm:"default:false" json:"hide_details"`
@@ -37,8 +37,8 @@ const (
 
 type JobApplicationQuestion struct {
 	gorm.Model
-	JobPerformaID uint                     `gorm:"index" json:"job_performa_id"`
-	JobPerforma   JobProforma              `gorm:"foreignkey:JobPerformaID" json:"-"`
+	JobProformaID uint                     `gorm:"index" json:"job_proforma_id"`
+	JobProforma   JobProforma              `gorm:"foreignkey:JobProformaID" json:"-"`
 	Type          ApplicationQuestionsType `json:"type"`
 	Question      string                   `json:"question"`
 	Options       string                   `json:"options"` //csv
@@ -52,10 +52,10 @@ type JobApplicationQuestionsAnswer struct {
 	Answer                    string                 `json:"answer"`
 }
 
-type JobPerformaEvent struct {
+type JobProformaEvent struct {
 	gorm.Model
-	JobPerformaID    uint        `gorm:"index" json:"job_performa_id"`
-	JobPerforma      JobProforma `gorm:"foreignkey:JobPerformaID" json:"-"`
+	JobProformaID    uint        `gorm:"index" json:"job_proforma_id"`
+	JobProforma      JobProforma `gorm:"foreignkey:JobProformaID" json:"-"`
 	Name             string      `json:"name"`
 	Duration         string      `json:"duration"`
 	Venue            string      `json:"venue"`
@@ -68,16 +68,16 @@ type JobPerformaEvent struct {
 
 type EventCordinator struct {
 	gorm.Model
-	JobPerformaEventID uint             `gorm:"index" json:"job_performa_event_id"`
-	JobPerformaEvent   JobPerformaEvent `gorm:"foreignkey:JobPerformaEventID" json:"-"`
+	JobProformaEventID uint             `gorm:"index" json:"job_proforma_event_id"`
+	JobProformaEvent   JobProformaEvent `gorm:"foreignkey:JobProformaEventID" json:"-"`
 	CordinatorID       string           `json:"cordinator_id"`
 	CordinatorName     string           `json:"cordinator_name"`
 }
 
 type EventStudent struct {
 	gorm.Model
-	JobPerformaEventID        uint             `gorm:"index" json:"job_performa_event_id"`
-	JobPerformaEvent          JobPerformaEvent `gorm:"foreignkey:JobPerformaEventID" json:"-"`
+	JobProformaEventID        uint             `gorm:"index" json:"job_proforma_event_id"`
+	JobProformaEvent          JobProformaEvent `gorm:"foreignkey:JobProformaEventID" json:"-"`
 	StudentRecruitmentCycleID uint             `gorm:"index" json:"student_recruitment_cycle_id"`
 	Present                   bool             `json:"present"`
 }
