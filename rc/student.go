@@ -62,10 +62,16 @@ type bulkPostStudentRequest struct {
 }
 
 func postStudents(ctx *gin.Context) {
-	rid := ctx.Param("rid")
+	rid_string := ctx.Param("rid")
+	rid, err := util.ParseUint(rid_string)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
 	var emails bulkPostStudentRequest
 
-	err := ctx.BindJSON(&emails)
+	err = ctx.BindJSON(&emails)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -83,7 +89,7 @@ func postStudents(ctx *gin.Context) {
 
 	for _, student := range studentsGlobal {
 		students = append(students, StudentRecruitmentCycle{
-			RecruitmentCycleID:           util.ToUint(rid),
+			RecruitmentCycleID:           rid,
 			StudentID:                    student.ID,
 			Email:                        student.IITKEmail,
 			Name:                         student.Name,

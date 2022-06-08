@@ -4,10 +4,10 @@ import (
 	"strconv"
 )
 
-func ToUint(s string) uint {
+func ParseUint(s string) (uint, error) {
 	i, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
-		return 0
+		return 0, err
 	}
-	return uint(i)
+	return uint(i), nil
 }
