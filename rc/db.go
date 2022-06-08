@@ -69,6 +69,11 @@ func fetchCompany(ctx *gin.Context, rid string, cid string, company *CompanyRecr
 	return tx.Error
 }
 
+func FetchCompanyByID(ctx *gin.Context, cid uint, company *CompanyRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Where("id = ?", cid).First(company)
+	return tx.Error
+}
+
 func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Create(company)
 	return tx.Error
@@ -134,10 +139,7 @@ func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
 	return tx.Error
 }
 
-func updateStudentType(ctx *gin.Context, r *pioppoRequest, newType StudentRecruitmentCycleType) error {
-	cid := r.cid
-	emails := r.email
-
+func UpdateStudentType(ctx *gin.Context, cid uint, emails []string) error {
 	var c CompanyRecruitmentCycle
 	tx := db.WithContext(ctx).Where("id = ?", cid).First(c)
 	if tx.Error != nil {
@@ -146,9 +148,25 @@ func updateStudentType(ctx *gin.Context, r *pioppoRequest, newType StudentRecrui
 
 	tx = db.WithContext(ctx).Model(StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND email IN ?", c.RecruitmentCycleID, emails).Updates(
 		StudentRecruitmentCycle{
-			Type:     newType,
+			Type:     PIOPPO,
 			IsFrozen: true,
 			Comment:  "PIO/PPO by " + c.CompanyName,
 		})
 	return tx.Error
+}
+
+func FetchStudentIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, error) {
+	var students []StudentRecruitmentCycle
+	var studentIDs []uint
+
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND email IN ?", rid, emails).Select("id").Find(students)
+	if tx.Error != nil {
+		return studentIDs, tx.Error
+	}
+
+	for _, student := range students {
+		studentIDs = append(studentIDs, student.ID)
+	}
+
+	return studentIDs, tx.Error
 }

@@ -15,8 +15,8 @@ func getAllEventsByRCHandler(ctx *gin.Context) {
 		return
 	}
 
-	events := []JobPerformaEvent{}
-	err = getEventsByRC(ctx, rid, &events)
+	events := []JobProformaEvent{}
+	err = fetchEventsByRC(ctx, rid, &events)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

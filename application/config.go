@@ -6,6 +6,7 @@ import (
 	_ "github.com/spo-iitk/ras-backend/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
@@ -21,7 +22,9 @@ func openConnection() {
 	dsn := "host=" + host + " user=" + user + " password=" + password
 	dsn += " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Kolkata"
 
-	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		logrus.Fatal("Failed to connect to application database: ", err)
 		panic(err)
@@ -30,7 +33,7 @@ func openConnection() {
 	db = database
 
 	err = db.AutoMigrate(&JobProforma{}, &JobApplicationQuestion{}, &JobApplicationQuestionsAnswer{},
-		&JobPerformaEvent{}, &EventCordinator{}, &EventStudent{})
+		&JobProformaEvent{}, &EventCordinator{}, &EventStudent{})
 	if err != nil {
 		logrus.Fatal("Failed to migrate application database: ", err)
 		panic(err)
@@ -42,3 +45,11 @@ func openConnection() {
 func init() {
 	openConnection()
 }
+
+type EventType string
+
+const (
+	ApplicationSubmitted EventType = "Application"
+	Recruited            EventType = "Recruited"
+	PIOPPOACCEPTED       EventType = "PIO-PPO"
+)
