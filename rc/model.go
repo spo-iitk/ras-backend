@@ -87,8 +87,7 @@ type StudentRecruitmentCycle struct {
 	RecruitmentCycle             RecruitmentCycle            `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
 	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
-	CurrentCPI                   float64                     `json:"current_cpi"`
-	UGCPI                        float64                     `json:"ug_cpi"`
+	CPI                          float64                     `json:"cpi"`
 	Email                        string                      `grom:"index" json:"email"`
 	Name                         string                      `json:"name"`
 	Type                         StudentRecruitmentCycleType `json:"type" gorm:"default:Available"`

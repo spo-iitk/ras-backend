@@ -87,8 +87,7 @@ func postStudents(ctx *gin.Context) {
 			StudentID:                    student.ID,
 			Email:                        student.IITKEmail,
 			Name:                         student.Name,
-			CurrentCPI:                   student.CurrentCPI,
-			UGCPI:                        student.UGCPI,
+			CPI:                          student.CurrentCPI,
 			ProgramDepartmentID:          student.ProgramDepartmentID,
 			SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID,
 		})
