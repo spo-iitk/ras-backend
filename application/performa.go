@@ -80,7 +80,7 @@ func postPerformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	if jp.CompanyID != cid {
+	if jp.CompanyRecruitmentCycleID != cid {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": "Company ID mismatch"})
 		return
 	}
@@ -130,7 +130,7 @@ func putPerformaByCompanyID(ctx *gin.Context) {
 	}
 
 	var jp JobProforma
-	if jp.CompanyID != cid {
+	if jp.CompanyRecruitmentCycleID != cid {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": "Company ID mismatch"})
 		return
 	}
@@ -173,7 +173,7 @@ func deletePerformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	if jp.CompanyID != cid {
+	if jp.CompanyRecruitmentCycleID != cid {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": "Company ID mismatch"})
 		return
 	}
