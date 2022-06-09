@@ -28,7 +28,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			performa.PUT("/question/:qid", putQuestion)       // all proforma
 			performa.POST("/question/new", postQuestion)      // all proforma
 
-			performa.POST("/email", ras.PlaceHolderController) // edit proforma
+			performa.POST("/email", proformaEmailHandler(mail_channel)) // edit proforma
 			// excel and resume pending
 
 			performa.GET("/event", ras.PlaceHolderController)                // edit proforma

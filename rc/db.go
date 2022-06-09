@@ -159,14 +159,13 @@ func FetchStudentIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, error
 	var students []StudentRecruitmentCycle
 	var studentIDs []uint
 
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND email IN ?", rid, emails).Select("id").Find(students)
-	if tx.Error != nil {
-		return studentIDs, tx.Error
-	}
-
-	for _, student := range students {
-		studentIDs = append(studentIDs, student.ID)
-	}
-
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND email IN ?", rid, emails).Select("id").Find(students).Pluck("id", &studentIDs)
 	return studentIDs, tx.Error
+}
+
+func FetchStudentEmailBySRCID(ctx *gin.Context, srcIDs []uint) ([]string, error) {
+	var studentEmails []string
+
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("id IN ?", srcIDs).Pluck("email", &studentEmails)
+	return studentEmails, tx.Error
 }

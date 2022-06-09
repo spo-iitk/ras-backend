@@ -81,3 +81,9 @@ func getRecruitmentStats(ctx *gin.Context, rid uint, stats *[]EventStudent) erro
 	tx := db.WithContext(ctx).Joins("job_proforma_event", db.Where("name IN", []EventType{Recruited, PIOPPOACCEPTED})).Where("recruitment_cycle_id = ?", rid).Find(stats)
 	return tx.Error
 }
+
+func fetchStudentRCIDByEvents(ctx *gin.Context, eventID uint) ([]uint, error) {
+	var ids []uint
+	tx := db.WithContext(ctx).Model(&EventStudent{}).Where("job_proforma_event_id = ?", eventID).Pluck("student_recruitment_cycle_id", &ids)
+	return ids, tx.Error
+}
