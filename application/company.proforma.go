@@ -62,3 +62,28 @@ func postProformaByCompanyHandler(ctx *gin.Context) {
 	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
 	ctx.JSON(200, gin.H{"pid": jp.ID})
 }
+
+func putProformaByCompanyHandler(ctx *gin.Context) {
+	cid, err := extractCompanyRCID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	var jp Proforma
+	err = ctx.BindJSON(&jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	jp.CompanyRecruitmentCycleID = cid
+
+	err = updateProformaForCompany(ctx, &jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, gin.H{"data": "edited proforma"})
+}

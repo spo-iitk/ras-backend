@@ -65,36 +65,6 @@ func putProforma(ctx *gin.Context) {
 	ctx.JSON(200, jp)
 }
 
-func putProformaByCompanyID(ctx *gin.Context) {
-	cid_string := ctx.Param("cid")
-	cid, err := util.ParseUint(cid_string)
-
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	var jp Proforma
-	if jp.CompanyRecruitmentCycleID != cid {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": "Company ID mismatch"})
-		return
-	}
-
-	err = ctx.BindJSON(&jp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	err = updateProforma(ctx, &jp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(200, gin.H{"data": "edited proforma"})
-}
-
 func deleteProformaByCompanyID(ctx *gin.Context) {
 	pid_string := ctx.Param("pid")
 	pid, err := util.ParseUint(pid_string)

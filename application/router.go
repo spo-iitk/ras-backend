@@ -68,7 +68,8 @@ func CompanyRouter(r *gin.Engine) {
 	{
 		company.GET("", getProformaForCompanyHandler)
 		company.POST("", postProformaByCompanyHandler)
-		company.PUT("", putProformaByCompanyID)            // if ownwr
+
+		company.PUT("", putProformaByCompanyHandler)       // if ownwr
 		company.GET("/:pid", getProformaHandler)           // 1 proforma by id
 		company.DELETE("/:pid", deleteProformaByCompanyID) // if ownwr
 
