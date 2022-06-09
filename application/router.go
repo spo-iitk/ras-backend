@@ -63,7 +63,7 @@ func StudentRouter(r *gin.Engine) {
 	}
 }
 func CompanyRouter(r *gin.Engine) {
-	company := r.Group("/api/application/company/:cid/rc/:rid/proforma")
+	company := r.Group("/api/company/application/rc/:rid/proforma")
 	{
 		company.GET("", getProformaByCompanyID)            // all perfroma by company id
 		company.POST("/new", postProformaByCompanyID)      // add new proforma
