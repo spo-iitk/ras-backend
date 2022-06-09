@@ -66,7 +66,7 @@ type JobProformaEvent struct {
 	RecordAttendance bool        `json:"record_attendance" gorm:"default:false"`
 }
 
-type EventCordinator struct {
+type EventCoordinator struct {
 	gorm.Model
 	JobProformaEventID uint             `gorm:"index" json:"job_proforma_event_id"`
 	JobProformaEvent   JobProformaEvent `gorm:"foreignkey:JobProformaEventID" json:"-"`

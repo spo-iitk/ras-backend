@@ -37,10 +37,10 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			performa.PUT("/event", putEventHandler)                                       // edit proforma
 			performa.DELETE("/event/:eid", deleteEventHandler)                            // edit proforma
 
-			performa.GET("/event/:eid/student", getStudentByEventHandler)       // 1 proforma add students to event i.e. pass to next stage
-			performa.POST("/event/:eid/student", postStudentsByEventHandler)    // 1 proforma add students to event i.e. pass to next stage
-			performa.GET("/event/:eid/coordinator", ras.PlaceHolderController)  // 1 proforma add students to event i.e. pass to next stage
-			performa.POST("/event/:eid/coordinator", ras.PlaceHolderController) // 1 proforma add students to event i.e. pass to next stage
+			performa.GET("/event/:eid/student", getStudentsByEventHandler)          // 1 proforma add students to event i.e. pass to next stage
+			performa.POST("/event/:eid/student", postStudentsByEventHandler)        // 1 proforma add students to event i.e. pass to next stage
+			performa.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)  // 1 proforma add students to event i.e. pass to next stage
+			performa.POST("/event/:eid/coordinator", postCoordinatorByEventHandler) // 1 proforma add students to event i.e. pass to next stage
 
 		}
 	}

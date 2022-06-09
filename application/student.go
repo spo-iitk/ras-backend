@@ -8,7 +8,7 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getStudentByEventHandler(ctx *gin.Context) {
+func getStudentsByEventHandler(ctx *gin.Context) {
 	eid_string := ctx.Param("eid")
 	eid, err := util.ParseUint(eid_string)
 	if err != nil {
@@ -28,7 +28,7 @@ func getStudentByEventHandler(ctx *gin.Context) {
 }
 
 type postStudentsByEventRequest struct {
-	EventID uint     `json:"eventID" binding:"required"`
+	EventID uint     `json:"event_id" binding:"required"`
 	Emails  []string `json:"emails" binding:"required"`
 }
 
