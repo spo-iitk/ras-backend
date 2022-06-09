@@ -5,21 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/middleware"
-	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
 func postApplicationHandler(ctx *gin.Context) {
-	rid_string := ctx.Param("rid")
-	rid, err := util.ParseUint(rid_string)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	pid_string := ctx.Param("pid")
-	pid, err := util.ParseUint(pid_string)
+	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -31,13 +21,7 @@ func postApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
-	user_email := middleware.GetUserID(ctx)
-	if user_email == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		return
-	}
-
-	sid, err := rc.FetchStudentRCIDs(ctx, rid, []string{user_email})
+	sid, err := extractStudentRCID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -45,7 +29,7 @@ func postApplicationHandler(ctx *gin.Context) {
 
 	var application = EventStudent{
 		ProformaEventID:           eid,
-		StudentRecruitmentCycleID: sid[0],
+		StudentRecruitmentCycleID: sid,
 		Present:                   true,
 	}
 	var applications = []EventStudent{application}
@@ -59,33 +43,19 @@ func postApplicationHandler(ctx *gin.Context) {
 }
 
 func deleteApplicationHandler(ctx *gin.Context) {
-	rid_string := ctx.Param("rid")
-	rid, err := util.ParseUint(rid_string)
+	sid, err := extractStudentRCID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user_email := middleware.GetUserID(ctx)
-	if user_email == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		return
-	}
-
-	sid, err := rc.FetchStudentRCIDs(ctx, rid, []string{user_email})
+	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	pid_string := ctx.Param("pid")
-	pid, err := util.ParseUint(pid_string)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err = deleteApplication(ctx, pid, sid[0])
+	err = deleteApplication(ctx, pid, sid)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
