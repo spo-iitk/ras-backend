@@ -20,8 +20,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		proforma := admin.Group("/proforma/:pid")
 		{
-			proforma.GET("", getProformaHandler)           // 1 proforma
-			proforma.PUT("", putProforma)                  // edit proforma
+			proforma.GET("", getProformaHandler)       // 1 proforma
+			proforma.PUT("", putProforma)              // edit proforma
 			proforma.DELETE("", deleteProformaHandler) // delete proforma
 
 			proforma.GET("/question", getQuestionsByPID)      // all proforma
@@ -32,7 +32,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.POST("/email", proformaEmailHandler(mail_channel)) // edit proforma
 			// excel and resume pending
 
-			proforma.GET("/event", getEventsByPIDHandler)                                 // edit proforma
+			proforma.GET("/event", getEventsByProformaHandler)                            // edit proforma
 			proforma.POST("/event/new", postEventHandler)                                 // edit proforma
 			proforma.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel)) // edit proforma
 			proforma.PUT("/event", putEventHandler)                                       // edit proforma
@@ -74,8 +74,8 @@ func CompanyRouter(r *gin.Engine) {
 		company.GET("/:pid", getProformaHandler)
 		company.DELETE("/:pid", deleteProformaByCompanyHandler)
 
-		company.GET("/:pid/event", ras.PlaceHolderController)         // all envents
-		company.GET("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents
+		company.GET("/:pid/event", getEventsByProformaHandler)        // all envents
+		company.GET("/:pid/event/:eid", getEventHandler)              // 1 envents
 		company.PUT("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents
 		company.DELETE("/:pid/event/:eid", ras.PlaceHolderController) // 1 envents
 

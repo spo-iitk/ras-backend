@@ -25,7 +25,7 @@ func getAllEventsByRCHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, events)
 }
 
-func getEventsByPIDHandler(ctx *gin.Context) {
+func getEventsByProformaHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
