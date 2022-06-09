@@ -169,3 +169,9 @@ func FetchStudentEmailBySRCID(ctx *gin.Context, srcIDs []uint) ([]string, error)
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("id IN ?", srcIDs).Pluck("email", &studentEmails)
 	return studentEmails, tx.Error
 }
+
+func FetchCompanyRCID(ctx *gin.Context, rid uint, companyid uint) (uint, error) {
+	var company CompanyRecruitmentCycle
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, companyid).First(&company)
+	return company.ID, tx.Error
+}

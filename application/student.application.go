@@ -67,7 +67,7 @@ func deleteApplicationHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"success": "application deleted"})
 }
 
-func getEventsByIDHandler(ctx *gin.Context) {
+func getEventHandler(ctx *gin.Context) {
 	eid_string := ctx.Param("eid")
 	eid, err := util.ParseUint(eid_string)
 	if err != nil {

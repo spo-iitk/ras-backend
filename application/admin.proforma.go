@@ -7,25 +7,6 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getProformaByCompanyID(ctx *gin.Context) {
-	cid_string := ctx.Param("cid")
-	cid, err := util.ParseUint(cid_string)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	var jps []Proforma
-
-	err = fetchProformaByCompanyRC(ctx, cid, &jps)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(200, jps)
-}
-
 func getProformaHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
@@ -42,6 +23,24 @@ func getProformaHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, jp)
+}
+
+func getProformaByCompanyHandler(ctx *gin.Context) {
+	cid, err := util.ParseUint(ctx.Param("cid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	var jps []Proforma
+
+	err = fetchProformaByCompanyRC(ctx, cid, &jps)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, jps)
 }
 
 func postProformaByCompanyID(ctx *gin.Context) {
