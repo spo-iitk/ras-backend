@@ -127,3 +127,19 @@ func createEventCoordinator(ctx *gin.Context, eventCoordinator *EventCoordinator
 	tx := db.WithContext(ctx).FirstOrCreate(eventCoordinator)
 	return tx.Error
 }
+
+func fetchApplicationEventID(ctx *gin.Context, pid uint) (uint, error) {
+	var event JobProformaEvent
+	tx := db.WithContext(ctx).Where("job_proforma_id = ? AND name = ?", pid, ApplicationSubmitted).First(&event)
+	return event.ID, tx.Error
+}
+
+func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
+	tx := db.WithContext(ctx).Where("job_proforma_event_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(EventStudent{})
+	return tx.Error
+}
+
+func fetchEventsByStudent(ctx *gin.Context, sid uint, events *[]JobProformaEvent) error {
+	tx := db.WithContext(ctx).Joins("event_student", db.Where(&EventStudent{StudentRecruitmentCycleID: sid})).Find(events)
+	return tx.Error
+}

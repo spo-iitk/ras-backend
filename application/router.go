@@ -52,12 +52,11 @@ func StudentRouter(r *gin.Engine) {
 		student.GET("/proforma", getPerformaByRID)
 		student.GET("/proforma/:pid", getPerformaByPID)
 
-		student.POST("/proforma/new", ras.PlaceHolderController) // question post isme hi honge
-		student.DELETE("/:aid", ras.PlaceHolderController)
-		student.GET("", ras.PlaceHolderController)
-		student.GET("/events", ras.PlaceHolderController)     // all events by date
-		student.GET("/event/:eid", ras.PlaceHolderController) // all events by date
-		student.GET("/stats", ras.PlaceHolderController)      // all events by date
+		student.POST("/proforma/:pid", postApplicationHandler) // question post isme hi honge
+		student.DELETE("/proforma/:pid", deleteApplicationHandler)
+		student.GET("/events", getEventsByStudentHandler) // all events by date
+		student.GET("/event/:eid", getEventsByIDHandler)  // all events by date
+		student.GET("/stats", ras.PlaceHolderController)  // all events by date
 		student.GET("/resume", ras.PlaceHolderController)
 		student.POST("/resume/new", ras.PlaceHolderController)
 
