@@ -20,8 +20,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		proforma := admin.Group("/proforma/:pid")
 		{
-			proforma.GET("", getProforma) // 1 proforma
-			proforma.PUT("", putProforma) // edit proforma
+			proforma.GET("", getProformaHandler) // 1 proforma
+			proforma.PUT("", putProforma)        // edit proforma
 
 			proforma.GET("/question", getQuestionsByPID)      // all proforma
 			proforma.GET("/question/:qid", getQuestionsByQID) // all proforma
@@ -47,16 +47,18 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 }
 
 func StudentRouter(r *gin.Engine) {
-	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
+	student := r.Group("/api/student/application/rc/:rid")
 	{
-		student.GET("/proforma", getProformaByRID)
-		student.GET("/proforma/:pid", getProforma)
+		student.GET("/proforma", getProformaByRIDHandler)
+		student.GET("/proforma/:pid", getProformaHandler)
 
-		student.POST("/proforma/:pid", postApplicationHandler) // question post isme hi honge
+		student.POST("/proforma/:pid", postApplicationHandler)
 		student.DELETE("/proforma/:pid", deleteApplicationHandler)
-		student.GET("/events", getEventsByStudentHandler) // all events by date
-		student.GET("/event/:eid", getEventsByIDHandler)  // all events by date
-		student.GET("/stats", ras.PlaceHolderController)  // all events by date
+
+		student.GET("/events", getEventsByStudentHandler)
+		student.GET("/event/:eid", getEventsByIDHandler)
+
+		student.GET("/stats", ras.PlaceHolderController)
 		student.GET("/resume", ras.PlaceHolderController)
 		student.POST("/resume/new", ras.PlaceHolderController)
 
@@ -67,7 +69,7 @@ func CompanyRouter(r *gin.Engine) {
 	{
 		company.GET("", getProformaByCompanyID)            // all perfroma by company id
 		company.POST("/new", postProformaByCompanyID)      // add new proforma
-		company.GET("/:pid", getProforma)                  // 1 proforma by id
+		company.GET("/:pid", getProformaHandler)           // 1 proforma by id
 		company.PUT("", putProformaByCompanyID)            // if ownwr
 		company.DELETE("/:pid", deleteProformaByCompanyID) // if ownwr
 

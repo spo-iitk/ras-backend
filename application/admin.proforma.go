@@ -26,7 +26,7 @@ func getProformaByCompanyID(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
-func getProforma(ctx *gin.Context) {
+func getProformaHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})

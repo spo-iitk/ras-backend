@@ -5,7 +5,7 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getProformaByRID(ctx *gin.Context) {
+func getProformaByRIDHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})

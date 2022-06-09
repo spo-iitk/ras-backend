@@ -3,7 +3,7 @@ package application
 import "github.com/gin-gonic/gin"
 
 func createEventStudent(ctx *gin.Context, eventStudent *EventStudent) error {
-	tx := db.WithContext(ctx).Create(eventStudent)
+	tx := db.WithContext(ctx).FirstOrCreate(eventStudent)
 	return tx.Error
 }
 

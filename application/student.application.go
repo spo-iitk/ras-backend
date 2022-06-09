@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -39,6 +40,7 @@ func postApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
+	logrus.Infof("Application for %d submitted against Performa %d with application ID %s", sid, pid, application.ID)
 	ctx.JSON(http.StatusOK, gin.H{"success": "application submitted with id: " + fmt.Sprint(application.ID)})
 }
 
@@ -61,6 +63,7 @@ func deleteApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
+	logrus.Infof("Application for %d deleted against Performa %d", sid, pid)
 	ctx.JSON(http.StatusOK, gin.H{"success": "application deleted"})
 }
 

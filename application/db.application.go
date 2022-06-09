@@ -9,6 +9,6 @@ func fetchApplicationEventID(ctx *gin.Context, pid uint) (uint, error) {
 }
 
 func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
-	tx := db.WithContext(ctx).Where("proforma_event_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(EventStudent{})
+	tx := db.WithContext(ctx).Where("proforma_event_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(&EventStudent{})
 	return tx.Error
 }
