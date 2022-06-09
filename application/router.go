@@ -60,8 +60,7 @@ func StudentRouter(r *gin.Engine) {
 
 		student.GET("/stats", ras.PlaceHolderController)
 		student.GET("/resume", ras.PlaceHolderController)
-		student.POST("/resume/new", ras.PlaceHolderController)
-
+		student.POST("/resume", ras.PlaceHolderController)
 	}
 }
 func CompanyRouter(r *gin.Engine) {

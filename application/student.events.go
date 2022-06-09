@@ -13,7 +13,7 @@ func getEventsByStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	events := []ProformaEvent{}
+	var events []ProformaEvent
 	err = fetchEventsByStudent(ctx, sid, &events)
 
 	if err != nil {
