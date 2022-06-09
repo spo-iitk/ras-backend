@@ -52,6 +52,11 @@ func putProforma(ctx *gin.Context) {
 		return
 	}
 
+	if jp.ID == 0 {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": "id is required"})
+		return
+	}
+
 	err = updateProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
@@ -61,7 +66,6 @@ func putProforma(ctx *gin.Context) {
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
-
 	ctx.JSON(200, jp)
 }
 

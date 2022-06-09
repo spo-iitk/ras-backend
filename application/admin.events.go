@@ -8,8 +8,7 @@ import (
 )
 
 func getAllEventsByRCHandler(ctx *gin.Context) {
-	rid_string := ctx.Param("rid")
-	rid, err := util.ParseUint(rid_string)
+	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

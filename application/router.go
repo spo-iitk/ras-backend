@@ -10,19 +10,19 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
-		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler) // all proforma
-		admin.GET("/events", getAllEventsByRCHandler)                    // all events by date by schedule/not schedule
-		admin.GET("/student/stats", getStats)                            // query branch wise stats
-		admin.POST("/pio-ppo", postPPOPIOHandler)                        // add ppo-pio, to events
+		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
+		admin.GET("/events", getAllEventsByRCHandler)
+		admin.GET("/student/stats", getStats)
+		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/resume", ras.PlaceHolderController)
 		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
 		proforma := admin.Group("/proforma/:pid")
 		{
-			proforma.GET("", getProformaHandler)       // 1 proforma
-			proforma.PUT("", putProforma)              // edit proforma
-			proforma.DELETE("", deleteProformaHandler) // delete proforma
+			proforma.GET("", getProformaHandler)
+			proforma.PUT("", putProforma)
+			proforma.DELETE("", deleteProformaHandler)
 
 			proforma.GET("/question", getQuestionsByPID)      // all proforma
 			proforma.GET("/question/:qid", getQuestionsByQID) // all proforma
@@ -81,6 +81,6 @@ func CompanyRouter(r *gin.Engine) {
 		company.PUT("/event/:eid", putEventByCompanyHandler)
 		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
 
-		company.GET("/event/:eid/students", getStudentsByEventHandler) // students of event
+		company.GET("/event/:eid/students", getStudentsByEventHandler)
 	}
 }
