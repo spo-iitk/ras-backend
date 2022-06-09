@@ -32,24 +32,23 @@ func postApplicationHandler(ctx *gin.Context) {
 		StudentRecruitmentCycleID: sid,
 		Present:                   true,
 	}
-	var applications = []EventStudent{application}
-	err = createEventStudents(ctx, &applications)
+	err = createEventStudent(ctx, &application)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "application submitted with id: " + fmt.Sprint(applications[0].ID)})
+	ctx.JSON(http.StatusOK, gin.H{"success": "application submitted with id: " + fmt.Sprint(application.ID)})
 }
 
 func deleteApplicationHandler(ctx *gin.Context) {
-	sid, err := extractStudentRCID(ctx)
+	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	pid, err := util.ParseUint(ctx.Param("pid"))
+	sid, err := extractStudentRCID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

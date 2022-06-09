@@ -75,7 +75,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		})
 	}
 
-	err = createStudentEvents(ctx, &ses)
+	err = createEventStudents(ctx, &ses)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

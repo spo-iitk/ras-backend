@@ -2,13 +2,13 @@ package application
 
 import "github.com/gin-gonic/gin"
 
-// func createStudentEvent(ctx *gin.Context, eventStudent *EventStudent) error {
-// 	tx := db.WithContext(ctx).Create(eventStudent)
-// 	return tx.Error
-// }
+func createEventStudent(ctx *gin.Context, eventStudent *EventStudent) error {
+	tx := db.WithContext(ctx).Create(eventStudent)
+	return tx.Error
+}
 
-func createStudentEvents(ctx *gin.Context, eventStudents *[]EventStudent) error {
-	tx := db.WithContext(ctx).Create(eventStudents)
+func createEventStudents(ctx *gin.Context, eventStudents *[]EventStudent) error {
+	tx := db.WithContext(ctx).FirstOrCreate(eventStudents)
 	return tx.Error
 }
 
@@ -25,10 +25,5 @@ func fetchStudentRCIDByEvents(ctx *gin.Context, eventID uint) ([]uint, error) {
 
 func fetchStudentsByEvent(ctx *gin.Context, eventID uint, students *[]EventStudent) error {
 	tx := db.WithContext(ctx).Where("proforma_event_id = ?", eventID).Find(students)
-	return tx.Error
-}
-
-func createEventStudents(ctx *gin.Context, eventStudents *[]EventStudent) error {
-	tx := db.WithContext(ctx).FirstOrCreate(eventStudents)
 	return tx.Error
 }
