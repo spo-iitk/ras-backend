@@ -34,7 +34,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			performa.GET("/event", getEventsByPIDHandler)                    // edit proforma
 			performa.POST("/event/new", postEventHandler)           // edit proforma
 			performa.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel)) // edit proforma
-			performa.PUT("/event/:eid", ras.PlaceHolderController)           // edit proforma
+			performa.PUT("/event/:eid", putEventHandler)           // edit proforma
 			performa.DELETE("/event/:eid", ras.PlaceHolderController)        // edit proforma
 
 			performa.GET("/event/:eid/student", ras.PlaceHolderController)      // 1 proforma add students to event i.e. pass to next stage

@@ -97,3 +97,8 @@ func fetchStudentRCIDByEvents(ctx *gin.Context, eventID uint) ([]uint, error) {
 	tx := db.WithContext(ctx).Model(&EventStudent{}).Where("job_proforma_event_id = ?", eventID).Pluck("student_recruitment_cycle_id", &ids)
 	return ids, tx.Error
 }
+
+func updateEvent(ctx *gin.Context, event *JobProformaEvent) error {
+	tx := db.WithContext(ctx).Where("id = ?", event.ID).Updates(event)
+	return tx.Error
+}

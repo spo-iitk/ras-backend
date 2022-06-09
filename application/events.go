@@ -69,3 +69,25 @@ func postEventHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, event)
 }
+
+func putEventHandler(ctx *gin.Context) {
+	var event JobProformaEvent
+	err := ctx.BindJSON(&event)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if event.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "event id is required"})
+		return
+	}
+
+	err = updateEvent(ctx, &event)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, event)
+}
