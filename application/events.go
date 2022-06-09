@@ -91,3 +91,20 @@ func putEventHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, event)
 }
+
+func deleteEventHandler(ctx *gin.Context) {
+	eid_string := ctx.Param("eid")
+	eid, err := util.ParseUint(eid_string)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = deleteEvent(ctx, eid)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted event"})
+}

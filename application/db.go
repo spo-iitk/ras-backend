@@ -102,3 +102,8 @@ func updateEvent(ctx *gin.Context, event *JobProformaEvent) error {
 	tx := db.WithContext(ctx).Where("id = ?", event.ID).Updates(event)
 	return tx.Error
 }
+
+func deleteEvent(ctx *gin.Context, id uint) error {
+	tx := db.WithContext(ctx).Where("id = ?", id).Delete(JobProformaEvent{})
+	return tx.Error
+}
