@@ -49,7 +49,7 @@ func postEventReminderHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		var event JobProformaEvent
+		var event ProformaEvent
 		err = fetchEventByID(ctx, eid, &event)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -7,7 +7,7 @@ import (
 	"github.com/spo-iitk/ras-backend/rc"
 )
 
-func getEmptyProformaByCID(ctx *gin.Context, cid uint, jp *JobProforma) error {
+func getEmptyProformaByCID(ctx *gin.Context, cid uint, jp *Proforma) error {
 	var companyRC rc.CompanyRecruitmentCycle
 	err := rc.FetchCompanyByID(ctx, cid, &companyRC)
 	if err != nil {
@@ -42,7 +42,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
-	var jp JobProforma
+	var jp Proforma
 	err = getEmptyProformaByCID(ctx, req.cid, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
@@ -55,9 +55,9 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
-	var event = JobProformaEvent{
-		JobProformaID: jp.ID,
-		Name:          "PIO-PPO",
+	var event = ProformaEvent{
+		ProformaID: jp.ID,
+		Name:       "PIO-PPO",
 	}
 	err = createEvent(ctx, &event)
 	if err != nil {
@@ -69,7 +69,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 
 	for _, studentID := range studentIDs {
 		ses = append(ses, EventStudent{
-			JobProformaEventID:        event.ID,
+			ProformaEventID:           event.ID,
 			StudentRecruitmentCycleID: studentID,
 			Present:                   true,
 		})

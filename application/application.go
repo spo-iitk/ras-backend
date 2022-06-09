@@ -44,7 +44,7 @@ func postApplicationHandler(ctx *gin.Context) {
 	}
 
 	var application = EventStudent{
-		JobProformaEventID:        eid,
+		ProformaEventID:           eid,
 		StudentRecruitmentCycleID: sid[0],
 		Present:                   true,
 	}
@@ -102,7 +102,7 @@ func getEventsByIDHandler(ctx *gin.Context) {
 		return
 	}
 
-	var event JobProformaEvent
+	var event ProformaEvent
 	err = fetchEventByID(ctx, eid, &event)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -41,9 +41,9 @@ func postCoordinatorByEventHandler(ctx *gin.Context) {
 	}
 
 	var coordinator = EventCoordinator{
-		JobProformaEventID: req.EventID,
-		CordinatorID:       req.CoordinatorID,
-		CordinatorName:     req.Name,
+		ProformaEventID: req.EventID,
+		CordinatorID:    req.CoordinatorID,
+		CordinatorName:  req.Name,
 	}
 
 	err = createEventCoordinator(ctx, &coordinator)

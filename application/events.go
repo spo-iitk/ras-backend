@@ -17,7 +17,7 @@ func getAllEventsByRCHandler(ctx *gin.Context) {
 		return
 	}
 
-	events := []JobProformaEvent{}
+	events := []ProformaEvent{}
 	err = fetchEventsByRC(ctx, rid, &events)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func getEventsByPIDHandler(ctx *gin.Context) {
 		return
 	}
 
-	events := []JobProformaEvent{}
+	events := []ProformaEvent{}
 	err = fetchEventsByPID(ctx, pid, &events)
 
 	if err != nil {
@@ -54,14 +54,14 @@ func postEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	var event JobProformaEvent
+	var event ProformaEvent
 	err = ctx.BindJSON(&event)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	event.JobProformaID = pid
+	event.ProformaID = pid
 
 	err = createEvent(ctx, &event)
 	if err != nil {
@@ -73,7 +73,7 @@ func postEventHandler(ctx *gin.Context) {
 }
 
 func putEventHandler(ctx *gin.Context) {
-	var event JobProformaEvent
+	var event ProformaEvent
 	err := ctx.BindJSON(&event)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -131,7 +131,7 @@ func getEventsByStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	events := []JobProformaEvent{}
+	events := []ProformaEvent{}
 	err = fetchEventsByStudent(ctx, sid[0], &events)
 
 	if err != nil {

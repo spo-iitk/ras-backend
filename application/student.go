@@ -56,7 +56,7 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 	students := []EventStudent{}
 	for _, srcID := range srcIDs {
 		students = append(students, EventStudent{
-			JobProformaEventID:        req.EventID,
+			ProformaEventID:           req.EventID,
 			StudentRecruitmentCycleID: srcID,
 		})
 	}

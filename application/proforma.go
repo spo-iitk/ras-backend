@@ -15,7 +15,7 @@ func getProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	var jps []JobProforma
+	var jps []Proforma
 
 	err = fetchProformaByCompanyRC(ctx, cid, &jps)
 	if err != nil {
@@ -34,7 +34,7 @@ func getProformaByRID(ctx *gin.Context) {
 		return
 	}
 
-	var jps []JobProforma
+	var jps []Proforma
 
 	err = fetchProformaByRC(ctx, rid, &jps)
 	if err != nil {
@@ -53,9 +53,9 @@ func getProformaByPID(ctx *gin.Context) {
 		return
 	}
 
-	var jp JobProforma
+	var jp Proforma
 
-	err = fetchJobProforma(ctx, pid, &jp)
+	err = fetchProforma(ctx, pid, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -72,7 +72,7 @@ func postProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	var jp JobProforma
+	var jp Proforma
 
 	err = ctx.BindJSON(&jp)
 	if err != nil {
@@ -85,7 +85,7 @@ func postProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	err = createJobProforma(ctx, &jp)
+	err = createProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -99,7 +99,7 @@ func postProformaByCompanyID(ctx *gin.Context) {
 }
 
 func putProforma(ctx *gin.Context) {
-	var jp JobProforma
+	var jp Proforma
 
 	err := ctx.BindJSON(&jp)
 	if err != nil {
@@ -107,7 +107,7 @@ func putProforma(ctx *gin.Context) {
 		return
 	}
 
-	err = updateJobProforma(ctx, &jp)
+	err = updateProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -129,7 +129,7 @@ func putProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	var jp JobProforma
+	var jp Proforma
 	if jp.CompanyRecruitmentCycleID != cid {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": "Company ID mismatch"})
 		return
@@ -141,7 +141,7 @@ func putProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	err = updateJobProforma(ctx, &jp)
+	err = updateProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -165,8 +165,8 @@ func deleteProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	var jp JobProforma
-	err = fetchJobProforma(ctx, pid, &jp)
+	var jp Proforma
+	err = fetchProforma(ctx, pid, &jp)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
@@ -178,7 +178,7 @@ func deleteProformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	err = deleteJobProforma(ctx, pid)
+	err = deleteProforma(ctx, pid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
