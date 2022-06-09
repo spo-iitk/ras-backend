@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getProformaForCompanyHandler(ctx *gin.Context) {
@@ -86,4 +87,31 @@ func putProformaByCompanyHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, gin.H{"data": "edited proforma"})
+}
+
+func deleteProformaByCompanyHandler(ctx *gin.Context) {
+	pid, err := util.ParseUint(ctx.Param("pid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	cid, err := extractCompanyRCID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	ok, err := deleteProformaByCompany(ctx, pid, cid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !ok {
+		ctx.AbortWithStatusJSON(402, gin.H{"error": "proforma not found or unauthorized"})
+		return
+	}
+
+	ctx.JSON(200, gin.H{"data": "deleted proforma"})
 }

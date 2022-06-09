@@ -37,6 +37,11 @@ func deleteProforma(ctx *gin.Context, pid uint) error {
 	return tx.Error
 }
 
+func deleteProformaByCompany(ctx *gin.Context, pid uint, cid uint) (bool, error) {
+	tx := db.WithContext(ctx).Where("id = ? AND company_recruitment_cycle_id = ?", pid, cid).Delete(Proforma{})
+	return tx.RowsAffected > 0, tx.Error
+}
+
 func firstOrCreateEmptyPerfoma(ctx *gin.Context, jp *Proforma) error {
 	tx := db.WithContext(ctx).Where("company_recruitment_cycle_id = ?", jp.CompanyRecruitmentCycleID).FirstOrCreate(jp)
 	return tx.Error
