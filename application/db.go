@@ -57,6 +57,11 @@ func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]JobProformaEvent) err
 	return tx.Error
 }
 
+func fetchEventByID(ctx *gin.Context, id uint, event *JobProformaEvent) error {
+	tx := db.WithContext(ctx).Where("id = ?", id).First(event)
+	return tx.Error
+}
+
 func fetchEventsByPID(ctx *gin.Context, pid uint, events *[]JobProformaEvent) error {
 	tx := db.WithContext(ctx).Where("job_proforma_id = ?", pid).Find(events)
 	return tx.Error
