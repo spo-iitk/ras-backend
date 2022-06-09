@@ -42,7 +42,7 @@ func createNotice(ctx *gin.Context, notice *Notice) error {
 }
 
 func removeNotice(ctx *gin.Context, nid string) error {
-	tx := db.WithContext(ctx).Where("id = ?", nid).Delete(Notice{})
+	tx := db.WithContext(ctx).Where("id = ?", nid).Delete(&Notice{})
 	if tx.RowsAffected == 0 {
 		return errors.New("no notice found")
 	}
@@ -110,7 +110,7 @@ func updateStudentQuestion(ctx *gin.Context, question *RecruitmentCycleQuestion)
 }
 
 func deleteStudentQuestion(ctx *gin.Context, qid string) error {
-	tx := db.WithContext(ctx).Where("id = ?", qid).Delete(RecruitmentCycleQuestion{})
+	tx := db.WithContext(ctx).Where("id = ?", qid).Delete(&RecruitmentCycleQuestion{})
 	return tx.Error
 }
 
@@ -130,7 +130,7 @@ func updateStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnsw
 }
 
 func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(RecruitmentCycleQuestionsAnswer{})
+	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&RecruitmentCycleQuestionsAnswer{})
 	return tx.Error
 }
 

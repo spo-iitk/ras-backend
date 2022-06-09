@@ -52,24 +52,22 @@ type RecruitmentCycleQuestionsAnswer struct {
 
 type CompanyRecruitmentCycle struct {
 	gorm.Model
-	CompanyID          uint             `gorm:"index" json:"company_id"`
-	CompanyName        string           `json:"company_name"`
-	RecruitmentCycleID uint             `gorm:"index" json:"recruitment_cycle_id"`
-	RecruitmentCycle   RecruitmentCycle `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
-	Comments           string           `json:"comments"`
+	CompanyID          uint   `gorm:"index" json:"company_id"`
+	CompanyName        string `json:"company_name"`
+	RecruitmentCycleID uint   `gorm:"index" json:"recruitment_cycle_id"`
+	Comments           string `json:"comments"`
 	// Some more fields
 }
 
 type Notice struct {
 	gorm.Model
-	RecruitmentCycleID uint             `gorm:"index" json:"recruitment_cycle_id"`
-	RecruitmentCycle   RecruitmentCycle `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
-	Title              string           `json:"title" binding:"required"`
-	Description        string           `json:"description" binding:"required"`
-	Tags               string           `json:"tags" binding:"required"`
-	Attachment         string           `json:"attachment"`
-	CreatedBy          string           `json:"created_by"`
-	LastReminderAt     int64            `json:"last_reminder_at" gorm:"default:0"`
+	RecruitmentCycleID uint   `gorm:"index" json:"recruitment_cycle_id"`
+	Title              string `json:"title" binding:"required"`
+	Description        string `json:"description" binding:"required"`
+	Tags               string `json:"tags" binding:"required"`
+	Attachment         string `json:"attachment"`
+	CreatedBy          string `json:"created_by"`
+	LastReminderAt     int64  `json:"last_reminder_at" gorm:"default:0"`
 }
 
 type StudentRecruitmentCycleType string
