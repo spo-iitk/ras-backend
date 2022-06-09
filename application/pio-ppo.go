@@ -49,7 +49,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
-	studentIDs, err := rc.FetchStudentIDs(ctx, jp.RecruitmentCycleID, req.emails)
+	studentIDs, err := rc.FetchStudentRCIDs(ctx, jp.RecruitmentCycleID, req.emails)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

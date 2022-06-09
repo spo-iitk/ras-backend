@@ -155,7 +155,7 @@ func UpdateStudentType(ctx *gin.Context, cid uint, emails []string) error {
 	return tx.Error
 }
 
-func FetchStudentIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, error) {
+func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, error) {
 	var students []StudentRecruitmentCycle
 	var studentIDs []uint
 
