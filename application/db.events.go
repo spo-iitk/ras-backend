@@ -12,7 +12,7 @@ func fetchEvent(ctx *gin.Context, id uint, event *ProformaEvent) error {
 	return tx.Error
 }
 
-func fetchEventsByPID(ctx *gin.Context, pid uint, events *[]ProformaEvent) error {
+func fetchEventsByProforma(ctx *gin.Context, pid uint, events *[]ProformaEvent) error {
 	tx := db.WithContext(ctx).Where("proforma_id = ?", pid).Find(events)
 	return tx.Error
 }

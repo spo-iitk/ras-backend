@@ -21,19 +21,19 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		proforma := admin.Group("/proforma/:pid")
 		{
 			proforma.GET("", getProformaHandler)
-			proforma.PUT("", putProforma)
+			proforma.PUT("", putProformaHandler)
 			proforma.DELETE("", deleteProformaHandler)
 
-			proforma.GET("/question", getQuestionsByPID)      // all proforma
-			proforma.GET("/question/:qid", getQuestionsByQID) // all proforma
-			proforma.PUT("/question/:qid", putQuestion)       // all proforma
-			proforma.POST("/question/new", postQuestion)      // all proforma
+			proforma.GET("/question", getQuestionsByProformaHandler)
+			proforma.GET("/question/:qid", getQuestionHandler)
+			proforma.PUT("/question/:qid", putQuestionHandler)
+			proforma.POST("/question", postQuestionHandler)
 
 			proforma.POST("/email", proformaEmailHandler(mail_channel)) // edit proforma
 			// excel and resume pending
 
 			proforma.GET("/event", getEventsByProformaHandler)                            // edit proforma
-			proforma.POST("/event/new", postEventHandler)                                 // edit proforma
+			proforma.POST("/event", postEventHandler)                                     // edit proforma
 			proforma.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel)) // edit proforma
 			proforma.PUT("/event", putEventHandler)                                       // edit proforma
 			proforma.DELETE("/event/:eid", deleteEventHandler)                            // edit proforma

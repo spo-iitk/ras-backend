@@ -18,7 +18,9 @@ type proformaEmailRequest struct {
 func proformaEmailHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var request proformaEmailRequest
-		if err := ctx.ShouldBindJSON(&request); err != nil {
+
+		err := ctx.ShouldBindJSON(&request)
+		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -68,7 +70,9 @@ func postEventReminderHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		mail_channel <- mail.GenerateMails(studentEmails, "Reminder for an Event: "+event.Name, "This is a gentle reminder about a event. Please check the event details at "+"event.URL") //! TODO add url
+		mail_channel <- mail.GenerateMails(studentEmails, "Reminder for an Event: "+event.Name,
+			"This is a gentle reminder about a event. Please check the event details at "+"event.URL") //! TODO add url
+
 		ctx.JSON(http.StatusOK, gin.H{"success": "email sent"})
 	}
 }

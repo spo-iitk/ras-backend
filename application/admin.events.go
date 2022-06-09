@@ -32,7 +32,7 @@ func getEventsByProformaHandler(ctx *gin.Context) {
 	}
 
 	events := []ProformaEvent{}
-	err = fetchEventsByPID(ctx, pid, &events)
+	err = fetchEventsByProforma(ctx, pid, &events)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

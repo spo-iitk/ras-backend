@@ -18,6 +18,6 @@ func updateProformaQuestion(ctx *gin.Context, question *JobApplicationQuestion) 
 }
 
 func createProformaQuestion(ctx *gin.Context, question *JobApplicationQuestion) error {
-	tx := db.WithContext(ctx).Create(question)
+	tx := db.WithContext(ctx).FirstOrCreate(question)
 	return tx.Error
 }

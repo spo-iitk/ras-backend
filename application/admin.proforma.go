@@ -43,7 +43,7 @@ func getProformaByCompanyHandler(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
-func putProforma(ctx *gin.Context) {
+func putProformaHandler(ctx *gin.Context) {
 	var jp Proforma
 
 	err := ctx.BindJSON(&jp)

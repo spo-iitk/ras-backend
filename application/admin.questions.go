@@ -7,9 +7,8 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getQuestionsByPID(ctx *gin.Context) {
-	pid_string := ctx.Param("pid")
-	pid, err := util.ParseUint(pid_string)
+func getQuestionsByProformaHandler(ctx *gin.Context) {
+	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -25,9 +24,8 @@ func getQuestionsByPID(ctx *gin.Context) {
 	ctx.JSON(200, questions)
 }
 
-func getQuestionsByQID(ctx *gin.Context) {
-	qid_string := ctx.Param("qid")
-	qid, err := util.ParseUint(qid_string)
+func getQuestionHandler(ctx *gin.Context) {
+	qid, err := util.ParseUint(ctx.Param("qid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -43,10 +41,10 @@ func getQuestionsByQID(ctx *gin.Context) {
 	ctx.JSON(200, question)
 }
 
-func postQuestion(ctx *gin.Context) {
+func postQuestionHandler(ctx *gin.Context) {
 	var question JobApplicationQuestion
-	err := ctx.BindJSON(&question)
 
+	err := ctx.BindJSON(&question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -61,16 +59,20 @@ func postQuestion(ctx *gin.Context) {
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v created a proforma question with id %d", user, question.ID)
-
 	ctx.JSON(200, gin.H{"qid": question.ID})
 }
 
-func putQuestion(ctx *gin.Context) {
+func putQuestionHandler(ctx *gin.Context) {
 	var question JobApplicationQuestion
-	err := ctx.BindJSON(&question)
 
+	err := ctx.BindJSON(&question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if question.ID == 0 {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": "id is required"})
 		return
 	}
 
