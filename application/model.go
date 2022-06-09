@@ -6,12 +6,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type JobProforma struct {
+type Proforma struct {
 	gorm.Model
 	CompanyID                 uint          `gorm:"index" json:"company_id"`
 	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
 	RecruitmentCycleID        uint          `gorm:"index" json:"recruitment_cycle_id"`
-	IsApproved                bool          `json:"is_approved"`
+	IsApproved                sql.NullBool  `json:"is_approved" gorm:"default:false"`
 	ActionTakenBy             string        `json:"action_taken_by"`
 	SetDeadline               sql.NullInt64 `json:"set_deadline"` // NULL implies unpublished
 	HideDetails               bool          `gorm:"default:false" json:"hide_details"`
@@ -37,11 +37,11 @@ const (
 
 type JobApplicationQuestion struct {
 	gorm.Model
-	JobPerformaID uint                     `gorm:"index" json:"job_performa_id"`
-	JobPerforma   JobProforma              `gorm:"foreignkey:JobPerformaID" json:"-"`
-	Type          ApplicationQuestionsType `json:"type"`
-	Question      string                   `json:"question"`
-	Options       string                   `json:"options"` //csv
+	ProformaID uint                     `gorm:"index" json:"proforma_id"`
+	Proforma   Proforma                 `gorm:"foreignkey:ProformaID" json:"-"`
+	Type       ApplicationQuestionsType `json:"type"`
+	Question   string                   `json:"question"`
+	Options    string                   `json:"options"` //csv
 }
 
 type JobApplicationQuestionsAnswer struct {
@@ -52,32 +52,32 @@ type JobApplicationQuestionsAnswer struct {
 	Answer                    string                 `json:"answer"`
 }
 
-type JobPerformaEvent struct {
+type ProformaEvent struct {
 	gorm.Model
-	JobPerformaID    uint        `gorm:"index" json:"job_performa_id"`
-	JobPerforma      JobProforma `gorm:"foreignkey:JobPerformaID" json:"-"`
-	Name             string      `json:"name"`
-	Duration         string      `json:"duration"`
-	Venue            string      `json:"venue"`
-	StartTime        int64       `json:"start_time"`
-	EndTime          int64       `json:"end_time"`
-	Description      string      `json:"description"`
-	MainPOC          string      `json:"main_poc"`
-	RecordAttendance bool        `json:"record_attendance"`
+	ProformaID       uint     `gorm:"index" json:"proforma_id"`
+	Proforma         Proforma `gorm:"foreignkey:ProformaID" json:"-"`
+	Name             string   `json:"name"`
+	Duration         string   `json:"duration"`
+	Venue            string   `json:"venue"`
+	StartTime        int64    `json:"start_time"`
+	EndTime          int64    `json:"end_time"`
+	Description      string   `json:"description"`
+	MainPOC          string   `json:"main_poc"`
+	RecordAttendance bool     `json:"record_attendance" gorm:"default:false"`
 }
 
-type EventCordinator struct {
+type EventCoordinator struct {
 	gorm.Model
-	JobPerformaEventID uint             `gorm:"index" json:"job_performa_event_id"`
-	JobPerformaEvent   JobPerformaEvent `gorm:"foreignkey:JobPerformaEventID" json:"-"`
-	CordinatorID       string           `json:"cordinator_id"`
-	CordinatorName     string           `json:"cordinator_name"`
+	ProformaEventID uint          `gorm:"index" json:"proforma_event_id"`
+	ProformaEvent   ProformaEvent `gorm:"foreignkey:ProformaEventID" json:"-"`
+	CordinatorID    string        `json:"cordinator_id"`
+	CordinatorName  string        `json:"cordinator_name"`
 }
 
 type EventStudent struct {
 	gorm.Model
-	JobPerformaEventID        uint             `gorm:"index" json:"job_performa_event_id"`
-	JobPerformaEvent          JobPerformaEvent `gorm:"foreignkey:JobPerformaEventID" json:"-"`
-	StudentRecruitmentCycleID uint             `gorm:"index" json:"student_recruitment_cycle_id"`
-	Present                   bool             `json:"present"`
+	ProformaEventID           uint          `gorm:"index" json:"proforma_event_id"`
+	ProformaEvent             ProformaEvent `gorm:"foreignkey:ProformaEventID" json:"-"`
+	StudentRecruitmentCycleID uint          `gorm:"index" json:"student_recruitment_cycle_id"`
+	Present                   bool          `json:"present"`
 }

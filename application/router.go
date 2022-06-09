@@ -10,71 +10,76 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
-		admin.GET("/company/:cid/proforma", ras.PlaceHolderController) // all proforma
-		admin.GET("/events", ras.PlaceHolderController)                // all events by date by schedule/not schedule
-		admin.POST("/student/stats", ras.PlaceHolderController)        // query branch wise stats
-		admin.POST("/pio-ppo", ras.PlaceHolderController)              // add ppo-pio, to events
+		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
+		admin.GET("/events", getAllEventsByRCHandler)
+		admin.GET("/student/stats", getStats)
+		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/resume", ras.PlaceHolderController)
 		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
-		performa := admin.Group("/proforma/:pid")
+		proforma := admin.Group("/proforma/:pid")
 		{
-			performa.GET("", ras.PlaceHolderController) // 1 proforma
-			performa.PUT("", ras.PlaceHolderController) // edit proforma
+			proforma.GET("", getProformaHandler)
+			proforma.PUT("", putProformaHandler)
+			proforma.DELETE("", deleteProformaHandler)
 
-			performa.GET("/question", ras.PlaceHolderController)      // all proforma
-			performa.GET("/question/:qid", ras.PlaceHolderController) // all proforma
-			performa.PUT("/question/:qid", ras.PlaceHolderController) // all proforma
-			performa.POST("/question/new", ras.PlaceHolderController) // all proforma
+			proforma.GET("/question", getQuestionsByProformaHandler)
+			proforma.GET("/question/:qid", getQuestionHandler)
+			proforma.PUT("/question/:qid", putQuestionHandler)
+			proforma.POST("/question", postQuestionHandler)
 
-			performa.POST("/email", ras.PlaceHolderController) // edit proforma
-			// excel and resume pending
+			proforma.POST("/email", proformaEmailHandler(mail_channel))
 
-			performa.GET("/event", ras.PlaceHolderController)                // edit proforma
-			performa.POST("/event/new", ras.PlaceHolderController)           // edit proforma
-			performa.POST("/event/:eid/reminder", ras.PlaceHolderController) // edit proforma
-			performa.PUT("/event/:eid", ras.PlaceHolderController)           // edit proforma
-			performa.DELETE("/event/:eid", ras.PlaceHolderController)        // edit proforma
+			proforma.GET("/event", getEventsByProformaHandler)
+			proforma.POST("/event", postEventHandler)
+			proforma.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel))
+			proforma.PUT("/event", putEventHandler)
+			proforma.DELETE("/event/:eid", deleteEventHandler)
 
-			performa.GET("/event/:eid/student", ras.PlaceHolderController)      // 1 proforma add students to event i.e. pass to next stage
-			performa.POST("/event/:eid/student", ras.PlaceHolderController)     // 1 proforma add students to event i.e. pass to next stage
-			performa.GET("/event/:eid/coordinator", ras.PlaceHolderController)  // 1 proforma add students to event i.e. pass to next stage
-			performa.POST("/event/:eid/coordinator", ras.PlaceHolderController) // 1 proforma add students to event i.e. pass to next stage
+			proforma.GET("/event/:eid/student", getStudentsByEventHandler)          // 1 proforma add students to event i.e. pass to next stage
+			proforma.POST("/event/:eid/student", postStudentsByEventHandler)        // 1 proforma add students to event i.e. pass to next stage
+			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)  // 1 proforma add students to event i.e. pass to next stage
+			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler) // 1 proforma add students to event i.e. pass to next stage
 
 		}
 	}
 }
 
 func StudentRouter(r *gin.Engine) {
-	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
+	student := r.Group("/api/student/application/rc/:rid")
 	{
-		student.GET("/proforma", ras.PlaceHolderController)
-		student.GET("/proforma/:pid", ras.PlaceHolderController)
-		student.POST("/proforma/:pid/new", ras.PlaceHolderController) // question post isme hi honge
-		student.DELETE("/:aid", ras.PlaceHolderController)
-		student.GET("", ras.PlaceHolderController)
-		student.GET("/events", ras.PlaceHolderController)     // all events by date
-		student.GET("/event/:eid", ras.PlaceHolderController) // all events by date
-		student.GET("/stats", ras.PlaceHolderController)      // all events by date
-		student.GET("/resume", ras.PlaceHolderController)
-		student.POST("/resume/new", ras.PlaceHolderController)
+		student.GET("/proforma", getProformaByRIDHandler)
+		student.GET("/proforma/:pid", getProformaHandler)
 
+		student.POST("/proforma/:pid", postApplicationHandler)
+		student.DELETE("/proforma/:pid", deleteApplicationHandler)
+
+		student.GET("/events", getEventsByStudentHandler)
+		student.GET("/event/:eid", getEventHandler)
+
+		student.GET("/stats", ras.PlaceHolderController)
+		student.GET("/resume", ras.PlaceHolderController)
+		student.POST("/resume", ras.PlaceHolderController)
 	}
 }
 func CompanyRouter(r *gin.Engine) {
-	company := r.Group("/api/application/company/rc/:rid/performa")
+	company := r.Group("/api/company/application/rc/:rid")
 	{
-		company.GET("", ras.PlaceHolderController)         // enrolment question
-		company.GET("/:pid", ras.PlaceHolderController)    // enrolment question
-		company.PUT("/:pid", ras.PlaceHolderController)    // if ownwr
-		company.DELETE("/:pid", ras.PlaceHolderController) // if ownwr
+		company.GET("/proforma", getProformaForCompanyHandler)
+		company.POST("/proforma", postProformaByCompanyHandler)
 
-		company.GET("/:pid/event", ras.PlaceHolderController)         // all envents
-		company.GET("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents
-		company.PUT("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents
-		company.DELETE("/:pid/event/:eid", ras.PlaceHolderController) // 1 envents
+		company.PUT("/proforma", putProformaByCompanyHandler)
+		company.GET("/proforma/:pid", getProformaHandler)
+		company.DELETE("/proforma/:pid", deleteProformaByCompanyHandler)
 
-		company.GET("/:pid/event/:eid/students", ras.PlaceHolderController) // students of event
+		company.GET("/proforma/:pid/event", getEventsByProformaHandler)
+		company.POST("/event", postEventByCompanyHandler)
+		company.GET("/event/:eid", getEventHandler)
+
+		company.PUT("/event/:eid", putEventByCompanyHandler)
+		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
+
+		company.GET("/event/:eid/students", getStudentsByEventHandler)
 	}
 }

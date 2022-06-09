@@ -15,7 +15,7 @@ type CompanyHR struct {
 	CompanyID   uint    `json:"company_id"`
 	Company     Company `gorm:"foreignkey:CompanyID" json:"-"`
 	Name        string  `json:"name"`
-	Email       string  `json:"email"`
+	Email       string  `gorm:"uniqueIndex;->;<-:create" json:"email"`
 	Phone       string  `json:"phone"`
 	Designation string  `json:"designation"`
 }
