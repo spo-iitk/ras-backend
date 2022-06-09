@@ -107,3 +107,8 @@ func deleteEvent(ctx *gin.Context, id uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", id).Delete(JobProformaEvent{})
 	return tx.Error
 }
+
+func fetchStudentsByEvent(ctx *gin.Context, eventID uint, students *[]EventStudent) error {
+	tx := db.WithContext(ctx).Where("job_proforma_event_id = ?", eventID).Find(students)
+	return tx.Error
+}
