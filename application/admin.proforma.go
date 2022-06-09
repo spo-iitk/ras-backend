@@ -43,40 +43,6 @@ func getProformaByCompanyHandler(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
-func postProformaByCompanyID(ctx *gin.Context) {
-	cid_string := ctx.Param("cid")
-	cid, err := util.ParseUint(cid_string)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	var jp Proforma
-
-	err = ctx.BindJSON(&jp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	if jp.CompanyRecruitmentCycleID != cid {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": "Company ID mismatch"})
-		return
-	}
-
-	err = createProforma(ctx, &jp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	user := middleware.GetUserID(ctx)
-
-	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
-
-	ctx.JSON(200, gin.H{"pid": jp.ID})
-}
-
 func putProforma(ctx *gin.Context) {
 	var jp Proforma
 

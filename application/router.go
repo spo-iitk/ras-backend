@@ -66,10 +66,10 @@ func StudentRouter(r *gin.Engine) {
 func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company/application/rc/:rid/proforma")
 	{
-		company.GET("", getProformaForCompanyHandler)      // all perfroma by company id
-		company.POST("/new", postProformaByCompanyID)      // add new proforma
-		company.GET("/:pid", getProformaHandler)           // 1 proforma by id
+		company.GET("", getProformaForCompanyHandler)
+		company.POST("", postProformaByCompanyHandler)
 		company.PUT("", putProformaByCompanyID)            // if ownwr
+		company.GET("/:pid", getProformaHandler)           // 1 proforma by id
 		company.DELETE("/:pid", deleteProformaByCompanyID) // if ownwr
 
 		company.GET("/:pid/event", ras.PlaceHolderController)         // all envents
