@@ -112,3 +112,8 @@ func fetchStudentsByEvent(ctx *gin.Context, eventID uint, students *[]EventStude
 	tx := db.WithContext(ctx).Where("job_proforma_event_id = ?", eventID).Find(students)
 	return tx.Error
 }
+
+func createEventStudents(ctx *gin.Context, eventStudents *[]EventStudent) error {
+	tx := db.WithContext(ctx).FirstOrCreate(eventStudents)
+	return tx.Error
+}
