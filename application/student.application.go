@@ -32,6 +32,7 @@ func postApplicationHandler(ctx *gin.Context) {
 		StudentRecruitmentCycleID: sid,
 		Present:                   true,
 	}
+
 	err = createEventStudent(ctx, &application)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -26,28 +26,8 @@ func getProformaByCompanyID(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
-func getProformaByRID(ctx *gin.Context) {
-	rid_string := ctx.Param("rid")
-	rid, err := util.ParseUint(rid_string)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	var jps []Proforma
-
-	err = fetchProformaByRC(ctx, rid, &jps)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(200, jps)
-}
-
-func getProformaByPID(ctx *gin.Context) {
-	pid_string := ctx.Param("pid")
-	pid, err := util.ParseUint(pid_string)
+func getProforma(ctx *gin.Context) {
+	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

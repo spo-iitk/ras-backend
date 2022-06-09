@@ -20,8 +20,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		proforma := admin.Group("/proforma/:pid")
 		{
-			proforma.GET("", getProformaByPID) // 1 proforma
-			proforma.PUT("", putProforma)      // edit proforma
+			proforma.GET("", getProforma) // 1 proforma
+			proforma.PUT("", putProforma) // edit proforma
 
 			proforma.GET("/question", getQuestionsByPID)      // all proforma
 			proforma.GET("/question/:qid", getQuestionsByQID) // all proforma
@@ -50,7 +50,7 @@ func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
 	{
 		student.GET("/proforma", getProformaByRID)
-		student.GET("/proforma/:pid", getProformaByPID)
+		student.GET("/proforma/:pid", getProforma)
 
 		student.POST("/proforma/:pid", postApplicationHandler) // question post isme hi honge
 		student.DELETE("/proforma/:pid", deleteApplicationHandler)
@@ -67,7 +67,7 @@ func CompanyRouter(r *gin.Engine) {
 	{
 		company.GET("", getProformaByCompanyID)            // all perfroma by company id
 		company.POST("/new", postProformaByCompanyID)      // add new proforma
-		company.GET("/:pid", getProformaByPID)             // 1 proforma by id
+		company.GET("/:pid", getProforma)                  // 1 proforma by id
 		company.PUT("", putProformaByCompanyID)            // if ownwr
 		company.DELETE("/:pid", deleteProformaByCompanyID) // if ownwr
 
