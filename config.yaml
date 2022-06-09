@@ -14,7 +14,7 @@ OTP:
   EXPIRATION: 20
   SIZE: 6
 DATABASE:
-  HOST: "localhost"
+  HOST: "database"
   PORT: "5432"
   PASSWORD: "b2Led2ke"
   USER: "admin"
