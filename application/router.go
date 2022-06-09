@@ -31,7 +31,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			performa.POST("/email", proformaEmailHandler(mail_channel)) // edit proforma
 			// excel and resume pending
 
-			performa.GET("/event", ras.PlaceHolderController)                // edit proforma
+			performa.GET("/event", getEventsByPIDHandler)                    // edit proforma
 			performa.POST("/event/new", ras.PlaceHolderController)           // edit proforma
 			performa.POST("/event/:eid/reminder", ras.PlaceHolderController) // edit proforma
 			performa.PUT("/event/:eid", ras.PlaceHolderController)           // edit proforma

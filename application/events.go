@@ -22,5 +22,24 @@ func getAllEventsByRCHandler(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"events": events})
+	ctx.JSON(http.StatusOK, events)
+}
+
+func getEventsByPIDHandler(ctx *gin.Context) {
+	pid_string := ctx.Param("pid")
+	pid, err := util.ParseUint(pid_string)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	events := []JobProformaEvent{}
+	err = fetchEventsByPID(ctx, pid, &events)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, events)
 }
