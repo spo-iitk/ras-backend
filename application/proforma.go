@@ -7,7 +7,7 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getPerformaByCompanyID(ctx *gin.Context) {
+func getProformaByCompanyID(ctx *gin.Context) {
 	cid_string := ctx.Param("cid")
 	cid, err := util.ParseUint(cid_string)
 	if err != nil {
@@ -17,7 +17,7 @@ func getPerformaByCompanyID(ctx *gin.Context) {
 
 	var jps []JobProforma
 
-	err = fetchPerformaByCompanyRC(ctx, cid, &jps)
+	err = fetchProformaByCompanyRC(ctx, cid, &jps)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -26,7 +26,7 @@ func getPerformaByCompanyID(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
-func getPerformaByRID(ctx *gin.Context) {
+func getProformaByRID(ctx *gin.Context) {
 	rid_string := ctx.Param("rid")
 	rid, err := util.ParseUint(rid_string)
 	if err != nil {
@@ -36,7 +36,7 @@ func getPerformaByRID(ctx *gin.Context) {
 
 	var jps []JobProforma
 
-	err = fetchPerformaByRC(ctx, rid, &jps)
+	err = fetchProformaByRC(ctx, rid, &jps)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -45,7 +45,7 @@ func getPerformaByRID(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
-func getPerformaByPID(ctx *gin.Context) {
+func getProformaByPID(ctx *gin.Context) {
 	pid_string := ctx.Param("pid")
 	pid, err := util.ParseUint(pid_string)
 	if err != nil {
@@ -55,7 +55,7 @@ func getPerformaByPID(ctx *gin.Context) {
 
 	var jp JobProforma
 
-	err = fetchJobPerforma(ctx, pid, &jp)
+	err = fetchJobProforma(ctx, pid, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -64,7 +64,7 @@ func getPerformaByPID(ctx *gin.Context) {
 	ctx.JSON(200, jp)
 }
 
-func postPerformaByCompanyID(ctx *gin.Context) {
+func postProformaByCompanyID(ctx *gin.Context) {
 	cid_string := ctx.Param("cid")
 	cid, err := util.ParseUint(cid_string)
 	if err != nil {
@@ -85,7 +85,7 @@ func postPerformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	err = createJobPerforma(ctx, &jp)
+	err = createJobProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -93,12 +93,12 @@ func postPerformaByCompanyID(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v created a performa with id %d", user, jp.ID)
+	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
 
 	ctx.JSON(200, gin.H{"pid": jp.ID})
 }
 
-func putPerforma(ctx *gin.Context) {
+func putProforma(ctx *gin.Context) {
 	var jp JobProforma
 
 	err := ctx.BindJSON(&jp)
@@ -107,7 +107,7 @@ func putPerforma(ctx *gin.Context) {
 		return
 	}
 
-	err = updateJobPerforma(ctx, &jp)
+	err = updateJobProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -115,12 +115,12 @@ func putPerforma(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v edited a performa with id %d", user, jp.ID)
+	logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
 
 	ctx.JSON(200, jp)
 }
 
-func putPerformaByCompanyID(ctx *gin.Context) {
+func putProformaByCompanyID(ctx *gin.Context) {
 	cid_string := ctx.Param("cid")
 	cid, err := util.ParseUint(cid_string)
 
@@ -141,16 +141,16 @@ func putPerformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	err = updateJobPerforma(ctx, &jp)
+	err = updateJobProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"data": "edited performa"})
+	ctx.JSON(200, gin.H{"data": "edited proforma"})
 }
 
-func deletePerformaByCompanyID(ctx *gin.Context) {
+func deleteProformaByCompanyID(ctx *gin.Context) {
 	pid_string := ctx.Param("pid")
 	pid, err := util.ParseUint(pid_string)
 	if err != nil {
@@ -166,7 +166,7 @@ func deletePerformaByCompanyID(ctx *gin.Context) {
 	}
 
 	var jp JobProforma
-	err = fetchJobPerforma(ctx, pid, &jp)
+	err = fetchJobProforma(ctx, pid, &jp)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
@@ -178,11 +178,11 @@ func deletePerformaByCompanyID(ctx *gin.Context) {
 		return
 	}
 
-	err = deleteJobPerforma(ctx, pid)
+	err = deleteJobProforma(ctx, pid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"data": "deleted performa"})
+	ctx.JSON(200, gin.H{"data": "deleted proforma"})
 }

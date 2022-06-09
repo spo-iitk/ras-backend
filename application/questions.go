@@ -16,7 +16,7 @@ func getQuestionsByPID(ctx *gin.Context) {
 	}
 
 	var questions []JobApplicationQuestion
-	err = fetchPerformaQuestion(ctx, pid, &questions)
+	err = fetchProformaQuestion(ctx, pid, &questions)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -34,7 +34,7 @@ func getQuestionsByQID(ctx *gin.Context) {
 	}
 
 	var question JobApplicationQuestion
-	err = fetchPerformaQuestionByID(ctx, qid, &question)
+	err = fetchProformaQuestionByID(ctx, qid, &question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -52,7 +52,7 @@ func postQuestion(ctx *gin.Context) {
 		return
 	}
 
-	err = createPerformaQuestion(ctx, &question)
+	err = createProformaQuestion(ctx, &question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -60,7 +60,7 @@ func postQuestion(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v created a performa question with id %d", user, question.ID)
+	logrus.Infof("%v created a proforma question with id %d", user, question.ID)
 
 	ctx.JSON(200, gin.H{"qid": question.ID})
 }
@@ -74,7 +74,7 @@ func putQuestion(ctx *gin.Context) {
 		return
 	}
 
-	err = updatePerformaQuestion(ctx, &question)
+	err = updateProformaQuestion(ctx, &question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -82,7 +82,7 @@ func putQuestion(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v updated a performa question with id %d", user, question.ID)
+	logrus.Infof("%v updated a proforma question with id %d", user, question.ID)
 
 	ctx.JSON(200, gin.H{"data": "updated question successfully"})
 }

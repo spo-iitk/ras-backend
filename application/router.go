@@ -10,7 +10,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
-		admin.GET("/company/:cid/proforma", getPerformaByCompanyID) // all proforma
+		admin.GET("/company/:cid/proforma", getProformaByCompanyID) // all proforma
 		admin.GET("/events", getAllEventsByRCHandler)               // all events by date by schedule/not schedule
 		admin.GET("/student/stats", getStats)                       // query branch wise stats
 		admin.POST("/pio-ppo", postPPOPIOHandler)                   // add ppo-pio, to events
@@ -18,29 +18,29 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/resume", ras.PlaceHolderController)
 		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
-		performa := admin.Group("/proforma/:pid")
+		proforma := admin.Group("/proforma/:pid")
 		{
-			performa.GET("", getPerformaByPID) // 1 proforma
-			performa.PUT("", putPerforma)      // edit proforma
+			proforma.GET("", getProformaByPID) // 1 proforma
+			proforma.PUT("", putProforma)      // edit proforma
 
-			performa.GET("/question", getQuestionsByPID)      // all proforma
-			performa.GET("/question/:qid", getQuestionsByQID) // all proforma
-			performa.PUT("/question/:qid", putQuestion)       // all proforma
-			performa.POST("/question/new", postQuestion)      // all proforma
+			proforma.GET("/question", getQuestionsByPID)      // all proforma
+			proforma.GET("/question/:qid", getQuestionsByQID) // all proforma
+			proforma.PUT("/question/:qid", putQuestion)       // all proforma
+			proforma.POST("/question/new", postQuestion)      // all proforma
 
-			performa.POST("/email", proformaEmailHandler(mail_channel)) // edit proforma
+			proforma.POST("/email", proformaEmailHandler(mail_channel)) // edit proforma
 			// excel and resume pending
 
-			performa.GET("/event", getEventsByPIDHandler)                                 // edit proforma
-			performa.POST("/event/new", postEventHandler)                                 // edit proforma
-			performa.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel)) // edit proforma
-			performa.PUT("/event", putEventHandler)                                       // edit proforma
-			performa.DELETE("/event/:eid", deleteEventHandler)                            // edit proforma
+			proforma.GET("/event", getEventsByPIDHandler)                                 // edit proforma
+			proforma.POST("/event/new", postEventHandler)                                 // edit proforma
+			proforma.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel)) // edit proforma
+			proforma.PUT("/event", putEventHandler)                                       // edit proforma
+			proforma.DELETE("/event/:eid", deleteEventHandler)                            // edit proforma
 
-			performa.GET("/event/:eid/student", getStudentsByEventHandler)          // 1 proforma add students to event i.e. pass to next stage
-			performa.POST("/event/:eid/student", postStudentsByEventHandler)        // 1 proforma add students to event i.e. pass to next stage
-			performa.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)  // 1 proforma add students to event i.e. pass to next stage
-			performa.POST("/event/:eid/coordinator", postCoordinatorByEventHandler) // 1 proforma add students to event i.e. pass to next stage
+			proforma.GET("/event/:eid/student", getStudentsByEventHandler)          // 1 proforma add students to event i.e. pass to next stage
+			proforma.POST("/event/:eid/student", postStudentsByEventHandler)        // 1 proforma add students to event i.e. pass to next stage
+			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)  // 1 proforma add students to event i.e. pass to next stage
+			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler) // 1 proforma add students to event i.e. pass to next stage
 
 		}
 	}
@@ -49,8 +49,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student/application/rc/:rid") // abhishek will sort this
 	{
-		student.GET("/proforma", getPerformaByRID)
-		student.GET("/proforma/:pid", getPerformaByPID)
+		student.GET("/proforma", getProformaByRID)
+		student.GET("/proforma/:pid", getProformaByPID)
 
 		student.POST("/proforma/:pid", postApplicationHandler) // question post isme hi honge
 		student.DELETE("/proforma/:pid", deleteApplicationHandler)
@@ -63,13 +63,13 @@ func StudentRouter(r *gin.Engine) {
 	}
 }
 func CompanyRouter(r *gin.Engine) {
-	company := r.Group("/api/application/company/:cid/rc/:rid/performa")
+	company := r.Group("/api/application/company/:cid/rc/:rid/proforma")
 	{
-		company.GET("", getPerformaByCompanyID)            // all perfroma by company id
-		company.POST("/new", postPerformaByCompanyID)      // add new proforma
-		company.GET("/:pid", getPerformaByPID)             // 1 performa by id
-		company.PUT("", putPerformaByCompanyID)            // if ownwr
-		company.DELETE("/:pid", deletePerformaByCompanyID) // if ownwr
+		company.GET("", getProformaByCompanyID)            // all perfroma by company id
+		company.POST("/new", postProformaByCompanyID)      // add new proforma
+		company.GET("/:pid", getProformaByPID)             // 1 proforma by id
+		company.PUT("", putProformaByCompanyID)            // if ownwr
+		company.DELETE("/:pid", deleteProformaByCompanyID) // if ownwr
 
 		company.GET("/:pid/event", ras.PlaceHolderController)         // all envents
 		company.GET("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents

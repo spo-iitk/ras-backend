@@ -7,7 +7,7 @@ import (
 	"github.com/spo-iitk/ras-backend/rc"
 )
 
-func getEmptyPerformaByCID(ctx *gin.Context, cid uint, jp *JobProforma) error {
+func getEmptyProformaByCID(ctx *gin.Context, cid uint, jp *JobProforma) error {
 	var companyRC rc.CompanyRecruitmentCycle
 	err := rc.FetchCompanyByID(ctx, cid, &companyRC)
 	if err != nil {
@@ -43,7 +43,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 	}
 
 	var jp JobProforma
-	err = getEmptyPerformaByCID(ctx, req.cid, &jp)
+	err = getEmptyProformaByCID(ctx, req.cid, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
