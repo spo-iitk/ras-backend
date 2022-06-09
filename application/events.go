@@ -43,3 +43,29 @@ func getEventsByPIDHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, events)
 }
+
+func postEventHandler(ctx *gin.Context) {
+	pid_string := ctx.Param("pid")
+	pid, err := util.ParseUint(pid_string)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var event JobProformaEvent
+	err = ctx.BindJSON(&event)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	event.JobProformaID = pid
+
+	err = createEvent(ctx, &event)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, event)
+}

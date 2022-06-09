@@ -63,7 +63,7 @@ type JobProformaEvent struct {
 	EndTime          int64       `json:"end_time"`
 	Description      string      `json:"description"`
 	MainPOC          string      `json:"main_poc"`
-	RecordAttendance bool        `json:"record_attendance"`
+	RecordAttendance bool        `json:"record_attendance" gorm:"default:false"`
 }
 
 type EventCordinator struct {
