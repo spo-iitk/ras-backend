@@ -65,20 +65,22 @@ func StudentRouter(r *gin.Engine) {
 	}
 }
 func CompanyRouter(r *gin.Engine) {
-	company := r.Group("/api/company/application/rc/:rid/proforma")
+	company := r.Group("/api/company/application/rc/:rid")
 	{
-		company.GET("", getProformaForCompanyHandler)
-		company.POST("", postProformaByCompanyHandler)
+		company.GET("/proforma", getProformaForCompanyHandler)
+		company.POST("/proforma", postProformaByCompanyHandler)
 
-		company.PUT("", putProformaByCompanyHandler)
-		company.GET("/:pid", getProformaHandler)
-		company.DELETE("/:pid", deleteProformaByCompanyHandler)
+		company.PUT("/proforma", putProformaByCompanyHandler)
+		company.GET("/proforma/:pid", getProformaHandler)
+		company.DELETE("/proforma/:pid", deleteProformaByCompanyHandler)
 
-		company.GET("/:pid/event", getEventsByProformaHandler)        // all envents
-		company.GET("/:pid/event/:eid", getEventHandler)              // 1 envents
-		company.PUT("/:pid/event/:eid", ras.PlaceHolderController)    // 1 envents
-		company.DELETE("/:pid/event/:eid", ras.PlaceHolderController) // 1 envents
+		company.GET("/proforma/:pid/event", getEventsByProformaHandler)
+		company.POST("/event", postEventByCompanyHandler)
+		company.GET("/event/:eid", getEventHandler)
 
-		company.GET("/:pid/event/:eid/students", ras.PlaceHolderController) // students of event
+		company.PUT("/event/:eid", putEventByCompanyHandler)
+		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
+
+		company.GET("/event/:eid/students", getStudentsByEventHandler) // students of event
 	}
 }

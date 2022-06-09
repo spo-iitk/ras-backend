@@ -76,7 +76,7 @@ func getEventHandler(ctx *gin.Context) {
 	}
 
 	var event ProformaEvent
-	err = fetchEventByID(ctx, eid, &event)
+	err = fetchEvent(ctx, eid, &event)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

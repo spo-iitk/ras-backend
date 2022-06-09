@@ -7,7 +7,7 @@ func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]ProformaEvent) error 
 	return tx.Error
 }
 
-func fetchEventByID(ctx *gin.Context, id uint, event *ProformaEvent) error {
+func fetchEvent(ctx *gin.Context, id uint, event *ProformaEvent) error {
 	tx := db.WithContext(ctx).Where("id = ?", id).First(event)
 	return tx.Error
 }

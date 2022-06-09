@@ -9,8 +9,7 @@ import (
 )
 
 func getStudentsByEventHandler(ctx *gin.Context) {
-	eid_string := ctx.Param("eid")
-	eid, err := util.ParseUint(eid_string)
+	eid, err := util.ParseUint(ctx.Param("eid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
