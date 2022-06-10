@@ -9,6 +9,12 @@ import (
 
 func whoamiHandler(ctx *gin.Context) {
 	middleware.Authenticator()(ctx)
-	data := gin.H{"role": middleware.GetRoleID(ctx), "user_id": middleware.GetUserID(ctx)}
-	ctx.JSON(http.StatusOK, gin.H{"status": "User Logged In", "data": data})
+	user_id := middleware.GetUserID(ctx)
+	role_id := middleware.GetRoleID(ctx)
+
+	if user_id == "" {
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"role_id": role_id, "user_id": user_id})
 }

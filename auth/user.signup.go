@@ -64,7 +64,7 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		}
 
 		logrus.Infof("User %s created successfully with id %d", signupReq.UserID, id)
-		mail_channel <- mail.GenerateMail(signupReq.UserID, signupReq.Name+"registered on RAS", "Dear "+signupReq.Name+",\n\nYou have been registered on RAS")
+		mail_channel <- mail.GenerateMail(signupReq.UserID, "Registered on RAS", "Dear "+signupReq.Name+",\n\nYou have been registered on RAS")
 		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully signed up"})
 	}
 }

@@ -32,4 +32,3 @@ func cleanupOTP() {
 		db.Unscoped().Delete(OTP{}, "expires > ?", time.Now().Add(-24*time.Hour).UnixMilli())
 	}
 }
-
