@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.5"
 
 services:
   database:
@@ -22,6 +22,6 @@ services:
     networks:
       - default
     ports:
-    - "80:80"
+    - "80"
 volumes:
   data:
