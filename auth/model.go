@@ -25,11 +25,11 @@ type OTP struct {
 
 type CompanySignUpRequest struct {
 	gorm.Model
-	CompanyName string `json:"company_name"`
-	Name        string `json:"name"`
-	Designation string `json:"designation"`
-	Email       string `json:"email"`
-	Phone       string `json:"phone"`
+	CompanyName string `json:"company_name" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Designation string `json:"designation" binding:"required"`
+	Email       string `json:"email" binding:"required"`
+	Phone       string `json:"phone" binding:"required"`
 	IsReviewed  bool   `json:"is_reviewed"`
 	Comments    string `json:"comments"`
 }
