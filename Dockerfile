@@ -3,8 +3,10 @@ FROM golang:1.18-bullseye
 # Set the Current Working Directory inside the container
 WORKDIR $GOPATH/src/github.com/spo-iitk/ras-backend
 
-RUN apt-get update
 RUN apt-get install -y sudo vim nginx git
+
+RUN git config --global user.name "SPO Web Team"
+RUN git config --global user.email "pas@iitk.ac.in"
 
 RUN git clone https://github.com/spo-iitk/ras-backend.git .
 
