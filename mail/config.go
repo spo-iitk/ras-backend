@@ -3,6 +3,7 @@ package mail
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	_ "github.com/spo-iitk/ras-backend/config"
 )
 
 var (
@@ -11,8 +12,8 @@ var (
 	host    string
 	port    string
 	webteam string
-	batch   int
-	sender  string
+	// batch   int
+	sender string
 )
 
 func init() {
@@ -26,5 +27,5 @@ func init() {
 	port = viper.GetString("MAIL.PORT")
 	webteam = viper.GetString("MAIL.WEBTEAM")
 
-	batch = viper.GetInt("MAIL.BATCH")
+	// batch = viper.GetInt("MAIL.BATCH")
 }
