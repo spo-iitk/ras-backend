@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/constants"
 )
@@ -18,5 +20,10 @@ func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role
 
 func updatePassword(ctx *gin.Context, userID string, password string) error {
 	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ?", userID).Update("password", password)
+	return tx.Error
+}
+
+func setLastLogin(ctx *gin.Context, userID string) error {
+	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ?", userID).Update("last_login", time.Now().Unix())
 	return tx.Error
 }
