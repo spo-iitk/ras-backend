@@ -37,6 +37,12 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
+	err = setLastLogin(c, loginReq.UserID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.SetCookie("token", token, 0, "", "", true, true)
 
 	c.JSON(http.StatusOK, gin.H{"status": "Successfully logged in"})

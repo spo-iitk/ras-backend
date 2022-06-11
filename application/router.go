@@ -11,8 +11,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
 		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
-		admin.GET("/events", getAllEventsByRCHandler)
-		admin.GET("/student/stats", getStats)
+		admin.GET("/event", getAllEventsByRCHandler)
+		admin.GET("/student/stat", getStats)
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/resume", ras.PlaceHolderController)
@@ -37,10 +37,10 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.PUT("/event", putEventHandler)
 			proforma.DELETE("/event/:eid", deleteEventHandler)
 
-			proforma.GET("/event/:eid/student", getStudentsByEventHandler)          // 1 proforma add students to event i.e. pass to next stage
-			proforma.POST("/event/:eid/student", postStudentsByEventHandler)        // 1 proforma add students to event i.e. pass to next stage
-			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)  // 1 proforma add students to event i.e. pass to next stage
-			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler) // 1 proforma add students to event i.e. pass to next stage
+			proforma.GET("/event/:eid/student", getStudentsByEventHandler)
+			proforma.POST("/event/:eid/student", postStudentsByEventHandler)
+			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
+			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
 
 		}
 	}
@@ -55,10 +55,10 @@ func StudentRouter(r *gin.Engine) {
 		student.POST("/proforma/:pid", postApplicationHandler)
 		student.DELETE("/proforma/:pid", deleteApplicationHandler)
 
-		student.GET("/events", getEventsByStudentHandler)
+		student.GET("/event", getEventsByStudentHandler)
 		student.GET("/event/:eid", getEventHandler)
 
-		student.GET("/stats", ras.PlaceHolderController)
+		student.GET("/stat", ras.PlaceHolderController)
 		student.GET("/resume", ras.PlaceHolderController)
 		student.POST("/resume", ras.PlaceHolderController)
 	}
@@ -80,6 +80,6 @@ func CompanyRouter(r *gin.Engine) {
 		company.PUT("/event/:eid", putEventByCompanyHandler)
 		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
 
-		company.GET("/event/:eid/students", getStudentsByEventHandler)
+		company.GET("/event/:eid/student", getStudentsByEventHandler)
 	}
 }

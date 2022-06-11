@@ -36,9 +36,14 @@ func resetPasswordHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		hashedPwd := hashAndSalt(resetPasswordReq.NewPassword)
 
-		err = updatePassword(ctx, resetPasswordReq.UserID, hashedPwd)
+		ok, err := updatePassword(ctx, resetPasswordReq.UserID, hashedPwd)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if !ok {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
 			return
 		}
 
