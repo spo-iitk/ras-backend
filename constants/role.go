@@ -3,13 +3,14 @@ package constants
 type Role uint8
 
 const (
-	GOD     Role = 0
-	OPC     Role = 1
-	APC     Role = 2
-	DPC     Role = 3
-	COCO    Role = 4
-	STAFF   Role = 5
-	COMPANY Role = 11
-	STUDENT Role = 10
-	NONE    Role = 20
+	NONE    Role = 0
+	STUDENT Role = 1
+	COMPANY Role = 2
+
+	GOD   Role = 100
+	OPC   Role = 101
+	APC   Role = 102
+	DPC   Role = 103
+	COCO  Role = 104
+	STAFF Role = 105
 )
