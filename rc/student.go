@@ -38,7 +38,7 @@ func getStudent(ctx *gin.Context) {
 func putStudent(ctx *gin.Context) {
 	var student StudentRecruitmentCycle
 
-	err := ctx.BindJSON(&student)
+	err := ctx.ShouldBindJSON(&student)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -71,7 +71,7 @@ func postStudents(ctx *gin.Context) {
 
 	var emails bulkPostStudentRequest
 
-	err = ctx.BindJSON(&emails)
+	err = ctx.ShouldBindJSON(&emails)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

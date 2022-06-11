@@ -22,7 +22,7 @@ func getStudentQuestions(ctx *gin.Context) {
 func postStudentQuestion(ctx *gin.Context) {
 	var question RecruitmentCycleQuestion
 
-	err := ctx.BindJSON(&question)
+	err := ctx.ShouldBindJSON(&question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -45,7 +45,7 @@ func postStudentQuestion(ctx *gin.Context) {
 func putStudentQuestion(ctx *gin.Context) {
 	var question RecruitmentCycleQuestion
 
-	err := ctx.BindJSON(&question)
+	err := ctx.ShouldBindJSON(&question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

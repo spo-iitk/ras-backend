@@ -51,7 +51,7 @@ func postEnrollmentAnswer(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 	var answer RecruitmentCycleQuestionsAnswer
 
-	err := ctx.BindJSON(&answer)
+	err := ctx.ShouldBindJSON(&answer)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

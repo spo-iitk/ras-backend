@@ -39,7 +39,7 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 	}
 
 	var req postStudentsByEventRequest
-	err = ctx.BindJSON(&req)
+	err = ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

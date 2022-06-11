@@ -26,7 +26,7 @@ func postNotice(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 	var notice Notice
 
-	err := ctx.BindJSON(&notice)
+	err := ctx.ShouldBindJSON(&notice)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

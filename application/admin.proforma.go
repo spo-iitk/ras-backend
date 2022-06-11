@@ -46,7 +46,7 @@ func getProformaByCompanyHandler(ctx *gin.Context) {
 func putProformaHandler(ctx *gin.Context) {
 	var jp Proforma
 
-	err := ctx.BindJSON(&jp)
+	err := ctx.ShouldBindJSON(&jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

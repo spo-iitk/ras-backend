@@ -22,7 +22,7 @@ func getStudentAnswers(ctx *gin.Context) {
 func putStudentAnswer(ctx *gin.Context) {
 	var answer RecruitmentCycleQuestionsAnswer
 
-	err := ctx.BindJSON(&answer)
+	err := ctx.ShouldBindJSON(&answer)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

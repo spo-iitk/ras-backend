@@ -30,7 +30,7 @@ type pioppoRequest struct {
 func postPPOPIOHandler(ctx *gin.Context) {
 	var req pioppoRequest
 
-	err := ctx.BindJSON(&req)
+	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

@@ -44,7 +44,7 @@ func getQuestionHandler(ctx *gin.Context) {
 func postQuestionHandler(ctx *gin.Context) {
 	var question JobApplicationQuestion
 
-	err := ctx.BindJSON(&question)
+	err := ctx.ShouldBindJSON(&question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
@@ -65,7 +65,7 @@ func postQuestionHandler(ctx *gin.Context) {
 func putQuestionHandler(ctx *gin.Context) {
 	var question JobApplicationQuestion
 
-	err := ctx.BindJSON(&question)
+	err := ctx.ShouldBindJSON(&question)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

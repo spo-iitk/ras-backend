@@ -10,7 +10,7 @@ import (
 
 func postEventByCompanyHandler(ctx *gin.Context) {
 	var event ProformaEvent
-	err := ctx.BindJSON(&event)
+	err := ctx.ShouldBindJSON(&event)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -45,7 +45,7 @@ func postEventByCompanyHandler(ctx *gin.Context) {
 
 func putEventByCompanyHandler(ctx *gin.Context) {
 	var event ProformaEvent
-	err := ctx.BindJSON(&event)
+	err := ctx.ShouldBindJSON(&event)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
