@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
 	"time"
@@ -48,7 +49,7 @@ func otpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		mail_channel <- mail.GenerateMail(otpReq.UserID, "OTP", "Your OTP is "+otp)
+		mail_channel <- mail.GenerateMail(otpReq.UserID, "OTP", fmt.Sprintf("Dear %s,\n\nYour OTP is %s\nThis otp will expire in %d minutes", otpReq.UserID, otp, otpExpiration))
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "OTP sent"})
 	}
