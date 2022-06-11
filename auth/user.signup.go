@@ -10,11 +10,12 @@ import (
 )
 
 type signUpRequest struct {
-	UserID   string `json:"user_id" binding:"required"`
-	Name     string `json:"name" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	OTP      string `json:"otp" binding:"required"`
-	RollNo   string `json:"roll_no" binding:"required"`
+	UserID    string `json:"user_id" binding:"required"`
+	Name      string `json:"name" binding:"required"`
+	Password  string `json:"password" binding:"required"`
+	RollNo    string `json:"roll_no" binding:"required"`
+	UserOTP   string `json:"user_otp" binding:"required"`
+	RollNoOTP string `json:"roll_no_otp" binding:"required"`
 }
 
 func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
@@ -26,14 +27,25 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		verified, err := verifyOTP(ctx, signupReq.UserID, signupReq.OTP)
+		verified, err := verifyOTP(ctx, signupReq.UserID, signupReq.UserOTP)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		if !verified {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid OTP"})
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid User OTP"})
+			return
+		}
+
+		verified, err = verifyOTP(ctx, signupReq.RollNo+"@iitk.ac.in", signupReq.RollNoOTP)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if !verified {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Roll No OTP"})
 			return
 		}
 
