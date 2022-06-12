@@ -14,11 +14,11 @@ const (
 type RecruitmentCycle struct {
 	gorm.Model
 	IsActive            bool                 `json:"is_active" gorm:"default:true"`
-	AcademicYear        string               `json:"academic_year" binding:"required"`
-	Type                RecruitmentCycleType `json:"type" binding:"required"`
-	StartDate           int64                `json:"start_date" binding:"required"`
-	Phase               uint                 `json:"phase" binding:"required"`
-	ApplicationCountCap uint                 `json:"application_count_cap" binding:"required"`
+	AcademicYear        string               `json:"academic_year"`
+	Type                RecruitmentCycleType `json:"type"`
+	StartDate           int64                `json:"start_date"`
+	Phase               uint                 `json:"phase"`
+	ApplicationCountCap uint                 `json:"application_count_cap"`
 }
 
 type RecruitmentCycleQuestionsType string
@@ -33,7 +33,7 @@ type RecruitmentCycleQuestion struct {
 	gorm.Model
 	Type               RecruitmentCycleQuestionsType `json:"type"`
 	Question           string                        `json:"question"`
-	RecruitmentCycleID uint                          `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycleID uint                          `gorm:"uniqueIndex;->;<-:create" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle              `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	Mandatory          bool                          `json:"mandatory" gorm:"default:false"`
 	Options            string                        `json:"options"` //csv
@@ -43,7 +43,7 @@ type RecruitmentCycleQuestionsAnswer struct {
 	gorm.Model
 	RecruitmentCycleQuestionID uint                     `gorm:"index" json:"recruitment_cycle_question_id"`
 	RecruitmentCycleQuestion   RecruitmentCycleQuestion `gorm:"foreignkey:RecruitmentCycleQuestionID" json:"-"`
-	StudentRecruitmentCycleID  uint                     `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycleID  uint                     `gorm:"uniqueIndex;->;<-:create" json:"student_recruitment_cycle_id"`
 	StudentRecruitmentCycle    StudentRecruitmentCycle  `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
 	Answer                     string                   `json:"answer"`
 	Comments                   string                   `json:"comments"`
@@ -52,22 +52,23 @@ type RecruitmentCycleQuestionsAnswer struct {
 
 type CompanyRecruitmentCycle struct {
 	gorm.Model
-	CompanyID          uint   `gorm:"index" json:"company_id"`
-	CompanyName        string `json:"company_name"`
-	RecruitmentCycleID uint   `gorm:"index" json:"recruitment_cycle_id"`
-	Comments           string `json:"comments"`
-	// Some more fields
+	CompanyID          uint             `gorm:"index" json:"company_id"`
+	CompanyName        string           `json:"company_name"`
+	RecruitmentCycleID uint             `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycle   RecruitmentCycle `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
+	Comments           string           `json:"comments"`
 }
 
 type Notice struct {
 	gorm.Model
-	RecruitmentCycleID uint   `gorm:"index" json:"recruitment_cycle_id"`
-	Title              string `json:"title" binding:"required"`
-	Description        string `json:"description" binding:"required"`
-	Tags               string `json:"tags" binding:"required"`
-	Attachment         string `json:"attachment"`
-	CreatedBy          string `json:"created_by"`
-	LastReminderAt     int64  `json:"last_reminder_at" gorm:"default:0"`
+	RecruitmentCycleID uint             `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycle   RecruitmentCycle `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
+	Title              string           `json:"title" binding:"required"`
+	Description        string           `json:"description" binding:"required"`
+	Tags               string           `json:"tags" binding:"required"`
+	Attachment         string           `json:"attachment"`
+	CreatedBy          string           `json:"created_by"`
+	LastReminderAt     int64            `json:"last_reminder_at" gorm:"default:0"`
 }
 
 type StudentRecruitmentCycleType string
@@ -81,7 +82,7 @@ const (
 type StudentRecruitmentCycle struct {
 	gorm.Model
 	StudentID                    uint                        `gorm:"index" json:"student_id"`
-	RecruitmentCycleID           uint                        `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycleID           uint                        `gorm:"index" json:"recruitment_cycle_id" binding:"required"`
 	RecruitmentCycle             RecruitmentCycle            `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
 	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
