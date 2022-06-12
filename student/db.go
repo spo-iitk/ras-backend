@@ -18,13 +18,8 @@ func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 }
 
 func FetchStudents(ctx *gin.Context, students *[]Student, emails []string) error {
-	tx := db.WithContext(ctx).Where("email IN ?", emails).Find(students)
+	tx := db.WithContext(ctx).Where("iitk_email IN ?", emails).Find(students)
 	return tx.Error
-}
-
-func updateStudent(ctx *gin.Context, student *Student, id uint) (bool, error) {
-	tx := db.WithContext(ctx).Model(&Student{}).Where("id = ?", id).Updates(student)
-	return tx.RowsAffected > 0, tx.Error
 }
 
 func getAllStudents(ctx *gin.Context, students *[]Student) error {
