@@ -15,13 +15,32 @@ func getAllRC(ctx *gin.Context) {
 	ctx.JSON(200, rc)
 }
 
+type RC struct {
+	IsActive            bool                 `json:"is_active" gorm:"default:true"`
+	AcademicYear        string               `json:"academic_year" binding:"required"`
+	Type                RecruitmentCycleType `json:"type" binding:"required"`
+	StartDate           int64                `json:"start_date" binding:"required"`
+	Phase               uint                 `json:"phase" binding:"required"`
+	ApplicationCountCap uint                 `json:"application_count_cap" binding:"required"`
+}
+
 func postRC(ctx *gin.Context) {
-	var rc RecruitmentCycle
-	err := ctx.BindJSON(&rc)
+	var recruitmentCycle RC
+	err := ctx.ShouldBindJSON(&recruitmentCycle)
 	if err != nil {
 		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
 		return
 	}
+
+	var rc = RecruitmentCycle{
+		IsActive:            recruitmentCycle.IsActive,
+		AcademicYear:        recruitmentCycle.AcademicYear,
+		Type:                recruitmentCycle.Type,
+		StartDate:           recruitmentCycle.StartDate,
+		Phase:               recruitmentCycle.Phase,
+		ApplicationCountCap: recruitmentCycle.ApplicationCountCap,
+	}
+
 	err = createRC(ctx, &rc)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
