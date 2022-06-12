@@ -7,11 +7,13 @@ import (
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/auth"
 	"github.com/spo-iitk/ras-backend/mail"
+	"github.com/spo-iitk/ras-backend/middleware"
 )
 
 func authServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := viper.GetString("PORT.AUTH")
 	r := gin.New()
+	r.Use(middleware.CORS())
 	auth.Router(mail_channel, r)
 
 	server := &http.Server{

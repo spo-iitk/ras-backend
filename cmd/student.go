@@ -14,6 +14,7 @@ import (
 func studentServer() *http.Server {
 	PORT := viper.GetString("PORT.STUDENT")
 	engine := gin.New()
+	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
 
 	student.StudentRouter(engine)
