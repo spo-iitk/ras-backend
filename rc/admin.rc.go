@@ -1,9 +1,6 @@
 package rc
 
-import (
-	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/middleware"
-)
+import "github.com/gin-gonic/gin"
 
 func getAllRC(ctx *gin.Context) {
 	var rc []RecruitmentCycle
@@ -64,34 +61,4 @@ func getRC(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(200, getRCResponse{rc})
-}
-
-func getStudentRC(ctx *gin.Context) {
-	email := middleware.GetUserID(ctx)
-
-	var rcs []RecruitmentCycle
-	err := fetchRCsByStudent(ctx, email, &rcs)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(200, rcs)
-}
-
-func getCompanyRecruitmentCycle(ctx *gin.Context) {
-
-	var rcs []RecruitmentCycle
-	companyID, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-	err = fetchRCsByCompanyID(ctx, companyID, &rcs)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(200, rcs)
 }
