@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
+	_ "github.com/spo-iitk/ras-backend/config"
 )
 
 var (
