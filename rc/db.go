@@ -180,3 +180,15 @@ func FetchCompanyRCID(ctx *gin.Context, rid uint, companyid uint) (uint, error) 
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, companyid).First(&company)
 	return company.ID, tx.Error
 }
+
+func getRegisteredStudentCount(ctx *gin.Context, rid uint) (int, error) {
+	var count int64
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ?", rid).Count(&count)
+	return int(count), tx.Error
+}
+
+func getRegisteredCompanyCount(ctx *gin.Context, rid uint) (int, error) {
+	var count int64
+	tx := db.WithContext(ctx).Model(&CompanyRecruitmentCycle{}).Where("recruitment_cycle_id = ?", rid).Count(&count)
+	return int(count), tx.Error
+}

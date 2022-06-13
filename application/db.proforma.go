@@ -46,3 +46,16 @@ func firstOrCreateEmptyPerfoma(ctx *gin.Context, jp *Proforma) error {
 	tx := db.WithContext(ctx).Where("company_recruitment_cycle_id = ?", jp.CompanyRecruitmentCycleID).FirstOrCreate(jp)
 	return tx.Error
 }
+
+func getRolesCount(ctx *gin.Context, rid uint) (int, error) {
+	var count int64
+	tx := db.WithContext(ctx).Model(&Proforma{}).Where("recruitment_cycle_id = ? AND name = ?", rid, true).Count(&count)
+	return int(count), tx.Error
+}
+
+func getPPOPIOCount(ctx *gin.Context, rid uint) (int, error) {
+	var count int64
+	tx := db.WithContext(ctx).Joins("proforma", db.Where(&Proforma{RecruitmentCycleID: rid})).
+		Model(&ProformaEvent{}).Where(" name IN ?", []EventType{Recruited, PIOPPOACCEPTED}).Count(&count)
+	return int(count), tx.Error
+}
