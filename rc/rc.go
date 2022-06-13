@@ -80,11 +80,14 @@ func getStudentRC(ctx *gin.Context) {
 }
 
 func getCompanyRecruitmentCycle(ctx *gin.Context) {
-	// email := middleware.GetUserID(ctx)
 
 	var rcs []RecruitmentCycle
-	companyID := uint(5) //! TODO get from company
-	err := fetchRCsByCompanyID(ctx, companyID, &rcs)
+	companyID, err := extractCompanyRCID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	err = fetchRCsByCompanyID(ctx, companyID, &rcs)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
