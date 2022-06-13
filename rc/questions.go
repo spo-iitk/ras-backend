@@ -62,7 +62,7 @@ func putStudentQuestion(ctx *gin.Context) {
 	}
 
 	if question.ID == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter student ID"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter question ID"})
 		return
 	}
 
@@ -73,7 +73,7 @@ func putStudentQuestion(ctx *gin.Context) {
 	}
 
 	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such question exists"})
 		return
 	}
 
