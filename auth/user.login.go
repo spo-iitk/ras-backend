@@ -43,7 +43,7 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("token", token, 0, "", "", true, true)
+	c.SetCookie("token", token, 0, "", "", false, false)
 
 	c.JSON(http.StatusOK, gin.H{"status": "Successfully logged in"})
 }
