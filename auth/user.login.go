@@ -43,7 +43,7 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("token", token, 0, "", "", false, false)
+	c.SetCookie("token", token, 0, "", "", true, true)
 
-	c.JSON(http.StatusOK, gin.H{"role_id": role, "user_id": loginReq.UserID})
+	c.JSON(http.StatusOK, gin.H{"role_id": role, "user_id": loginReq.UserID, "token": token})
 }
