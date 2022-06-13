@@ -24,7 +24,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/company/:cid", getCompany)     // get company
 
 		admin.GET("/student", getAllStudents) // get all students of rc
-		admin.GET("/student/:sid", getStudent)
+		admin.GET("/student/:sid", getStudentByID)
 		admin.PUT("/student", putStudent)
 		admin.POST("/student", postStudents) // bulk post/ enroll in RC
 

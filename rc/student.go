@@ -1,6 +1,8 @@
 package rc
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -35,6 +37,25 @@ func getStudent(ctx *gin.Context) {
 	ctx.JSON(200, student)
 }
 
+func getStudentByID(ctx *gin.Context) {
+	rid := ctx.Param("rid")
+	srid, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	var student StudentRecruitmentCycle
+
+	err = fetchStudentByID(ctx, srid, rid, &student)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, student)
+}
+
 func putStudent(ctx *gin.Context) {
 	var student StudentRecruitmentCycle
 
@@ -44,9 +65,19 @@ func putStudent(ctx *gin.Context) {
 		return
 	}
 
-	err = updateStudent(ctx, &student)
+	if student.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter student ID"})
+		return
+	}
+
+	ok, err := updateStudent(ctx, &student)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
 		return
 	}
 

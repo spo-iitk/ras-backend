@@ -89,9 +89,14 @@ func fetchStudent(ctx *gin.Context, email string, rid string, student *StudentRe
 	return tx.Error
 }
 
-func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Save(student)
+func fetchStudentByID(ctx *gin.Context, sid uint, rid string, student *StudentRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Where("id = ? AND recruitment_cycle_id = ?", sid, rid).First(student)
 	return tx.Error
+}
+
+func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, error) {
+	tx := db.WithContext(ctx).Where("id = ?", student.ID).Updates(student)
+	return tx.RowsAffected > 0, tx.Error
 }
 
 func createStudents(ctx *gin.Context, students *[]StudentRecruitmentCycle) error {
@@ -109,9 +114,9 @@ func createStudentQuestion(ctx *gin.Context, question *RecruitmentCycleQuestion)
 	return tx.Error
 }
 
-func updateStudentQuestion(ctx *gin.Context, question *RecruitmentCycleQuestion) error {
-	tx := db.WithContext(ctx).Save(question)
-	return tx.Error
+func updateStudentQuestion(ctx *gin.Context, question *RecruitmentCycleQuestion) (bool, error) {
+	tx := db.WithContext(ctx).Where("id =?", question.ID).Updates(question)
+	return tx.RowsAffected > 0, tx.Error
 }
 
 func deleteStudentQuestion(ctx *gin.Context, qid string) error {
@@ -130,7 +135,7 @@ func createStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnsw
 }
 
 func updateStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Save(answer)
+	tx := db.WithContext(ctx).Where("id = ?", answer.ID).Updates(answer)
 	return tx.Error
 }
 
