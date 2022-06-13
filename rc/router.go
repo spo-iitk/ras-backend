@@ -12,8 +12,10 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	admin := r.Group("/api/admin/rc/:rid")
 	{
 		admin.GET("", getRC)
+		admin.GET("/count", getRCCount)
 
 		// NOtice, events, new company must have an all query param
+
 		admin.GET("/notice", getAllNotices)
 		admin.POST("/notice/new", postNotice)
 		admin.POST("/notice/:nid/reminder", postReminder(mail_channel))
