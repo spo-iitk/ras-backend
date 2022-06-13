@@ -9,15 +9,21 @@ import (
 )
 
 var (
-	jwtExpirationLong  = viper.GetInt("JWT.EXPIRATION.LONG")
-	jwtExpirationShort = viper.GetInt("JWT.EXPIRATION.SHORT")
+	jwtExpirationLong  int
+	jwtExpirationShort int
+	signingKey         []byte
 )
-var signingKey = []byte(viper.GetString("JWT.PRIVATE_KEY"))
 
 type CustomClaims struct {
 	UserID string `json:"user_id"`
 	RoleID uint   `json:"role_id"`
 	jwt.StandardClaims
+}
+
+func init() {
+	jwtExpirationLong = viper.GetInt("JWT.EXPIRATION.LONG")
+	jwtExpirationShort = viper.GetInt("JWT.EXPIRATION.SHORT")
+	signingKey = []byte(viper.GetString("JWT.PRIVATE_KEY"))
 }
 
 func GenerateToken(userID string, roleID uint, long bool) (string, error) {
