@@ -50,7 +50,7 @@ func removeNotice(ctx *gin.Context, nid string) error {
 }
 
 func updateNotice(ctx *gin.Context, notice *Notice) error {
-	tx := db.WithContext(ctx).Save(notice)
+	tx := db.WithContext(ctx).Where("id = ?", notice.ID).Updates(notice)
 	return tx.Error
 }
 
