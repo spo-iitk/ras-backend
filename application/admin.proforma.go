@@ -82,5 +82,5 @@ func deleteProformaHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"data": "deleted proforma"})
+	ctx.JSON(200, gin.H{"status": "deleted proforma"})
 }

@@ -24,7 +24,7 @@ func getPrograms(ctx *gin.Context) {
 		programs[i].ID = i
 		programs[i].Name = c.GetProgram(i)
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": programs})
+	ctx.JSON(http.StatusOK, programs)
 }
 
 func getDepartments(ctx *gin.Context) {
@@ -34,7 +34,7 @@ func getDepartments(ctx *gin.Context) {
 		departments[i].ID = i
 		departments[i].Name = c.GetDepartment(i)
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": departments})
+	ctx.JSON(http.StatusOK, departments)
 }
 
 func getProgramsDepartments(ctx *gin.Context) {
@@ -43,5 +43,5 @@ func getProgramsDepartments(ctx *gin.Context) {
 	for i = 0; i < 10; i++ {
 		programDepartments[i] = c.GetProgramDepartment(i)
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": programDepartments})
+	ctx.JSON(http.StatusOK, programDepartments)
 }

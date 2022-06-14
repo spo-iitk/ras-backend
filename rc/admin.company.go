@@ -40,7 +40,7 @@ func postNewCompany(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	var company = CompanyRecruitmentCycle{
 		CompanyID:          addNewCompany.CompanyID,
 		CompanyName:        addNewCompany.CompanyName,
@@ -55,8 +55,7 @@ func postNewCompany(ctx *gin.Context) {
 		return
 	}
 
-	cid := company.ID
-	ctx.JSON(200, gin.H{"data": cid})
+	ctx.JSON(200, company)
 }
 
 func getCompany(ctx *gin.Context) {

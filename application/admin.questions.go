@@ -86,5 +86,5 @@ func putQuestionHandler(ctx *gin.Context) {
 
 	logrus.Infof("%v updated a proforma question with id %d", user, question.ID)
 
-	ctx.JSON(200, gin.H{"data": "updated question successfully"})
+	ctx.JSON(200, gin.H{"status": "updated question successfully"})
 }

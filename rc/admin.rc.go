@@ -1,6 +1,10 @@
 package rc
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+)
 
 func getAllRC(ctx *gin.Context) {
 	var rc []RecruitmentCycle
@@ -43,8 +47,7 @@ func postRC(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	id := gin.H{"id": rc.ID}
-	ctx.JSON(201, gin.H{"status": "created", "data": id})
+	ctx.JSON(201, gin.H{"status": fmt.Sprintf("RC %d created", rc.ID)})
 }
 
 //! TODO: Add more response data

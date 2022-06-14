@@ -86,7 +86,7 @@ func putProformaByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"data": "edited proforma"})
+	ctx.JSON(200, gin.H{"status": "edited proforma"})
 }
 
 func deleteProformaByCompanyHandler(ctx *gin.Context) {
@@ -113,5 +113,5 @@ func deleteProformaByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"data": "deleted proforma"})
+	ctx.JSON(200, gin.H{"status": "deleted proforma"})
 }

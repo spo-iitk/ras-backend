@@ -127,5 +127,5 @@ func postStudents(ctx *gin.Context) {
 
 	logrus.Infof("%v addedd %v new students", user, num)
 
-	ctx.JSON(200, gin.H{"status": "created students", "data": students})
+	ctx.JSON(200, gin.H{"status": "added students"})
 }

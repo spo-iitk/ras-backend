@@ -1,6 +1,7 @@
 package rc
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -55,6 +56,5 @@ func postEnrollmentAnswer(ctx *gin.Context) {
 		return
 	}
 
-	aid := answer.ID
-	ctx.JSON(200, gin.H{"data": aid})
+	ctx.JSON(200, gin.H{"status": fmt.Sprintf("Answer %d created", answer.ID)})
 }

@@ -19,7 +19,7 @@ func getAllNotices(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"data": notices})
+	ctx.JSON(200, notices)
 }
 
 func postNotice(ctx *gin.Context) {
@@ -46,8 +46,7 @@ func postNotice(ctx *gin.Context) {
 		return
 	}
 
-	nid := gin.H{"id": notice.ID}
-	ctx.JSON(200, gin.H{"data": nid})
+	ctx.JSON(200, notice)
 }
 
 func deleteNotice(ctx *gin.Context) {

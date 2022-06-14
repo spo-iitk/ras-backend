@@ -13,8 +13,8 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 	return tx.Error
 }
 
-func fetchApplicationCount(ctx *gin.Context, sid uint) (bool, error) {
-	var count int64
-	tx := db.WithContext(ctx).Model(&EventStudent{}).Distinct().Where("student_recruitment_cycle_id = ?", sid).Count(&count)
-	return false, tx.Error
-}
+// func fetchApplicationCount(ctx *gin.Context, sid uint) (bool, error) {
+// 	var count int64
+// 	tx := db.WithContext(ctx).Model(&EventStudent{}).Distinct().Where("student_recruitment_cycle_id = ?", sid).Count(&count)
+// 	return false, tx.Error
+// }

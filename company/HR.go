@@ -24,7 +24,7 @@ func getAllHRHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": HRs})
+	ctx.JSON(http.StatusOK, HRs)
 }
 
 func getHRHandler(ctx *gin.Context) {
@@ -43,7 +43,7 @@ func getHRHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": getHRRequest})
+	ctx.JSON(http.StatusOK, getHRRequest)
 }
 
 func deleteHRHandler(ctx *gin.Context) {

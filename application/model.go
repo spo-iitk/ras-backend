@@ -79,5 +79,5 @@ type EventStudent struct {
 	ProformaEventID           uint          `gorm:"index" json:"proforma_event_id"`
 	ProformaEvent             ProformaEvent `gorm:"foreignkey:ProformaEventID" json:"-"`
 	StudentRecruitmentCycleID uint          `gorm:"index" json:"student_recruitment_cycle_id"`
-	Present                   bool          `json:"present"`
+	Present                   bool          `gorm:"default:true" json:"present"`
 }

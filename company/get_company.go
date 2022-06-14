@@ -17,7 +17,7 @@ func getAllCompaniesHandler(ctx *gin.Context) {
 		return
 
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": companies})
+	ctx.JSON(http.StatusOK, companies)
 }
 
 func getCompanyHandler(ctx *gin.Context) {
@@ -36,5 +36,5 @@ func getCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": company})
+	ctx.JSON(http.StatusOK, company)
 }

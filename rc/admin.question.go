@@ -44,12 +44,11 @@ func postStudentQuestion(ctx *gin.Context) {
 		return
 	}
 
-	qid := question.ID
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v created a student question with id %d", user, qid)
+	logrus.Infof("%v created a student question with id %d", user, question.ID)
 
-	ctx.JSON(200, gin.H{"data": qid})
+	ctx.JSON(200, question)
 }
 
 func putStudentQuestion(ctx *gin.Context) {
