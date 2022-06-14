@@ -21,7 +21,7 @@ type RC struct {
 	AcademicYear        string               `json:"academic_year" binding:"required"`
 	Type                RecruitmentCycleType `json:"type" binding:"required"`
 	StartDate           int64                `json:"start_date" binding:"required"`
-	Phase               uint                 `json:"phase" binding:"required"`
+	Phase               string               `json:"phase" binding:"required"`
 	ApplicationCountCap uint                 `json:"application_count_cap" binding:"required"`
 }
 

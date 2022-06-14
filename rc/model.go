@@ -17,7 +17,7 @@ type RecruitmentCycle struct {
 	AcademicYear        string               `json:"academic_year"`
 	Type                RecruitmentCycleType `json:"type"`
 	StartDate           int64                `json:"start_date"`
-	Phase               uint                 `json:"phase"`
+	Phase               string               `json:"phase"`
 	ApplicationCountCap uint                 `json:"application_count_cap"`
 }
 
