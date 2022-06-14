@@ -19,7 +19,7 @@ func getStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": student})
+	ctx.JSON(http.StatusOK, student)
 
 }
 
@@ -39,7 +39,7 @@ func getStudentByIDHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": student})
+	ctx.JSON(http.StatusOK, student)
 }
 
 func getAllStudentsHandler(ctx *gin.Context) {
@@ -52,5 +52,5 @@ func getAllStudentsHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": students})
+	ctx.JSON(http.StatusOK, students)
 }
