@@ -4,7 +4,7 @@ MAIL:
   HOST: "smtp.cc.iitk.ac.in"
   PORT: "25"
   WEBTEAM: "spowebteam@gmail.com"
-  BATCH: 200
+  # BATCH: 200
 JWT:
   EXPIRATION:
     LONG: 100
@@ -14,7 +14,7 @@ OTP:
   EXPIRATION: 20
   SIZE: 6
 DATABASE:
-  HOST: "database"
+  HOST: "localhost"
   PORT: "5432"
   PASSWORD: "b2Led2ke"
   USER: "admin"
@@ -31,5 +31,6 @@ PORT:
   COMPANY: 3485
   ADMIN:
     RC: 3490
+    APP: 3492
     COMPANY: 3495
     STUDENT: 3500

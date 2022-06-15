@@ -21,6 +21,24 @@ func adminRCServer(mail_channel chan mail.Mail) *http.Server {
 	engine.Use(middleware.EnsureAdmin())
 
 	rc.AdminRouter(mail_channel, engine)
+
+	server := &http.Server{
+		Addr:         ":" + PORT,
+		Handler:      engine,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+	}
+
+	return server
+}
+
+func adminApplicationServer(mail_channel chan mail.Mail) *http.Server {
+	PORT := viper.GetString("PORT.ADMIN.APP")
+	engine := gin.New()
+	engine.Use(middleware.CORS())
+	engine.Use(middleware.Authenticator())
+	engine.Use(middleware.EnsureAdmin())
+
 	application.AdminRouter(mail_channel, engine)
 
 	server := &http.Server{
