@@ -12,7 +12,7 @@ func AdminRouter(r *gin.Engine) {
 		admin.GET("/:cid", getCompanyHandler)
 
 		admin.PUT("", updateCompanyHandler)
-		admin.POST("/new", addNewHandler)
+		admin.POST("", addNewHandler)
 
 		admin.DELETE("/:cid", deleteCompanyHandler)
 

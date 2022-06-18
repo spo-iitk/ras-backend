@@ -7,7 +7,7 @@ import (
 
 func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	r.GET("/api/admin/rc", getAllRC)
-	r.POST("/api/admin/rc/new", postRC)
+	r.POST("/api/admin/rc", postRC)
 
 	admin := r.Group("/api/admin/rc/:rid")
 	{
@@ -17,12 +17,12 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		// NOtice, events, new company must have an all query param
 
 		admin.GET("/notice", getAllNotices)
-		admin.POST("/notice/new", postNotice)
+		admin.POST("/notice", postNotice)
 		admin.POST("/notice/:nid/reminder", postReminder(mail_channel))
 		admin.DELETE("/notice/:nid", deleteNotice)
 
 		admin.GET("/company", getAllCompanies)     // all registerd compnay
-		admin.POST("/company/new", postNewCompany) // add compnay to RC from master
+		admin.POST("/company", postNewCompany) // add compnay to RC from master
 		admin.GET("/company/:cid", getCompany)     // get company
 
 		admin.GET("/student", getAllStudents) // get all students of rc

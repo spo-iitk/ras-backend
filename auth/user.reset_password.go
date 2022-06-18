@@ -50,6 +50,6 @@ func resetPasswordHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		logrus.Infof("Password of %s reset successfully", resetPasswordReq.UserID)
 		mail_channel <- mail.GenerateMail(resetPasswordReq.UserID, "Password Reset Successfully", "Your password has been reset successfully.")
 
-		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully reset password up"})
+		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully reset password"})
 	}
 }

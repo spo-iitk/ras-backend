@@ -75,7 +75,7 @@ func putStudent(ctx *gin.Context) {
 }
 
 type bulkPostStudentRequest struct {
-	Email []string `json:"email"`
+	Email []string `json:"email" binding:"required"`
 }
 
 func postStudents(ctx *gin.Context) {
