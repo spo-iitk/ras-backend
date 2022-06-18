@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	m "github.com/spo-iitk/ras-backend/middleware"
 )
 
 func addNewHandler(ctx *gin.Context) {
@@ -16,14 +17,33 @@ func addNewHandler(ctx *gin.Context) {
 		return
 	}
 
-	err := newCompany(ctx, &newCompanyRequest)
-
+	err := createCompany(ctx, &newCompanyRequest)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	logrus.Infof("A new company %s is added with id %d", newCompanyRequest.Name, newCompanyRequest.ID)
+	logrus.Infof("A new company %s is added with id %d by %s", newCompanyRequest.Name, newCompanyRequest.ID, m.GetUserID(ctx))
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully added"})
+
+}
+
+func addNewBulkHandler(ctx *gin.Context) {
+	var request []Company
+
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := createCompanies(ctx, &request)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	logrus.Infof("%d companies is added with by %s", len(request), m.GetUserID(ctx))
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully added"})
 
@@ -52,7 +72,7 @@ func updateCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	logrus.Infof("A company with id %d is updated", updateCompanyRequest.ID)
+	logrus.Infof("A company with id %d is updated by %s", updateCompanyRequest.ID, m.GetUserID(ctx))
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
@@ -71,7 +91,7 @@ func deleteCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	logrus.Infof("A company with id %d is deleted", cid)
+	logrus.Infof("A company with id %d is deleted by %s", cid, m.GetUserID(ctx))
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted"})
 
