@@ -38,4 +38,5 @@ type Student struct {
 	FriendName                   string  `json:"friend_name"`
 	FriendPhone                  string  `json:"friend_phone"`
 	IsEditable                   bool    `json:"is_editable"`
+	IsVerified                   bool    `json:"is_verified"`
 }

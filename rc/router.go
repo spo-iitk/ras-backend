@@ -21,9 +21,9 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.POST("/notice/:nid/reminder", postReminder(mail_channel))
 		admin.DELETE("/notice/:nid", deleteNotice)
 
-		admin.GET("/company", getAllCompanies)     // all registerd compnay
+		admin.GET("/company", getAllCompanies) // all registerd compnay
 		admin.POST("/company", postNewCompany) // add compnay to RC from master
-		admin.GET("/company/:cid", getCompany)     // get company
+		admin.GET("/company/:cid", getCompany) // get company
 
 		admin.GET("/student", getAllStudents) // get all students of rc
 		admin.GET("/student/:sid", getStudentByID)
@@ -35,7 +35,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/student/question", putStudentQuestion)
 		admin.DELETE("/student/question/:qid", deleteStudentQuestionHandler)
 
-		admin.GET("/student/:sid/question/answers", getStudentAnswers)          //get answer
+		admin.GET("/student/:sid/question/answers", getStudentAnswers)          // get answer
 		admin.PUT("/student/:sid/question", putStudentAnswer)                   // edit answer
 		admin.DELETE("/student/:sid/question/:qid", deleteStudentAnswerHandler) // delete answer
 	}
