@@ -7,8 +7,8 @@ MAIL:
   # BATCH: 200
 JWT:
   EXPIRATION:
-    LONG: 100
-    SHORT: 1500
+    LONG: 5000
+    SHORT: 200
   PRIVATE_KEY: "pretty-big-secret"
 OTP:
   EXPIRATION: 20
