@@ -23,6 +23,9 @@ func getAllCompanies(ctx *gin.Context) {
 type addNewCompanyRequest struct {
 	CompanyID   uint   `gorm:"index" json:"company_id" binding:"required"`
 	CompanyName string `json:"company_name" binding:"required"`
+	HR1         string `json:"hr1" binding:"required"`
+	HR2         string `json:"hr2"`
+	HR3         string `json:"hr3"`
 	Comments    string `json:"comments"`
 }
 

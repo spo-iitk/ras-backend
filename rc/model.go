@@ -56,6 +56,9 @@ type CompanyRecruitmentCycle struct {
 	CompanyName        string           `json:"company_name"`
 	RecruitmentCycleID uint             `gorm:"index" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
+	HR1                string           `json:"hr1"`
+	HR2                string           `json:"hr2"`
+	HR3                string           `json:"hr3"`
 	Comments           string           `json:"comments"`
 }
 
