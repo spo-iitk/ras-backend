@@ -16,7 +16,7 @@ func hrSignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		if middleware.GetRoleID(ctx) != constants.GOD || middleware.GetRoleID(ctx) != constants.OPC {
+		if middleware.GetRoleID(ctx) != constants.GOD && middleware.GetRoleID(ctx) != constants.OPC {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Only God and OPC can sign up for HR"})
 			return
 		}
