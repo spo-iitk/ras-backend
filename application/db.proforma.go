@@ -27,9 +27,9 @@ func updateProforma(ctx *gin.Context, jp *Proforma) error {
 	return tx.Error
 }
 
-func updateProformaForCompany(ctx *gin.Context, jp *Proforma) error {
+func updateProformaForCompany(ctx *gin.Context, jp *Proforma) (bool, error) {
 	tx := db.WithContext(ctx).Where("id = ? AND company_recruitment_cycle_id = ?", jp.ID, jp.CompanyRecruitmentCycleID).Updates(jp)
-	return tx.Error
+	return tx.RowsAffected == 1, tx.Error
 }
 
 func deleteProforma(ctx *gin.Context, pid uint) error {

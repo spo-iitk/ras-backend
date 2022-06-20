@@ -80,9 +80,14 @@ func putProformaByCompanyHandler(ctx *gin.Context) {
 
 	jp.CompanyRecruitmentCycleID = cid
 
-	err = updateProformaForCompany(ctx, &jp)
+	ok, err := updateProformaForCompany(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !ok {
+		ctx.AbortWithStatusJSON(402, gin.H{"error": "proforma not found or unauthorized"})
 		return
 	}
 
