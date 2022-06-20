@@ -63,6 +63,7 @@ type ProformaEvent struct {
 	EndTime          int64    `json:"end_time"`
 	Description      string   `json:"description"`
 	MainPOC          string   `json:"main_poc"`
+	Sequence         int      `json:"sequence"`
 	RecordAttendance bool     `json:"record_attendance" gorm:"default:false"`
 }
 
