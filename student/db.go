@@ -2,8 +2,8 @@ package student
 
 import "github.com/gin-gonic/gin"
 
-func CreateStudent(ctx *gin.Context, student *Student) error {
-	tx := db.WithContext(ctx).Create(student)
+func FirstOrCreateStudent(ctx *gin.Context, student *Student) error {
+	tx := db.WithContext(ctx).Where("IITKEmail = ?", student.IITKEmail).FirstOrCreate(student)
 	return tx.Error
 }
 

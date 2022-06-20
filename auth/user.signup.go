@@ -51,7 +51,7 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		hashedPwd := hashAndSalt(signupReq.Password)
 
-		id, err := createUser(ctx, &User{
+		id, err := firstOrCreateUser(ctx, &User{
 			UserID:   signupReq.UserID,
 			Name:     signupReq.Name,
 			Password: hashedPwd,
@@ -68,7 +68,7 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			RollNo:    signupReq.RollNo,
 		}
 
-		err = student.CreateStudent(ctx, &createStudent)
+		err = student.FirstOrCreateStudent(ctx, &createStudent)
 
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
