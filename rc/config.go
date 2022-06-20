@@ -20,7 +20,9 @@ func openConnection() {
 	dsn := "host=" + host + " user=" + user + " password=" + password
 	dsn += " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Kolkata"
 
-	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		// Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		logrus.Fatal("Failed to connect to cycle database: ", err)
 		panic(err)
