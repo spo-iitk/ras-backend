@@ -10,7 +10,7 @@ func fetchAllRCs(ctx *gin.Context, rc *[]RecruitmentCycle) error {
 }
 
 func fetchRCsByStudent(ctx *gin.Context, email string, rcs *[]RecruitmentCycle) error {
-	tx := db.WithContext(ctx).Joins("student_recruitment_cycle", db.Where(&StudentRecruitmentCycle{Email: email})).Find(&rcs)
+	tx := db.WithContext(ctx).Joins("StudentRecruitmentCycle", db.Where(&StudentRecruitmentCycle{Email: email})).Find(&rcs)
 	return tx.Error
 }
 
