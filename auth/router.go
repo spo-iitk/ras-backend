@@ -13,9 +13,11 @@ func Router(mail_channel chan mail.Mail, r *gin.Engine) {
 		auth.POST("/otp", otpHandler(mail_channel))
 		auth.POST("/reset-password", resetPasswordHandler(mail_channel))
 		auth.POST("/company-signup", companySignUpHandler(mail_channel))
-		
+
 		auth.GET("/whoami", whoamiHandler) // who am i, if not exploited
 
 		auth.POST("/hr-signup", hrSignUpHandler(mail_channel))
+
+		auth.GET("/new-companies", companiesAddedHandler)
 	}
 }
