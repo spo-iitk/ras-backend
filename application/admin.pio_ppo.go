@@ -23,8 +23,8 @@ func getEmptyProformaByCID(ctx *gin.Context, cid uint, jp *Proforma) error {
 }
 
 type pioppoRequest struct {
-	cid    uint
-	emails []string
+	Cid    uint     `json:"cid" binding:"required"`
+	Emails []string `json:"emails" binding:"required"`
 }
 
 func postPPOPIOHandler(ctx *gin.Context) {
@@ -36,20 +36,20 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = rc.UpdateStudentType(ctx, req.cid, req.emails)
+	err = rc.UpdateStudentType(ctx, req.Cid, req.Emails)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
 	var jp Proforma
-	err = getEmptyProformaByCID(ctx, req.cid, &jp)
+	err = getEmptyProformaByCID(ctx, req.Cid, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	studentIDs, err := rc.FetchStudentRCIDs(ctx, jp.RecruitmentCycleID, req.emails)
+	studentIDs, err := rc.FetchStudentRCIDs(ctx, jp.RecruitmentCycleID, req.Emails)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
