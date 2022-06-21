@@ -78,7 +78,7 @@ func GetStudentEligible(ctx *gin.Context, eligibility string) (bool, error) {
 	primaryID = int(student.ProgramDepartmentID)
 	secondaryID = int(student.SecondaryProgramDepartmentID)
 
-	if eligibility[primaryID]==1 || eligibility[secondaryID]==1 {
+	if eligibility[primaryID] == "1" || eligibility[secondaryID] == "1" {
 		return true, nil
 	}
 
