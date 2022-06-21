@@ -47,6 +47,12 @@ func firstOrCreateEmptyPerfoma(ctx *gin.Context, jp *Proforma) error {
 	return tx.Error
 }
 
+func getEligibility(ctx *gin.Context, pid uint) (string, error) {
+	var proforma Proforma
+	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", pid).First(&proforma)
+	return proforma.Eligibility, tx.Error
+}
+
 func getRolesCount(ctx *gin.Context, rid uint) (int, error) {
 	var count int64
 	tx := db.WithContext(ctx).Model(&Proforma{}).Where("recruitment_cycle_id = ? AND is_approved = ?", rid, true).Count(&count)

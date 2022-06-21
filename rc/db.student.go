@@ -68,3 +68,25 @@ func getRegisteredStudentCount(ctx *gin.Context, rid uint) (int, error) {
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ?", rid).Count(&count)
 	return int(count), tx.Error
 }
+
+func GetStudentEligible(ctx *gin.Context, eligibility string) (bool, error) {
+	var primaryID int
+	var secondaryID int
+
+	var student StudentRecruitmentCycle
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).First(&student)
+	
+	if tx.Error != nil{
+		return false, tx.Error
+	}
+	
+	primaryID = int(student.ProgramDepartmentID)
+	secondaryID = int(student.SecondaryProgramDepartmentID)
+
+	if eligibility[primaryID] == "1" || eligibility[secondaryID] == "1" {
+		return true, nil
+	}
+
+	return false, nil
+
+}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -13,6 +14,23 @@ func postApplicationHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	proformaEligibility, err := getEligibility(ctx, pid)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	eligible, err := rc.GetStudentEligible(ctx, proformaEligibility)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !eligible {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Not eligible to apply"})
 		return
 	}
 
@@ -25,6 +43,23 @@ func postApplicationHandler(ctx *gin.Context) {
 	sid, err := extractStudentRCID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	applicationCount, err := getCurrentApplicationCount(ctx, sid)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	applicationMaxCount, err := rc.GetMaxCountfromRC(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if applicationCount >= int(applicationMaxCount) {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Application count maxed out"})
 		return
 	}
 
