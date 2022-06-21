@@ -5,6 +5,11 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
+type companyRecruitmentCycleResponse struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
 func getCompanyRecruitmentCycle(ctx *gin.Context) {
 
 	var rcs []RecruitmentCycle
@@ -18,8 +23,11 @@ func getCompanyRecruitmentCycle(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
-
-	ctx.JSON(200, rcs)
+	var rcsr []companyRecruitmentCycleResponse
+	for _, rc := range rcs {
+		rcsr = append(rcsr, companyRecruitmentCycleResponse{ID: rc.ID, Name: string(rc.Type) + " " + rc.AcademicYear + " " + rc.Phase})
+	}
+	ctx.JSON(200, rcsr)
 }
 
 type companyRCHRResponse struct {
