@@ -57,5 +57,6 @@ func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company/rc")
 	{
 		company.GET("", getCompanyRecruitmentCycle) // get registered rc
+		company.GET("/:rid/hr", getCompanyRCHRHandler) 
 	}
 }

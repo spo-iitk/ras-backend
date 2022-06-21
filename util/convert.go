@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"strconv"
 )
 
@@ -10,4 +11,8 @@ func ParseUint(s string) (uint, error) {
 		return 0, err
 	}
 	return uint(i), nil
+}
+
+func ParseString(s uint) string {
+	return fmt.Sprint(s)
 }
