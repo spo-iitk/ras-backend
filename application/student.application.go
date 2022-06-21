@@ -17,6 +17,23 @@ func postApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
+	proformaEligibility, err := getEligibility(ctx, pid)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	eligible, err := rc.GetStudentEligible(ctx, proformaEligibility)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !eligible {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Not eligible to apply"})
+		return
+	}
+
 	eid, err := fetchApplicationEventID(ctx, pid)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

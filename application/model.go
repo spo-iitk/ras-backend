@@ -8,6 +8,7 @@ import (
 
 type Proforma struct {
 	gorm.Model
+	Eligibility               string        `gorm:"index" json:"eligibility"`
 	CompanyID                 uint          `gorm:"index" json:"company_id"`
 	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
 	RecruitmentCycleID        uint          `gorm:"index" json:"recruitment_cycle_id"`
@@ -77,6 +78,7 @@ type EventCoordinator struct {
 
 type EventStudent struct {
 	gorm.Model
+	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
 	ProformaEventID           uint          `gorm:"index" json:"proforma_event_id"`
 	ProformaEvent             ProformaEvent `gorm:"foreignkey:ProformaEventID" json:"-"`
 	StudentRecruitmentCycleID uint          `gorm:"index" json:"student_recruitment_cycle_id"`
