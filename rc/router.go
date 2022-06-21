@@ -55,6 +55,7 @@ func StudentRouter(r *gin.Engine) {
 }
 
 func CompanyRouter(r *gin.Engine) {
+	r.GET("/api/company/whoami", companyWhoamiHandler)
 	company := r.Group("/api/company/rc")
 	{
 		company.GET("", getCompanyRecruitmentCycle) // get registered rc

@@ -26,3 +26,9 @@ func deleteHR(ctx *gin.Context, id uint) error {
 	tx := db.WithContext(ctx).Delete(&CompanyHR{}, "id = ?", id)
 	return tx.Error
 }
+
+func FetchCompanyIDByEmail(ctx *gin.Context, email string) (uint, error) {
+	var hr CompanyHR
+	tx := db.WithContext(ctx).Where("email = ?", email).First(&hr)
+	return hr.CompanyID, tx.Error
+}
