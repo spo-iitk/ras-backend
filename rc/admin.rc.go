@@ -65,3 +65,17 @@ func getRC(ctx *gin.Context) {
 	}
 	ctx.JSON(200, getRCResponse{rc})
 }
+
+func GetMaxCountfromRC(ctx *gin.Context) (uint, error) {
+	id := ctx.Param("rid")
+	var rc RecruitmentCycle
+	err := fetchRC(ctx, id, &rc)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return 0, err
+	}
+
+	MaxCount:= rc.ApplicationCountCap
+
+	return MaxCount, nil
+}

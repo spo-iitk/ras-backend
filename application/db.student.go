@@ -27,3 +27,9 @@ func fetchStudentsByEvent(ctx *gin.Context, eventID uint, students *[]EventStude
 	tx := db.WithContext(ctx).Where("proforma_event_id = ?", eventID).Find(students)
 	return tx.Error
 }
+
+func getCurrentApplicationCount(ctx *gin.Context, sid uint) (int, error) {
+	var count int64
+	tx := db.WithContext(ctx).Model(&EventStudent{}).Where("student_recruitment_cycle_id = ?", sid).Group("company_recruitment_cycle_id").Count(&count)
+	return int(count), tx.Error
+}
