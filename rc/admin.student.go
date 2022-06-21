@@ -16,18 +16,18 @@ func getAllStudents(ctx *gin.Context) {
 
 	err := fetchAllStudents(ctx, rid, &students)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, students)
+	ctx.JSON(http.StatusOK, students)
 }
 
 func getStudentByID(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 	srid, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -35,11 +35,11 @@ func getStudentByID(ctx *gin.Context) {
 
 	err = fetchStudentByID(ctx, srid, rid, &student)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, student)
+	ctx.JSON(http.StatusOK, student)
 }
 
 func putStudent(ctx *gin.Context) {
@@ -47,7 +47,7 @@ func putStudent(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&student)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -58,7 +58,7 @@ func putStudent(ctx *gin.Context) {
 
 	ok, err := updateStudent(ctx, &student)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -71,7 +71,7 @@ func putStudent(ctx *gin.Context) {
 
 	logrus.Infof("%v updated a student with id %d", user, student.ID)
 
-	ctx.JSON(200, gin.H{"status": "updated student"})
+	ctx.JSON(http.StatusOK, gin.H{"status": "updated student"})
 }
 
 type bulkPostStudentRequest struct {
@@ -81,7 +81,7 @@ type bulkPostStudentRequest struct {
 func postStudents(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -89,7 +89,7 @@ func postStudents(ctx *gin.Context) {
 
 	err = ctx.ShouldBindJSON(&emails)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -99,7 +99,7 @@ func postStudents(ctx *gin.Context) {
 
 	err = student.FetchStudents(ctx, &studentsGlobal, emailArr)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -117,14 +117,30 @@ func postStudents(ctx *gin.Context) {
 
 	err = createStudents(ctx, &students)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	user := middleware.GetUserID(ctx)
 	num := len(students)
 
-	logrus.Infof("%v addedd %v new students", user, num)
+	logrus.Infof("%v added %v new students", user, num)
 
-	ctx.JSON(200, gin.H{"status": "added students"})
+	ctx.JSON(http.StatusOK, gin.H{"status": "added students"})
+}
+
+func deleteStudentByID(ctx *gin.Context) {
+	srid := ctx.Param("sid")
+
+	err := deleteStudent(ctx, srid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v deleted %v from RC", user, srid)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student"})
 }

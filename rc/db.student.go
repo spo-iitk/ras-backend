@@ -22,6 +22,11 @@ func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, er
 	return tx.RowsAffected > 0, tx.Error
 }
 
+func deleteStudent(ctx *gin.Context, sid string) error {
+	tx := db.WithContext(ctx).Where("id = ?", sid).Delete(&StudentRecruitmentCycle{})
+	return tx.Error
+}
+
 func createStudents(ctx *gin.Context, students *[]StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Create(students)
 	return tx.Error
