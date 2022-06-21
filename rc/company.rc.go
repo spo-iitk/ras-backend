@@ -31,9 +31,10 @@ func getCompanyRecruitmentCycle(ctx *gin.Context) {
 }
 
 type companyRCHRResponse struct {
-	HR1 string `json:"hr1"`
-	HR2 string `json:"hr2"`
-	HR3 string `json:"hr3"`
+	Name string `json:"name"`
+	HR1  string `json:"hr1"`
+	HR2  string `json:"hr2"`
+	HR3  string `json:"hr3"`
 }
 
 func getCompanyRCHRHandler(ctx *gin.Context) {
@@ -56,8 +57,9 @@ func getCompanyRCHRHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, companyRCHRResponse{
-		HR1: company.HR1,
-		HR2: company.HR2,
-		HR3: company.HR3,
+		Name: company.CompanyName,
+		HR1:  company.HR1,
+		HR2:  company.HR2,
+		HR3:  company.HR3,
 	})
 }
