@@ -8,7 +8,7 @@ import (
 func getCompanyRecruitmentCycle(ctx *gin.Context) {
 
 	var rcs []RecruitmentCycle
-	companyID, err := extractCompanyRCID(ctx)
+	companyID, err := extractCompanyID(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
