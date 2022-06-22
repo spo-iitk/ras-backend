@@ -55,6 +55,7 @@ func main() {
 		return adminCompanyServer().ListenAndServe()
 	})
 
+	log.Println("Starting Server...")
 	if err := g.Wait(); err != nil {
 		log.Fatal(err)
 	}
