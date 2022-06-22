@@ -8,7 +8,7 @@ func createEventStudent(ctx *gin.Context, eventStudent *EventStudent) error {
 }
 
 func createEventStudents(ctx *gin.Context, eventStudents *[]EventStudent) error {
-	tx := db.WithContext(ctx).FirstOrCreate(eventStudents)
+	tx := db.WithContext(ctx).Create(eventStudents)
 	return tx.Error
 }
 
