@@ -22,6 +22,14 @@ func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, er
 	return tx.RowsAffected > 0, tx.Error
 }
 
+func freezeStudentsToggle(ctx *gin.Context, emails []string, frozen bool) (bool, error) {
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("email IN ?", emails).Updates(
+		&StudentRecruitmentCycle{
+			IsFrozen: frozen,
+		})
+	return tx.RowsAffected > 0, tx.Error
+}
+
 func deleteStudent(ctx *gin.Context, sid string) error {
 	tx := db.WithContext(ctx).Where("id = ?", sid).Delete(&StudentRecruitmentCycle{})
 	return tx.Error

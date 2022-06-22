@@ -74,6 +74,38 @@ func putStudent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "updated student"})
 }
 
+type bulkFreezeStudentRequest struct {
+	Emails []string `json:"email"`
+	Frozen bool     `json:"frozen"`
+}
+
+func bulkFreezeStudents(ctx *gin.Context) {
+	var req bulkFreezeStudentRequest
+
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ok, err := freezeStudentsToggle(ctx, req.Emails, req.Frozen)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v froze %v students", user, len(req.Emails))
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "froze students"})
+}
+
 type bulkPostStudentRequest struct {
 	Email []string `json:"email" binding:"required"`
 }

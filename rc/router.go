@@ -30,7 +30,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/student/:sid", getStudentByID)
 		admin.DELETE("/student/:sid", deleteStudentByID)
 		admin.PUT("/student", putStudent)
-		admin.POST("/student", postStudents) // bulk post/ enroll in RC
+		admin.PUT("/student/freeze", bulkFreezeStudents) // bulk freeze unfreeze
+		admin.POST("/student", postStudents)             // bulk post/ enroll in RC
 
 		admin.GET("/student/questions", getStudentQuestions)
 		admin.POST("/student/question", postStudentQuestion)
