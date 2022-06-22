@@ -94,5 +94,6 @@ type StudentRecruitmentCycle struct {
 	Name                         string                      `json:"name"`
 	Type                         StudentRecruitmentCycleType `json:"type" gorm:"default:Available"`
 	IsFrozen                     bool                        `json:"is_frozen" gorm:"default:false"`
+	IsVerified                   bool                        `json:"is_verified" gorm:"default:false"`
 	Comment                      string                      `json:"comment"`
 }

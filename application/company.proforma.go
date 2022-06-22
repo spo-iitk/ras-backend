@@ -1,8 +1,6 @@
 package application
 
 import (
-	"database/sql"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -50,7 +48,6 @@ func postProformaByCompanyHandler(ctx *gin.Context) {
 
 	jp.CompanyRecruitmentCycleID = cid
 	jp.CompanyID = companyid
-	jp.IsApproved = sql.NullBool{}
 
 	err = createProforma(ctx, &jp)
 	if err != nil {
