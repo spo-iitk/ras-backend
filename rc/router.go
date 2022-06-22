@@ -8,6 +8,7 @@ import (
 func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	r.GET("/api/admin/rc", getAllRC)
 	r.POST("/api/admin/rc", postRC)
+	r.PUT("/api/admin/rc", editRCHandler)
 
 	admin := r.Group("/api/admin/rc/:rid")
 	{
@@ -59,6 +60,6 @@ func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company/rc")
 	{
 		company.GET("", getCompanyRecruitmentCycle) // get registered rc
-		company.GET("/:rid/hr", getCompanyRCHRHandler) 
+		company.GET("/:rid/hr", getCompanyRCHRHandler)
 	}
 }

@@ -77,3 +77,31 @@ func GetMaxCountfromRC(ctx *gin.Context) (uint, error) {
 
 	return MaxCount, nil
 }
+
+type editRCRequest struct {
+	ID                  uint `json:"id" binding:"required"`
+	Inactive            bool `json:"inactive" binding:"required"`
+	ApplicationCountCap uint `json:"application_count_cap"`
+}
+
+func editRCHandler(ctx *gin.Context) {
+	var req editRCRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	ok, err := updateRC(ctx, req.ID, req.Inactive, req.ApplicationCountCap)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !ok {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": "Could not find data"})
+		return
+	}
+
+	ctx.JSON(200, gin.H{"status": "Updated Succesfully"})
+}
