@@ -15,8 +15,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("", getRC)
 		admin.GET("/count", getRCCount)
 
-		// NOtice, events, new company must have an all query param
-
 		admin.GET("/notice", getAllNotices)
 		admin.POST("/notice", postNotice)
 		admin.POST("/notice/:nid/reminder", postReminder(mail_channel))
@@ -38,9 +36,9 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/student/question", putStudentQuestion)
 		admin.DELETE("/student/question/:qid", deleteStudentQuestionHandler)
 
-		admin.GET("/student/:sid/question/answers", getStudentAnswers)          // get answer
-		admin.PUT("/student/:sid/question", putStudentAnswer)                   // edit answer
-		admin.DELETE("/student/:sid/question/:qid", deleteStudentAnswerHandler) // delete answer
+		admin.GET("/student/:sid/question/answers", getStudentAnswers)
+		// admin.PUT("/student/:sid/question", putStudentAnswer)
+		// admin.DELETE("/student/:sid/question/:qid", deleteStudentAnswerHandler)
 	}
 }
 

@@ -1,8 +1,6 @@
 package rc
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type RecruitmentCycleType string
 
@@ -41,13 +39,11 @@ type RecruitmentCycleQuestion struct {
 
 type RecruitmentCycleQuestionsAnswer struct {
 	gorm.Model
-	RecruitmentCycleQuestionID uint                     `gorm:"index" json:"recruitment_cycle_question_id"`
+	RecruitmentCycleQuestionID uint                     `gorm:"index;->;<-:create" json:"recruitment_cycle_question_id"`
 	RecruitmentCycleQuestion   RecruitmentCycleQuestion `gorm:"foreignkey:RecruitmentCycleQuestionID" json:"-"`
-	StudentRecruitmentCycleID  uint                     `gorm:"uniqueIndex;->;<-:create" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycleID  uint                     `gorm:"index;->;<-:create" json:"student_recruitment_cycle_id"`
 	StudentRecruitmentCycle    StudentRecruitmentCycle  `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
 	Answer                     string                   `json:"answer"`
-	Comments                   string                   `json:"comments"`
-	Status                     string                   `json:"status"`
 }
 
 type CompanyRecruitmentCycle struct {

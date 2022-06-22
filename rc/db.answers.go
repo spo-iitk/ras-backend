@@ -12,12 +12,12 @@ func createStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnsw
 	return tx.Error
 }
 
-func updateStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnswer) error {
-	tx := db.WithContext(ctx).Where("id = ?", answer.ID).Updates(answer)
-	return tx.Error
-}
+// func updateStudentAnswer(ctx *gin.Context, answer *RecruitmentCycleQuestionsAnswer) error {
+// 	tx := db.WithContext(ctx).Where("id = ?", answer.ID).Updates(answer)
+// 	return tx.Error
+// }
 
-func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&RecruitmentCycleQuestionsAnswer{})
-	return tx.Error
-}
+// func deleteStudentAnswer(ctx *gin.Context, qid string, sid string) error {
+// 	tx := db.WithContext(ctx).Where("recruitment_cycle_question_id = ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&RecruitmentCycleQuestionsAnswer{})
+// 	return tx.Error
+// }
