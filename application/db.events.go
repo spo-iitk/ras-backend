@@ -28,7 +28,7 @@ func updateEvent(ctx *gin.Context, event *ProformaEvent) error {
 }
 
 func deleteEvent(ctx *gin.Context, id uint) error {
-	tx := db.WithContext(ctx).Where("id = ?", id).Delete(ProformaEvent{})
+	tx := db.WithContext(ctx).Where("id = ?", id).Delete(&ProformaEvent{})
 	return tx.Error
 }
 
