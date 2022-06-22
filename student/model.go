@@ -37,6 +37,6 @@ type Student struct {
 	PermanentAddress             string  `json:"permanent_address"`
 	FriendName                   string  `json:"friend_name"`
 	FriendPhone                  string  `json:"friend_phone"`
-	IsEditable                   bool    `json:"is_editable"`
-	IsVerified                   bool    `json:"is_verified"`
+	IsEditable                   bool    `json:"is_editable" gorm:"default:true"`
+	IsVerified                   bool    `json:"is_verified" gorm:"default:false"`
 }
