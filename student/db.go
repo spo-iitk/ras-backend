@@ -33,7 +33,15 @@ func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
 }
 
 func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (bool, error) {
-	tx := db.WithContext(ctx).Model(&Student{}).Where("iitk_email = ? AND is_editable = ?", email, true).Updates(student).Update("is_verified = ?", false)
+	tx := db.WithContext(ctx).Model(&Student{}).
+		Where("iitk_email = ? AND is_editable = ?", email, true).
+		Updates(student)
+	if tx.Error != nil {
+		return false, tx.Error
+	}
+
+	tx = db.WithContext(ctx).Model(&Student{}).
+		Where("iitk_email = ? AND is_editable = ?", email, true).Update("is_verified = ?", false)
 	return tx.RowsAffected > 0, tx.Error
 }
 
