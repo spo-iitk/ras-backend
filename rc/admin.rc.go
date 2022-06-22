@@ -1,8 +1,6 @@
 package rc
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -47,7 +45,7 @@ func postRC(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(201, gin.H{"status": fmt.Sprintf("RC %d created", rc.ID)})
+	ctx.JSON(201, gin.H{"id": rc.ID})
 }
 
 //! TODO: Add more response data
@@ -75,7 +73,7 @@ func GetMaxCountfromRC(ctx *gin.Context) (uint, error) {
 		return 0, err
 	}
 
-	MaxCount:= rc.ApplicationCountCap
+	MaxCount := rc.ApplicationCountCap
 
 	return MaxCount, nil
 }
