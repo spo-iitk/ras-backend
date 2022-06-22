@@ -25,7 +25,7 @@ func updateStudentHandler(ctx *gin.Context) {
 	}
 
 	if !updated {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Student not found"})
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Student not found or forbidden"})
 		return
 	}
 
