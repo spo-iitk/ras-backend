@@ -23,10 +23,7 @@ func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, er
 }
 
 func freezeStudentsToggle(ctx *gin.Context, emails []string, frozen bool) (bool, error) {
-	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("email IN ?", emails).Updates(
-		&StudentRecruitmentCycle{
-			IsFrozen: frozen,
-		})
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("email IN ?", emails).Update("is_frozen", frozen)
 	return tx.RowsAffected > 0, tx.Error
 }
 
