@@ -41,7 +41,7 @@ func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (boo
 	}
 
 	tx = db.WithContext(ctx).Model(&Student{}).
-		Where("iitk_email = ? AND is_editable = ?", email, true).Update("is_verified = ?", false)
+		Where("iitk_email = ? AND is_editable = ?", email, true).Update("is_verified", false)
 	return tx.RowsAffected > 0, tx.Error
 }
 
