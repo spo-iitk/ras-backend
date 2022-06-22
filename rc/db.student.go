@@ -52,7 +52,7 @@ func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, err
 	var students []StudentRecruitmentCycle
 	var studentIDs []uint
 
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND email IN ?", rid, emails).Select("id").Find(students).Pluck("id", &studentIDs)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND email IN ?", rid, emails).Select("id").Find(&students).Pluck("id", &studentIDs)
 	return studentIDs, tx.Error
 }
 
