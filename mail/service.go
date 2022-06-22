@@ -14,8 +14,8 @@ type Mail struct {
 }
 
 func (mail *Mail) BuildMessage() []byte {
-	message := fmt.Sprintf("From: Recruitment Automation Portal IITK<%s>\r\n", sender)
-	message += fmt.Sprintf("Subject: %s | Recruitment Automation Portal\r\n", mail.Subject)
+	message := fmt.Sprintf("From: Recruitment Automation System IITK<%s>\r\n", sender)
+	message += fmt.Sprintf("Subject: %s | Recruitment Automation System\r\n", mail.Subject)
 
 	// If mass mailing, BCC all the users
 	if len(mail.To) == 1 {
