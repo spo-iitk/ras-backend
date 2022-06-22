@@ -9,7 +9,7 @@ import (
 
 func getEmptyProformaByCID(ctx *gin.Context, cid uint, jp *Proforma) error {
 	var companyRC rc.CompanyRecruitmentCycle
-	err := rc.FetchCompanyByID(ctx, cid, &companyRC)
+	err := rc.FetchCompany(ctx, cid, &companyRC)
 	if err != nil {
 		return err
 	}

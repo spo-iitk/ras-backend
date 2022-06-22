@@ -50,7 +50,7 @@ func getCompanyRCHRHandler(ctx *gin.Context) {
 	}
 
 	var company CompanyRecruitmentCycle
-	err = fetchCompany(ctx, util.ParseString(rid), util.ParseString(companyID), &company)
+	err = fetchCompanyByRCIDAndCID(ctx, util.ParseString(rid), util.ParseString(companyID), &company)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
