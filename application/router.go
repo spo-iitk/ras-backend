@@ -79,7 +79,7 @@ func CompanyRouter(r *gin.Engine) {
 		company.POST("/event", postEventByCompanyHandler)
 		company.GET("/event/:eid", getEventHandler)
 
-		company.PUT("/event/:eid", putEventByCompanyHandler)
+		company.PUT("/event", putEventByCompanyHandler)
 		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
 
 		company.GET("/event/:eid/student", getStudentsByEventHandler)
