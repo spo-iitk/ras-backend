@@ -21,3 +21,14 @@ func deleteStudentQuestion(ctx *gin.Context, qid string) error {
 	tx := db.WithContext(ctx).Where("id = ?", qid).Delete(&RecruitmentCycleQuestion{})
 	return tx.Error
 }
+
+func fetchStudentQuestionsAnswers(ctx *gin.Context, rid, sid uint, questions *[]getStudentEnrollmentResponse) error {
+	tx := db.WithContext(ctx).Model(&RecruitmentCycleQuestion{}).
+		Joins("LEFT JOIN recruitment_cycle_questions_answers ON recruitment_cycle_questions_answers.recruitment_cycle_question_id = recruitment_cycle_questions.id").
+		Select("recruitment_cycle_questions.*, recruitment_cycle_questions_answers.answer").
+		Where(
+			"recruitment_cycle_questions.recruitment_cycle_id = ? AND recruitment_cycle_questions_answers.student_recruitment_cycle_id = ?",
+			rid, sid).
+		Find(questions)
+	return tx.Error
+}

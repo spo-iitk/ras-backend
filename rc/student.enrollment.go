@@ -2,53 +2,68 @@ package rc
 
 import (
 	"fmt"
-	"strconv"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
+type getStudentEnrollmentResponse struct {
+	RecruitmentCycleQuestion
+	Answer string `json:"answer"`
+}
+
 func getStudentEnrollment(ctx *gin.Context) {
-	rid := ctx.Param("rid")
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	sid, err := getStudentRecruitmentCycleID(ctx, rid)
+	sid, _, err := getStudentRecruitmentCycleID(ctx, rid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	var questions []RecruitmentCycleQuestion
-	var answers []RecruitmentCycleQuestionsAnswer
+	var result []getStudentEnrollmentResponse
 
-	err = fetchStudentQuestions(ctx, rid, &questions)
+	err = fetchStudentQuestionsAnswers(ctx, rid, sid, &result)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = fetchStudentAnswers(ctx, strconv.FormatUint(uint64(sid), 10), &answers)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(200, gin.H{"questions": questions, "answers": answers})
+	ctx.JSON(200, result)
 }
 
 func postEnrollmentAnswer(ctx *gin.Context) {
-	rid := ctx.Param("rid")
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var answer RecruitmentCycleQuestionsAnswer
 
-	err := ctx.ShouldBindJSON(&answer)
+	err = ctx.ShouldBindJSON(&answer)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	answer.StudentRecruitmentCycleID, err = getStudentRecruitmentCycleID(ctx, rid)
+	srcid, verified, err := getStudentRecruitmentCycleID(ctx, rid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	if verified {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": "Already Verified"})
+		return
+	}
+
+	answer.StudentRecruitmentCycleID = srcid
 
 	err = createStudentAnswer(ctx, &answer)
 	if err != nil {
