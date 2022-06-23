@@ -7,6 +7,16 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
+type AllResumeResponse struct {
+	Name          string `json:"name"`
+	Email         string `json:"email"`
+	Sid           uint   `json:"sid"`
+	RsId          uint   `json:"rsid"`
+	Resume        string `json:"resume"`
+	Verified      bool   `json:"verified"`
+	ActionTakenBy string `json:"action_taken_by"`
+}
+
 func getAllResumes(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
@@ -14,7 +24,7 @@ func getAllResumes(ctx *gin.Context) {
 		return
 	}
 
-	var resumes []StudentRecruitmentCycleResume
+	var resumes []AllResumeResponse
 	err = fetchAllResumes(ctx, rid, &resumes)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
