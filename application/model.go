@@ -8,7 +8,6 @@ import (
 
 type Proforma struct {
 	gorm.Model
-	Eligibility               string       `gorm:"index" json:"eligibility"`
 	CompanyID                 uint         `gorm:"index" json:"company_id"`
 	CompanyRecruitmentCycleID uint         `gorm:"index" json:"company_recruitment_cycle_id"`
 	RecruitmentCycleID        uint         `gorm:"index" json:"recruitment_cycle_id"`
@@ -17,6 +16,8 @@ type Proforma struct {
 	SetDeadline               uint         `json:"set_deadline" gorm:"default:0"` // 0 implies unpublished
 	HideDetails               bool         `gorm:"default:false" json:"hide_details"`
 	ActiveHRID                string       `json:"active_hr_id"`
+	Eligibility               string       `gorm:"index" json:"eligibility"`
+	CPICutoff                 float64      `gorm:"default:0" json:"cpi_cutoff"`
 	NatureOfBusiness          string       `json:"nature_of_business"`
 	TentativeJobLocation      string       `json:"tentative_job_location"`
 	JobDescription            string       `json:"job_description"`
