@@ -20,10 +20,11 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/resume", ras.PlaceHolderController)
 		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
 
+		admin.PUT("/proforma", putProformaHandler)
+		admin.POST("/proforma", postProformaHandler)
 		proforma := admin.Group("/proforma/:pid")
 		{
 			proforma.GET("", getProformaHandler)
-			proforma.PUT("", putProformaHandler)
 			proforma.DELETE("", deleteProformaHandler)
 
 			proforma.GET("/question", getQuestionsByProformaHandler)

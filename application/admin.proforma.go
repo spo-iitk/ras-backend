@@ -69,6 +69,27 @@ func putProformaHandler(ctx *gin.Context) {
 	ctx.JSON(200, jp)
 }
 
+func postProformaHandler(ctx *gin.Context) {
+	var jp Proforma
+
+	err := ctx.ShouldBindJSON(&jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = createProforma(ctx, &jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
+	ctx.JSON(200, jp)
+}
+
 func deleteProformaHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
