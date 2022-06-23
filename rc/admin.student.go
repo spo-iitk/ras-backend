@@ -154,8 +154,14 @@ func postStudents(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 	num := len(students)
+	reqNum := len(emailArr)
 
-	logrus.Infof("%v added %v new students", user, num)
+	logrus.Infof("%v added %v new students to RC %d", user, num, rid)
+
+	if num != reqNum {
+		ctx.JSON(http.StatusOK, gin.H{"status": "partially added student"})
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "added students"})
 }
