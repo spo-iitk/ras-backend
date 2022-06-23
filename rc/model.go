@@ -1,6 +1,10 @@
 package rc
 
-import "gorm.io/gorm"
+import (
+	"database/sql"
+
+	"gorm.io/gorm"
+)
 
 type RecruitmentCycleType string
 
@@ -23,7 +27,7 @@ type RecruitmentCycleQuestionsType string
 
 const (
 	MCQ         RecruitmentCycleQuestionsType = "MCQ"
-	SHORTANSWER RecruitmentCycleQuestionsType = "ShortAnswer"
+	SHORTANSWER RecruitmentCycleQuestionsType = "Short Answer"
 	BOOLEAN     RecruitmentCycleQuestionsType = "Boolean"
 )
 
@@ -92,4 +96,15 @@ type StudentRecruitmentCycle struct {
 	IsFrozen                     bool                        `json:"is_frozen" gorm:"default:false"`
 	IsVerified                   bool                        `json:"is_verified" gorm:"default:false"`
 	Comment                      string                      `json:"comment"`
+}
+
+type StudentRecruitmentCycleResume struct {
+	gorm.Model
+	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycle   StudentRecruitmentCycle `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
+	RecruitmentCycleID        uint                    `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycle          RecruitmentCycle        `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
+	Resume                    string                  `json:"resume"`
+	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
+	ActionTakenBy             string                  `json:"action_taken_by"`
 }
