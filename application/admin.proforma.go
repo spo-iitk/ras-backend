@@ -87,7 +87,7 @@ func postProformaHandler(ctx *gin.Context) {
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
-	ctx.JSON(200, jp)
+	ctx.JSON(200, gin.H{"pid": jp.ID})
 }
 
 func deleteProformaHandler(ctx *gin.Context) {
