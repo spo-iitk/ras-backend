@@ -34,7 +34,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/student", putStudent)
 
 		admin.PUT("/student/freeze", bulkFreezeStudents)
-		
 
 		admin.GET("/student/questions", getStudentQuestions)
 		admin.POST("/student/question", postStudentQuestion)
@@ -44,6 +43,10 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/student/:sid/question/answers", getStudentAnswers)
 		// admin.PUT("/student/:sid/question", putStudentAnswer)
 		// admin.DELETE("/student/:sid/question/:qid", deleteStudentAnswerHandler)
+
+		admin.GET("/resume", getAllResumes)
+		admin.GET("/resume/:rsid", getResume)
+		admin.PUT("/resume/:rsid/verify", putResumeVerify)
 	}
 }
 
@@ -56,6 +59,9 @@ func StudentRouter(r *gin.Engine) {
 
 		student.GET("/enrollment", getStudentEnrollment)              // enrolment question + answers
 		student.POST("/enrollment/:qid/answer", postEnrollmentAnswer) // enrolment answer
+
+		student.POST("/resume", postStudentResume) // add resume
+		student.GET("/resume", getStudentResume)   // get all resume
 	}
 }
 
