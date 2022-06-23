@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -69,7 +71,9 @@ func putResumeVerify(ctx *gin.Context) {
 		return
 	}
 
-	ok, err := updateResumeVerify(ctx, rsid, req.Verified)
+	user := middleware.GetUserID(ctx)
+
+	ok, err := updateResumeVerify(ctx, rsid, req.Verified, user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -79,6 +83,8 @@ func putResumeVerify(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "resume not found"})
 		return
 	}
+
+	logrus.Infof("%v verified resume with id %d, changed state to %v", user, rsid, req.Verified)
 
 	ctx.JSON(http.StatusOK, gin.H{"success": true})
 }
