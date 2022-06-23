@@ -31,7 +31,7 @@ func getStudent(ctx *gin.Context) {
 	email := middleware.GetUserID(ctx)
 	var student StudentRecruitmentCycle
 
-	err = fetchStudent(ctx, email, rid, &student)
+	err = fetchStudentByEmailAndRC(ctx, email, rid, &student)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

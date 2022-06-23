@@ -24,12 +24,17 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.POST("/company", postNewCompany) // add compnay to RC from master
 		admin.GET("/company/:cid", getCompany) // get company
 
-		admin.GET("/student", getAllStudents) // get all students of rc
+		admin.GET("/student", getAllStudents)
+
 		admin.GET("/student/:sid", getStudentByID)
+		admin.POST("/student/:sid/clarification", postClarificationHandler(mail_channel))
 		admin.DELETE("/student/:sid", deleteStudentByID)
+
+		admin.POST("/student", postStudents)
 		admin.PUT("/student", putStudent)
-		admin.PUT("/student/freeze", bulkFreezeStudents) // bulk freeze unfreeze
-		admin.POST("/student", postStudents)             // bulk post/ enroll in RC
+
+		admin.PUT("/student/freeze", bulkFreezeStudents)
+		
 
 		admin.GET("/student/questions", getStudentQuestions)
 		admin.POST("/student/question", postStudentQuestion)

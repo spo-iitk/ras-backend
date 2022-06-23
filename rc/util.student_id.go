@@ -10,7 +10,7 @@ func getStudentRecruitmentCycleID(ctx *gin.Context, rid uint) (uint, bool, error
 
 	email := middleware.GetUserID(ctx)
 
-	err := fetchStudent(ctx, email, rid, &student)
+	err := fetchStudentByEmailAndRC(ctx, email, rid, &student)
 	if err != nil {
 		return 0, false, err
 	}

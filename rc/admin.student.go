@@ -24,7 +24,6 @@ func getAllStudents(ctx *gin.Context) {
 }
 
 func getStudentByID(ctx *gin.Context) {
-	rid := ctx.Param("rid")
 	srid, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -33,7 +32,7 @@ func getStudentByID(ctx *gin.Context) {
 
 	var student StudentRecruitmentCycle
 
-	err = fetchStudentByID(ctx, srid, rid, &student)
+	err = fetchStudent(ctx, srid, &student)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
