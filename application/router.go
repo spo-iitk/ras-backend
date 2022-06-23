@@ -18,10 +18,11 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/resume", ras.PlaceHolderController)
-		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
+		admin.POST("/resume", ras.PlaceHolderController)
 
 		admin.PUT("/proforma", putProformaHandler)
 		admin.POST("/proforma", postProformaHandler)
+
 		proforma := admin.Group("/proforma/:pid")
 		{
 			proforma.GET("", getProformaHandler)
@@ -44,7 +45,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.POST("/event/:eid/student", postStudentsByEventHandler)
 			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
 			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
-
 		}
 	}
 }
