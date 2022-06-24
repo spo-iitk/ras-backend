@@ -61,7 +61,7 @@ func updateProforma(ctx *gin.Context, jp *Proforma) error {
 }
 
 func updateHideProforma(ctx *gin.Context, jp *hideProformaRequest) error {
-	tx := db.WithContext(ctx).Where("id = ?", jp.ID).Update("hide_details", jp.HideDetails)
+	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", jp.ID).Update("hide_details", jp.HideDetails)
 	return tx.Error
 }
 
