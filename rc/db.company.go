@@ -23,7 +23,7 @@ func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
 }
 
 func editCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Create(company)
+	tx := db.WithContext(ctx).Where("id = ?", company.ID).Updates(company)
 	return tx.Error
 }
 

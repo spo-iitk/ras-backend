@@ -70,7 +70,7 @@ func postNewCompany(ctx *gin.Context) {
 	ctx.JSON(200, company)
 }
 
-func putNewCompany(ctx *gin.Context) {
+func putCompany(ctx *gin.Context) {
 	var editCompanyRequest CompanyRecruitmentCycle
 
 	err := ctx.ShouldBindJSON(&editCompanyRequest)

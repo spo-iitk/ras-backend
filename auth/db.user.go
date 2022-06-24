@@ -7,11 +7,6 @@ import (
 	"github.com/spo-iitk/ras-backend/constants"
 )
 
-func createUser(ctx *gin.Context, user *User) (uint, error) {
-	tx := db.WithContext(ctx).Create(user)
-	return user.ID, tx.Error
-}
-
 func firstOrCreateUser(ctx *gin.Context, user *User) (uint, error) {
 	tx := db.WithContext(ctx).Where("user_id = ? ", user.UserID).FirstOrCreate(user)
 	return user.ID, tx.Error
