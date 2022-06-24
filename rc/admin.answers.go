@@ -1,12 +1,28 @@
 package rc
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/util"
+)
 
 func getStudentAnswers(ctx *gin.Context) {
-	sid := ctx.Param("sid")
-	var answers []RecruitmentCycleQuestionsAnswer
+	sid, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	err := fetchStudentAnswers(ctx, sid, &answers)
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var answers []getStudentEnrollmentResponse
+
+	err = fetchStudentQuestionsAnswers(ctx, rid, sid, &answers)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

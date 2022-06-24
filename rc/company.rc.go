@@ -25,7 +25,7 @@ func getCompanyRecruitmentCycle(ctx *gin.Context) {
 	}
 	var rcsr []companyRecruitmentCycleResponse
 	for _, rc := range rcs {
-		rcsr = append(rcsr, companyRecruitmentCycleResponse{ID: rc.ID, Name: string(rc.Type) + " " + rc.AcademicYear + " " + rc.Phase})
+		rcsr = append(rcsr, companyRecruitmentCycleResponse{ID: rc.ID, Name: string(rc.Type) + " " + rc.AcademicYear})
 	}
 	ctx.JSON(200, rcsr)
 }
