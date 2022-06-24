@@ -9,6 +9,7 @@ import (
 type Proforma struct {
 	gorm.Model
 	Eligibility               string        `gorm:"index" json:"eligibility"`
+	CPI                       float64       `json:"cpi" gorm:"default:0"`
 	CompanyID                 uint          `gorm:"index" json:"company_id"`
 	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
 	RecruitmentCycleID        uint          `gorm:"index" json:"recruitment_cycle_id"`

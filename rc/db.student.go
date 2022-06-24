@@ -74,7 +74,7 @@ func getRegisteredStudentCount(ctx *gin.Context, rid uint) (int, error) {
 	return int(count), tx.Error
 }
 
-func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string) (bool, error) {
+func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string, cpiEligibility float64) (bool, error) {
 
 	var primaryID int
 	var secondaryID int
@@ -90,7 +90,7 @@ func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string) (bool, e
 	primaryID = int(student.ProgramDepartmentID)
 	secondaryID = int(student.SecondaryProgramDepartmentID)
 
-	if student.IsVerified {
+	if student.IsVerified && student.CPI >= cpiEligibility {
 
 		if eligibility[primaryID] == '1' || eligibility[secondaryID] == '1' {
 			return true, nil

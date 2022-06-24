@@ -85,10 +85,10 @@ func firstOrCreateEmptyPerfoma(ctx *gin.Context, jp *Proforma) error {
 	return tx.Error
 }
 
-func getEligibility(ctx *gin.Context, pid uint) (string, error) {
+func getEligibility(ctx *gin.Context, pid uint) (string, float64, error) {
 	var proforma Proforma
 	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", pid).First(&proforma)
-	return proforma.Eligibility, tx.Error
+	return proforma.Eligibility, proforma.CPI, tx.Error
 }
 
 func getRolesCount(ctx *gin.Context, rid uint) (int, error) {

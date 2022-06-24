@@ -90,7 +90,7 @@ type StudentRecruitmentCycle struct {
 	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
 	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
 	CPI                          float64                     `json:"cpi"`
-	Email                        string                      `grom:"index" json:"email"`
+	Email                        string                      `gorm:"index" json:"email"`
 	Name                         string                      `json:"name"`
 	Type                         StudentRecruitmentCycleType `json:"type" gorm:"default:Available"`
 	IsFrozen                     bool                        `json:"is_frozen" gorm:"default:false"`

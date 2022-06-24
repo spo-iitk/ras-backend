@@ -29,13 +29,13 @@ func postApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
-	proformaEligibility, err := getEligibility(ctx, pid)
+	proformaEligibility, cpiEligibility, err := getEligibility(ctx, pid)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	eligible, err := rc.GetStudentEligible(ctx, sid, proformaEligibility)
+	eligible, err := rc.GetStudentEligible(ctx, sid, proformaEligibility, cpiEligibility)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
