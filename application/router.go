@@ -38,7 +38,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 			proforma.GET("/event", getEventsByProformaHandler)
 			proforma.POST("/event", postEventHandler)
-			proforma.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel))
 			proforma.PUT("/event", putEventHandler)
 			proforma.DELETE("/event/:eid", deleteEventHandler)
 
