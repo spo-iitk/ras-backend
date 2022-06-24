@@ -74,7 +74,7 @@ func putProformaHandler(ctx *gin.Context) {
 
 type hideProformaRequest struct {
 	ID          uint `binding:"required"`
-	HideDetails bool `binding:"required" json:"hide_details"`
+	HideDetails bool `json:"hide_details"`
 }
 
 func hideProformaHandler(ctx *gin.Context) {
