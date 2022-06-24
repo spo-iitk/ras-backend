@@ -54,11 +54,12 @@ func getStudentResume(ctx *gin.Context) {
 		return
 	}
 
-	resumes, err := fetchStudentResume(ctx, sid)
+	var resumes []StudentRecruitmentCycleResume
+	err = fetchStudentResume(ctx, sid, &resumes)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"resumes": resumes})
+	ctx.JSON(http.StatusOK, resumes)
 }
