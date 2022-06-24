@@ -103,8 +103,7 @@ func deleteApplicationHandler(ctx *gin.Context) {
 }
 
 func getEventHandler(ctx *gin.Context) {
-	eid_string := ctx.Param("eid")
-	eid, err := util.ParseUint(eid_string)
+	eid, err := util.ParseUint(ctx.Param("eid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

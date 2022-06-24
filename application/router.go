@@ -14,6 +14,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
 		admin.GET("/event", getAllEventsByRCHandler)
+		admin.GET("/event/:eid", getEventHandler)
 		admin.GET("/student/stat", getStats)
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
