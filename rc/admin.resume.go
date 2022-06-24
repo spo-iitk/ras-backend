@@ -13,7 +13,7 @@ type AllResumeResponse struct {
 	Name          string `json:"name"`
 	Email         string `json:"email"`
 	Sid           uint   `json:"sid"`
-	RsId          uint   `json:"rsid"`
+	Rsid          uint   `json:"rsid"`
 	Resume        string `json:"resume"`
 	Verified      bool   `json:"verified"`
 	ActionTakenBy string `json:"action_taken_by"`
