@@ -3,12 +3,45 @@ package application
 import "github.com/gin-gonic/gin"
 
 func fetchProformaByCompanyRC(ctx *gin.Context, cid uint, jps *[]Proforma) error {
-	tx := db.WithContext(ctx).Where("company_recruitment_cycle_id = ?", cid).Find(jps)
+	tx := db.WithContext(ctx).Where("company_recruitment_cycle_id = ?", cid).
+		Select(
+			"id",
+			"created_at",
+			"updated_at",
+			"deleted_at",
+			"eligibility",
+			"company_id",
+			"company_recruitment_cycle_id",
+			"recruitment_cycle_id",
+			"is_approved",
+			"action_taken_by",
+			"set_deadline",
+			"hide_details",
+			"active_hr_id",
+			"nature_of_business",
+			"tentative_job_location").
+		Find(jps)
 	return tx.Error
 }
 
 func fetchProformaByRC(ctx *gin.Context, rid uint, jps *[]Proforma) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(jps)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).
+		Select(
+			"id",
+			"created_at",
+			"updated_at",
+			"deleted_at",
+			"eligibility",
+			"company_id",
+			"company_recruitment_cycle_id",
+			"recruitment_cycle_id",
+			"is_approved",
+			"set_deadline",
+			"hide_details",
+			"active_hr_id",
+			"nature_of_business",
+			"tentative_job_location").
+		Find(jps)
 	return tx.Error
 }
 
@@ -24,6 +57,11 @@ func createProforma(ctx *gin.Context, jp *Proforma) error {
 
 func updateProforma(ctx *gin.Context, jp *Proforma) error {
 	tx := db.WithContext(ctx).Where("id = ?", jp.ID).Updates(jp)
+	return tx.Error
+}
+
+func updateHideProforma(ctx *gin.Context, jp *hideProformaRequest) error {
+	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", jp.ID).Update("hide_details", jp.HideDetails)
 	return tx.Error
 }
 

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getAllCompanies(ctx *gin.Context) {
@@ -62,11 +63,14 @@ func postNewCompany(ctx *gin.Context) {
 }
 
 func getCompany(ctx *gin.Context) {
-	rid := ctx.Param("rid")
-	cid := ctx.Param("cid")
+	cid, err := util.ParseUint(ctx.Param("cid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
 	var company CompanyRecruitmentCycle
 
-	err := fetchCompany(ctx, rid, cid, &company)
+	err = FetchCompany(ctx, cid, &company)
 	if err != nil {
 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
 		return

@@ -7,12 +7,12 @@ func fetchAllCompanies(ctx *gin.Context, rid string, companies *[]CompanyRecruit
 	return tx.Error
 }
 
-func fetchCompany(ctx *gin.Context, rid string, cid string, company *CompanyRecruitmentCycle) error {
+func fetchCompanyByRCIDAndCID(ctx *gin.Context, rid string, cid string, company *CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, cid).First(company)
 	return tx.Error
 }
 
-func FetchCompanyByID(ctx *gin.Context, cid uint, company *CompanyRecruitmentCycle) error {
+func FetchCompany(ctx *gin.Context, cid uint, company *CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("id = ?", cid).First(company)
 	return tx.Error
 }

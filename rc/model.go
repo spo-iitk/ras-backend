@@ -1,6 +1,8 @@
 package rc
 
 import (
+	"database/sql"
+
 	"gorm.io/gorm"
 )
 
@@ -25,7 +27,7 @@ type RecruitmentCycleQuestionsType string
 
 const (
 	MCQ         RecruitmentCycleQuestionsType = "MCQ"
-	SHORTANSWER RecruitmentCycleQuestionsType = "ShortAnswer"
+	SHORTANSWER RecruitmentCycleQuestionsType = "Short Answer"
 	BOOLEAN     RecruitmentCycleQuestionsType = "Boolean"
 )
 
@@ -41,13 +43,11 @@ type RecruitmentCycleQuestion struct {
 
 type RecruitmentCycleQuestionsAnswer struct {
 	gorm.Model
-	RecruitmentCycleQuestionID uint                     `gorm:"index" json:"recruitment_cycle_question_id"`
+	RecruitmentCycleQuestionID uint                     `gorm:"index;->;<-:create" json:"recruitment_cycle_question_id"`
 	RecruitmentCycleQuestion   RecruitmentCycleQuestion `gorm:"foreignkey:RecruitmentCycleQuestionID" json:"-"`
-	StudentRecruitmentCycleID  uint                     `gorm:"uniqueIndex;->;<-:create" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycleID  uint                     `gorm:"index;->;<-:create" json:"student_recruitment_cycle_id"`
 	StudentRecruitmentCycle    StudentRecruitmentCycle  `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
 	Answer                     string                   `json:"answer"`
-	Comments                   string                   `json:"comments"`
-	Status                     string                   `json:"status"`
 }
 
 type CompanyRecruitmentCycle struct {
@@ -85,7 +85,7 @@ const (
 type StudentRecruitmentCycle struct {
 	gorm.Model
 	StudentID                    uint                        `gorm:"index" json:"student_id"`
-	RecruitmentCycleID           uint                        `gorm:"index" json:"recruitment_cycle_id" binding:"required"`
+	RecruitmentCycleID           uint                        `gorm:"index" json:"recruitment_cycle_id"`
 	RecruitmentCycle             RecruitmentCycle            `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
 	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
@@ -94,5 +94,17 @@ type StudentRecruitmentCycle struct {
 	Name                         string                      `json:"name"`
 	Type                         StudentRecruitmentCycleType `json:"type" gorm:"default:Available"`
 	IsFrozen                     bool                        `json:"is_frozen" gorm:"default:false"`
+	IsVerified                   bool                        `json:"is_verified" gorm:"default:false"`
 	Comment                      string                      `json:"comment"`
+}
+
+type StudentRecruitmentCycleResume struct {
+	gorm.Model
+	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycle   StudentRecruitmentCycle `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
+	RecruitmentCycleID        uint                    `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycle          RecruitmentCycle        `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
+	Resume                    string                  `json:"resume"`
+	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
+	ActionTakenBy             string                  `json:"action_taken_by"`
 }

@@ -27,25 +27,6 @@ func getAllHRHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, HRs)
 }
 
-func getHRHandler(ctx *gin.Context) {
-	var getHRRequest CompanyHR
-
-	id, err := strconv.ParseUint(ctx.Param("hrid"), 10, 64)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	err = getHR(ctx, &getHRRequest, uint(id))
-
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, getHRRequest)
-}
-
 func deleteHRHandler(ctx *gin.Context) {
 
 	hrid, err := strconv.ParseUint(ctx.Param("hrid"), 10, 64)
@@ -84,33 +65,4 @@ func addHRHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully added"})
 
-}
-
-func updateHRHandler(ctx *gin.Context) {
-	var updateHRRequest CompanyHR
-
-	if err := ctx.ShouldBindJSON(&updateHRRequest); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if updateHRRequest.ID == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter HR ID"})
-		return
-	}
-
-	updated, err := updateHR(ctx, &updateHRRequest)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if !updated {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "HR not found"})
-		return
-	}
-
-	logrus.Infof("An HR with id %d is updated", updateHRRequest.ID)
-
-	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }

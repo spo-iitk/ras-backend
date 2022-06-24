@@ -32,7 +32,7 @@ type ApplicationQuestionsType string
 
 const (
 	MCQ         ApplicationQuestionsType = "MCQ"
-	SHORTANSWER ApplicationQuestionsType = "ShortAnswer"
+	SHORTANSWER ApplicationQuestionsType = "Short Answer"
 	BOOLEAN     ApplicationQuestionsType = "Boolean"
 )
 

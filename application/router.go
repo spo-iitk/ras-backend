@@ -18,12 +18,15 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/resume", ras.PlaceHolderController)
-		admin.POST("/resume", ras.PlaceHolderController) // bulk accept/reject
+		admin.POST("/resume", ras.PlaceHolderController)
+
+		admin.PUT("/proforma", putProformaHandler)
+		admin.PUT("/proforma/hide", hideProformaHandler)
+		admin.POST("/proforma", postProformaHandler)
 
 		proforma := admin.Group("/proforma/:pid")
 		{
 			proforma.GET("", getProformaHandler)
-			proforma.PUT("", putProformaHandler)
 			proforma.DELETE("", deleteProformaHandler)
 
 			proforma.GET("/question", getQuestionsByProformaHandler)
@@ -35,7 +38,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 			proforma.GET("/event", getEventsByProformaHandler)
 			proforma.POST("/event", postEventHandler)
-			proforma.POST("/event/:eid/reminder", postEventReminderHandler(mail_channel))
 			proforma.PUT("/event", putEventHandler)
 			proforma.DELETE("/event/:eid", deleteEventHandler)
 
@@ -43,7 +45,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.POST("/event/:eid/student", postStudentsByEventHandler)
 			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
 			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
-
 		}
 	}
 }
@@ -79,7 +80,7 @@ func CompanyRouter(r *gin.Engine) {
 		company.POST("/event", postEventByCompanyHandler)
 		company.GET("/event/:eid", getEventHandler)
 
-		company.PUT("/event/:eid", putEventByCompanyHandler)
+		company.PUT("/event", putEventByCompanyHandler)
 		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
 
 		company.GET("/event/:eid/student", getStudentsByEventHandler)

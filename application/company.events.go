@@ -104,7 +104,7 @@ func deleteEventByCompanyHandler(ctx *gin.Context) {
 	}
 
 	var event ProformaEvent
-	err = fetchEvent(ctx, event.ID, &event)
+	err = fetchEvent(ctx, eid, &event)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
