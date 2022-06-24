@@ -39,6 +39,11 @@ func postNewCompany(ctx *gin.Context) {
 		return
 	}
 
+	if addNewCompany.CompanyID == 0 {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": "company_id is required"})
+		return
+	}
+
 	rid, err := strconv.ParseUint(ctx.Param("rid"), 10, 64)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -49,6 +54,9 @@ func postNewCompany(ctx *gin.Context) {
 		CompanyID:          addNewCompany.CompanyID,
 		CompanyName:        addNewCompany.CompanyName,
 		RecruitmentCycleID: uint(rid),
+		HR1:                addNewCompany.HR1,
+		HR2:                addNewCompany.HR2,
+		HR3:                addNewCompany.HR3,
 		Comments:           addNewCompany.Comments,
 	}
 
@@ -60,6 +68,35 @@ func postNewCompany(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, company)
+}
+
+func putNewCompany(ctx *gin.Context) {
+	var editCompanyRequest CompanyRecruitmentCycle
+
+	err := ctx.ShouldBindJSON(&editCompanyRequest)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if editCompanyRequest.CompanyID != 0 || editCompanyRequest.RecruitmentCycleID != 0 {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": "company_id or rid is not allowed"})
+		return
+	}
+
+	if editCompanyRequest.ID == 0 {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": "id is required"})
+		return
+	}
+
+	err = editCompany(ctx, &editCompanyRequest)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, editCompanyRequest)
 }
 
 func getCompany(ctx *gin.Context) {

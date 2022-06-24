@@ -22,6 +22,11 @@ func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
 	return tx.Error
 }
 
+func editCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Create(company)
+	return tx.Error
+}
+
 func FetchCompanyRCID(ctx *gin.Context, rid uint, companyid uint) (uint, error) {
 	var company CompanyRecruitmentCycle
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, companyid).First(&company)

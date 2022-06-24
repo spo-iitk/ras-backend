@@ -22,6 +22,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.GET("/company", getAllCompanies) // all registerd compnay
 		admin.POST("/company", postNewCompany) // add compnay to RC from master
+		admin.PUT("/company", putNewCompany)   // add compnay to RC from master
 		admin.GET("/company/:cid", getCompany) // get company
 
 		admin.GET("/student", getAllStudents)
