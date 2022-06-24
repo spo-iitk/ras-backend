@@ -1,6 +1,7 @@
 package rc
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,13 +11,13 @@ import (
 )
 
 type AllResumeResponse struct {
-	Name          string `json:"name"`
-	Email         string `json:"email"`
-	Sid           uint   `json:"sid"`
-	Rsid          uint   `json:"rsid"`
-	Resume        string `json:"resume"`
-	Verified      bool   `json:"verified"`
-	ActionTakenBy string `json:"action_taken_by"`
+	Name          string       `json:"name"`
+	Email         string       `json:"email"`
+	Sid           uint         `json:"sid"`
+	Rsid          uint         `json:"rsid"`
+	Resume        string       `json:"resume"`
+	Verified      sql.NullBool `json:"verified"`
+	ActionTakenBy string       `json:"action_taken_by"`
 }
 
 func getAllResumes(ctx *gin.Context) {
