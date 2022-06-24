@@ -14,7 +14,7 @@ type Proforma struct {
 	IsApproved                sql.NullBool `json:"is_approved" gorm:"default:NULL"`
 	ActionTakenBy             string       `json:"action_taken_by"`
 	SetDeadline               uint         `json:"set_deadline" gorm:"default:0"` // 0 implies unpublished
-	HideDetails               bool         `gorm:"default:false" json:"hide_details"`
+	HideDetails               bool         `gorm:"default:true" json:"hide_details"`
 	ActiveHRID                string       `json:"active_hr_id"`
 	Eligibility               string       `gorm:"index" json:"eligibility"`
 	CPICutoff                 float64      `gorm:"default:0" json:"cpi_cutoff"`
