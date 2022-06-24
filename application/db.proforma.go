@@ -60,6 +60,11 @@ func updateProforma(ctx *gin.Context, jp *Proforma) error {
 	return tx.Error
 }
 
+func updateHideProforma(ctx *gin.Context, jp *hideProformaRequest) error {
+	tx := db.WithContext(ctx).Where("id = ?", jp.ID).Update("hide_details", jp.HideDetails)
+	return tx.Error
+}
+
 func updateProformaForCompany(ctx *gin.Context, jp *Proforma) (bool, error) {
 	tx := db.WithContext(ctx).Where("id = ? AND company_recruitment_cycle_id = ?", jp.ID, jp.CompanyRecruitmentCycleID).Updates(jp)
 	return tx.RowsAffected == 1, tx.Error

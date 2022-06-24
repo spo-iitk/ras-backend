@@ -21,6 +21,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.POST("/resume", ras.PlaceHolderController)
 
 		admin.PUT("/proforma", putProformaHandler)
+		admin.PUT("/proforma/hide", hideProformaHandler)
 		admin.POST("/proforma", postProformaHandler)
 
 		proforma := admin.Group("/proforma/:pid")

@@ -69,6 +69,32 @@ func putProformaHandler(ctx *gin.Context) {
 	ctx.JSON(200, jp)
 }
 
+type hideProformaRequest struct {
+	ID          uint `binding:"required"`
+	HideDetails bool `binding:"required" json:"hide_details"`
+}
+
+func hideProformaHandler(ctx *gin.Context) {
+	var req hideProformaRequest
+
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = updateHideProforma(ctx, &req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v edited a proforma with id %d", user, req.ID)
+	ctx.JSON(200, req)
+}
+
 func postProformaHandler(ctx *gin.Context) {
 	var jp Proforma
 
