@@ -1,6 +1,8 @@
 package application
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -66,7 +68,8 @@ func putProformaHandler(ctx *gin.Context) {
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
-	ctx.JSON(200, jp)
+
+	ctx.JSON(200, gin.H{"status": "Updated proforma with id " + fmt.Sprint(jp.ID)})
 }
 
 type hideProformaRequest struct {
@@ -92,7 +95,8 @@ func hideProformaHandler(ctx *gin.Context) {
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v edited a proforma with id %d", user, req.ID)
-	ctx.JSON(200, req)
+
+	ctx.JSON(200, gin.H{"status": "Updated proforma with id " + fmt.Sprint(req.ID)})
 }
 
 func postProformaHandler(ctx *gin.Context) {
