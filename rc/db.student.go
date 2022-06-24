@@ -80,7 +80,7 @@ func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string) (bool, e
 	var secondaryID int
 
 	var student StudentRecruitmentCycle
-  
+
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("id = ?", sid).First(&student)
 
 	if tx.Error != nil {
@@ -90,10 +90,12 @@ func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string) (bool, e
 	primaryID = int(student.ProgramDepartmentID)
 	secondaryID = int(student.SecondaryProgramDepartmentID)
 
-	if eligibility[primaryID] == '1' || eligibility[secondaryID] == '1' {
-		return true, nil
-	}
+	if student.IsVerified {
 
+		if eligibility[primaryID] == '1' || eligibility[secondaryID] == '1' {
+			return true, nil
+		}
+	}
 	return false, nil
 
 }
