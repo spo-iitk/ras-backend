@@ -17,12 +17,6 @@ func firstOrCreateUser(ctx *gin.Context, user *User) (uint, error) {
 	return user.ID, tx.Error
 }
 
-func getAllCompaniesAdded(ctx *gin.Context) ([]User, error) {
-	var companies []User
-	tx := db.WithContext(ctx).Where("role_id = 2").Order("created_at DESC").Limit(50).Find(&companies)
-	return companies, tx.Error
-}
-
 func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role, error) {
 	var user User
 	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
