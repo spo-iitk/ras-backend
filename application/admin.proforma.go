@@ -45,6 +45,24 @@ func getProformaByCompanyHandler(ctx *gin.Context) {
 	ctx.JSON(200, jps)
 }
 
+func getAllProformasHandler(ctx *gin.Context) {
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	var jps []Proforma
+
+	err = fetchProformaByRCAdmin(ctx, rid, &jps)
+	if err != nil {
+		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, jps)
+}
+
 func putProformaHandler(ctx *gin.Context) {
 	var jp Proforma
 

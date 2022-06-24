@@ -11,19 +11,18 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
 		admin.GET("/count", getApplicationCount)
-
-		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
-		admin.GET("/event", getAllEventsByRCHandler)
-		admin.GET("/event/:eid", getEventHandler)
 		admin.GET("/student/stat", getStats)
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
-		admin.GET("/resume", ras.PlaceHolderController)
-		admin.POST("/resume", ras.PlaceHolderController)
+		admin.GET("/event", getAllEventsByRCHandler)
+		admin.GET("/event/:eid", getEventHandler)
 
+		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
+
+		admin.GET("/proforma", getAllProformasHandler)
+		admin.POST("/proforma", postProformaHandler)
 		admin.PUT("/proforma", putProformaHandler)
 		admin.PUT("/proforma/hide", hideProformaHandler)
-		admin.POST("/proforma", postProformaHandler)
 
 		proforma := admin.Group("/proforma/:pid")
 		{
