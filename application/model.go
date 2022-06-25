@@ -8,17 +8,18 @@ import (
 
 type Proforma struct {
 	gorm.Model
-	Eligibility               string       `gorm:"index" json:"eligibility"`
-	CPI                       float64      `json:"cpi" gorm:"default:0"`
-	CompanyID                 uint         `gorm:"index" json:"company_id"`
-	CompanyRecruitmentCycleID uint         `gorm:"index" json:"company_recruitment_cycle_id"`
-	RecruitmentCycleID        uint         `gorm:"index" json:"recruitment_cycle_id"`
-	IsApproved                sql.NullBool `json:"is_approved" gorm:"default:NULL"`
+	CompanyRecruitmentCycleID uint         `json:"company_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
+	CompanyID                 uint         `json:"company_id" gorm:"index;->;<-:create"`
+	CompanyName               string       `json:"company_name"`
 	ActionTakenBy             string       `json:"action_taken_by"`
-	SetDeadline               uint         `gorm:"default:0" json:"set_deadline"` // 0 implies unpublished
-	HideDetails               bool         `gorm:"default:false" json:"hide_details"`
-	ActiveHRID                string       `json:"active_hr_id"`
-	NatureOfBusiness          string       `json:"nature_of_business"`
+	IsApproved                sql.NullBool `json:"is_approved" gorm:"index;default:NULL"`
+	Deadline                  uint         `json:"deadline" gorm:"default:0"` // 0 implies unpublished
+	Eligibility               string       `json:"eligibility"`
+	CPICutoff                 float64      `json:"cpi_cutoff" gorm:"default:0"`
+	HideDetails               bool         `json:"hide_details" gorm:"default:true"`
+	ActiveHR                  string       `json:"active_hr"`
+	Role                      string       `json:"role"`
 	TentativeJobLocation      string       `json:"tentative_job_location"`
 	JobDescription            string       `json:"job_description"`
 	CostToCompany             string       `json:"cost_to_company"`
@@ -29,40 +30,40 @@ type Proforma struct {
 	MessageForCordinator      string       `json:"message_for_cordinator"`
 }
 
-type ApplicationQuestionsType string
+type ApplicationQuestionType string
 
 const (
-	MCQ         ApplicationQuestionsType = "MCQ"
-	SHORTANSWER ApplicationQuestionsType = "Short Answer"
-	BOOLEAN     ApplicationQuestionsType = "Boolean"
+	MCQ         ApplicationQuestionType = "MCQ"
+	SHORTANSWER ApplicationQuestionType = "Short Answer"
+	BOOLEAN     ApplicationQuestionType = "Boolean"
 )
 
-type JobApplicationQuestion struct {
+type ApplicationQuestion struct {
 	gorm.Model
-	ProformaID uint                     `gorm:"index" json:"proforma_id"`
-	Proforma   Proforma                 `gorm:"foreignkey:ProformaID" json:"-"`
-	Type       ApplicationQuestionsType `json:"type"`
-	Question   string                   `json:"question"`
-	Options    string                   `json:"options"` //csv
+	ProformaID uint                    `json:"proforma_id" gorm:"index;->;<-:create"`
+	Proforma   Proforma                `json:"-" gorm:"foreignkey:ProformaID"`
+	Type       ApplicationQuestionType `json:"type"`
+	Question   string                  `json:"question"`
+	Options    string                  `json:"options"` //csv
 }
 
-type JobApplicationQuestionsAnswer struct {
+type ApplicationQuestionAnswer struct {
 	gorm.Model
-	JobApplicationQuestionID  uint                   `gorm:"index" json:"job_application_question_id"`
-	JobApplicationQuestion    JobApplicationQuestion `gorm:"foreignkey:JobApplicationQuestionID" json:"-"`
-	StudentRecruitmentCycleID uint                   `gorm:"index" json:"student_recruitment_cycle_id"`
-	Answer                    string                 `json:"answer"`
+	ApplicationQuestionID     uint                `json:"application_question_id" gorm:"index;->;<-:create"`
+	ApplicationQuestion       ApplicationQuestion `json:"-" gorm:"foreignkey:ApplicationQuestionID"`
+	StudentRecruitmentCycleID uint                `json:"student_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	Answer                    string              `json:"answer"`
 }
 
 type ProformaEvent struct {
 	gorm.Model
-	ProformaID       uint     `gorm:"index" json:"proforma_id"`
-	Proforma         Proforma `gorm:"foreignkey:ProformaID" json:"-"`
+	ProformaID       uint     `json:"proforma_id" gorm:"index;->;<-:create"`
+	Proforma         Proforma `json:"-" gorm:"foreignkey:ProformaID"`
 	Name             string   `json:"name"`
 	Duration         string   `json:"duration"`
 	Venue            string   `json:"venue"`
-	StartTime        int64    `json:"start_time"`
-	EndTime          int64    `json:"end_time"`
+	StartTime        uint     `json:"start_time"`
+	EndTime          uint     `json:"end_time"`
 	Description      string   `json:"description"`
 	MainPOC          string   `json:"main_poc"`
 	Sequence         int      `json:"sequence"`
@@ -71,17 +72,26 @@ type ProformaEvent struct {
 
 type EventCoordinator struct {
 	gorm.Model
-	ProformaEventID uint          `gorm:"index" json:"proforma_event_id"`
-	ProformaEvent   ProformaEvent `gorm:"foreignkey:ProformaEventID" json:"-"`
+	ProformaEventID uint          `json:"proforma_event_id" gorm:"index;->;<-:create"`
+	ProformaEvent   ProformaEvent `json:"-" gorm:"foreignkey:ProformaEventID"`
 	CordinatorID    string        `json:"cordinator_id"`
 	CordinatorName  string        `json:"cordinator_name"`
 }
 
 type EventStudent struct {
 	gorm.Model
-	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
-	ProformaEventID           uint          `gorm:"index" json:"proforma_event_id"`
-	ProformaEvent             ProformaEvent `gorm:"foreignkey:ProformaEventID" json:"-"`
-	StudentRecruitmentCycleID uint          `gorm:"index" json:"student_recruitment_cycle_id"`
-	Present                   bool          `gorm:"default:true" json:"present"`
+	ProformaEventID           uint          `json:"proforma_event_id" gorm:"index;->;<-:create"`
+	ProformaEvent             ProformaEvent `json:"-" gorm:"foreignkey:ProformaEventID"`
+	CompanyRecruitmentCycleID uint          `json:"company_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	StudentRecruitmentCycleID uint          `json:"student_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	Present                   bool          `json:"present" gorm:"default:true"`
+}
+
+type ApplicationResume struct {
+	gorm.Model
+	StudentRecruitmentCycleID uint     `json:"student_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	ProformaID                uint     `json:"proforma_id" gorm:"index;->;<-:create"`
+	Profoma                   Proforma `json:"-" gorm:"foreignkey:ProformaID"`
+	ResumeID                  uint     `json:"resume_id"`
+	Resume                    string   `json:"resume"`
 }

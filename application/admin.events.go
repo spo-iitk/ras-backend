@@ -7,6 +7,12 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
+type getAllEventsByRCResponse struct {
+	ProformaEvent
+	CompanyName string `json:"company_name"`
+	Role        string `json:"role"`
+}
+
 func getAllEventsByRCHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
@@ -14,24 +20,26 @@ func getAllEventsByRCHandler(ctx *gin.Context) {
 		return
 	}
 
-	events := []ProformaEvent{}
-	err = fetchEventsByRC(ctx, rid, &events)
+	var events []getAllEventsByRCResponse
 
+	err = fetchEventsByRC(ctx, rid, &events)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, events)
 }
 
 func getEventsByProformaHandler(ctx *gin.Context) {
+
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	events := []ProformaEvent{}
+	var events []ProformaEvent
 	err = fetchEventsByProforma(ctx, pid, &events)
 
 	if err != nil {

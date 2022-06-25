@@ -40,7 +40,7 @@ func postEventByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "event created with id " + fmt.Sprint(event.ID)})
+	ctx.JSON(http.StatusOK, gin.H{"status": "event created with id " + fmt.Sprint(event.ID)})
 }
 
 func putEventByCompanyHandler(ctx *gin.Context) {
@@ -87,7 +87,7 @@ func putEventByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "event created with id " + fmt.Sprint(event.ID)})
+	ctx.JSON(http.StatusOK, gin.H{"status": "event created with id " + fmt.Sprint(event.ID)})
 }
 
 func deleteEventByCompanyHandler(ctx *gin.Context) {
@@ -128,5 +128,29 @@ func deleteEventByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "deleted event with id " + fmt.Sprint(eid)})
+	ctx.JSON(http.StatusOK, gin.H{"status": "deleted event with id " + fmt.Sprint(eid)})
+}
+
+func getEventsByProformaForCompanyHandler(ctx *gin.Context) {
+	_, err := extractCompanyRCID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract student rcid"})
+		return
+	}
+
+	pid, err := util.ParseUint(ctx.Param("pid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var events []ProformaEvent
+	err = fetchEventsByProforma(ctx, pid, &events)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, events)
 }

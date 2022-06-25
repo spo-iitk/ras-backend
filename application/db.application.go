@@ -1,6 +1,8 @@
 package application
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func fetchApplicationEventID(ctx *gin.Context, pid uint) (uint, error) {
 	var event ProformaEvent
@@ -9,12 +11,72 @@ func fetchApplicationEventID(ctx *gin.Context, pid uint) (uint, error) {
 }
 
 func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
-	tx := db.WithContext(ctx).Where("proforma_event_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(&EventStudent{})
-	return tx.Error
+	var questions []getApplicationResponse
+	err := fetchApplicationQuestionsAnswers(ctx, pid, sid, &questions)
+	if err != nil {
+		return err
+	}
+
+	var qid []uint
+	for _, question := range questions {
+		qid = append(qid, question.ID)
+	}
+
+	tx := db.WithContext(ctx).Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	if err := tx.Where("proforma_event_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(&EventStudent{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Where("application_question_id IN ?", qid).Delete(&ApplicationQuestionAnswer{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Where("proforma_id = ?", pid).Delete(&ApplicationResume{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
 }
 
-// func fetchApplicationCount(ctx *gin.Context, sid uint) (bool, error) {
-// 	var count int64
-// 	tx := db.WithContext(ctx).Model(&EventStudent{}).Distinct().Where("student_recruitment_cycle_id = ?", sid).Count(&count)
-// 	return false, tx.Error
-// }
+func createApplication(ctx *gin.Context, application *EventStudent, answers *[]ApplicationQuestionAnswer, resume *ApplicationResume) error {
+	tx := db.WithContext(ctx).Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	if err := tx.Create(application).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Create(answers).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Create(resume).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}

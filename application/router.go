@@ -3,15 +3,14 @@ package application
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/mail"
-	"github.com/spo-iitk/ras-backend/ras"
 )
 
 func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
-		admin.GET("/count", getApplicationCount)
-		admin.GET("/student/stat", getStats)
+		admin.GET("/count", getApplicationCountHandler)
+		admin.GET("/student/stats", getStatsHandler)
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/event", getAllEventsByRCHandler)
@@ -30,9 +29,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.DELETE("", deleteProformaHandler)
 
 			proforma.GET("/question", getQuestionsByProformaHandler)
-			proforma.GET("/question/:qid", getQuestionHandler)
+			proforma.POST("/quxestion", postQuestionHandler)
 			proforma.PUT("/question/:qid", putQuestionHandler)
-			proforma.POST("/question", postQuestionHandler)
 
 			proforma.POST("/email", proformaEmailHandler(mail_channel))
 
@@ -43,8 +41,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 			proforma.GET("/event/:eid/student", getStudentsByEventHandler)
 			proforma.POST("/event/:eid/student", postStudentsByEventHandler)
-			proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
-			proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
+			// proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
+			// proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
 		}
 	}
 }
@@ -52,19 +50,18 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student/application/rc/:rid")
 	{
-		student.GET("/proforma", getProformaByRIDHandler)
-		student.GET("/proforma/:pid", getProformaHandler)
-		student.GET("/proforma/:pid/event", getEventsByProformaHandler)
+		student.GET("/proforma", getProformasForStudentHandler)
+		student.GET("/proforma/:pid", getProformaForStudentHandler)
+		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
 
+		student.GET("/proforma/:pid", getApplicationHandler)
 		student.POST("/proforma/:pid", postApplicationHandler)
 		student.DELETE("/proforma/:pid", deleteApplicationHandler)
 
 		student.GET("/event", getEventsByStudentHandler)
 		student.GET("/event/:eid", getEventHandler)
 
-		student.GET("/stat", ras.PlaceHolderController)
-		student.GET("/resume", ras.PlaceHolderController)
-		student.POST("/resume", ras.PlaceHolderController)
+		student.GET("/stats", getStatsHandler)
 	}
 }
 func CompanyRouter(r *gin.Engine) {
@@ -74,16 +71,16 @@ func CompanyRouter(r *gin.Engine) {
 		company.POST("/proforma", postProformaByCompanyHandler)
 
 		company.PUT("/proforma", putProformaByCompanyHandler)
-		company.GET("/proforma/:pid", getProformaHandler)
+		company.GET("/proforma/:pid", getProformaHandlerForCompany)
 		company.DELETE("/proforma/:pid", deleteProformaByCompanyHandler)
 
-		company.GET("/proforma/:pid/event", getEventsByProformaHandler)
+		company.GET("/proforma/:pid/event", getEventsByProformaForCompanyHandler)
 		company.POST("/event", postEventByCompanyHandler)
 		company.GET("/event/:eid", getEventHandler)
 
 		company.PUT("/event", putEventByCompanyHandler)
 		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
 
-		company.GET("/event/:eid/student", getStudentsByEventHandler)
+		company.GET("/event/:eid/student", getStudentsByEventForCompanyHandler)
 	}
 }

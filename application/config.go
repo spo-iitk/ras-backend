@@ -31,7 +31,7 @@ func openConnection() {
 
 	db = database
 
-	err = db.AutoMigrate(&Proforma{}, &JobApplicationQuestion{}, &JobApplicationQuestionsAnswer{},
+	err = db.AutoMigrate(&Proforma{}, &ApplicationQuestion{}, &ApplicationQuestionAnswer{},
 		&ProformaEvent{}, &EventCoordinator{}, &EventStudent{})
 	if err != nil {
 		logrus.Fatal("Failed to migrate application database: ", err)

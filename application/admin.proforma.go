@@ -1,7 +1,7 @@
 package application
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -12,7 +12,7 @@ import (
 func getProformaHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -20,47 +20,47 @@ func getProformaHandler(ctx *gin.Context) {
 
 	err = fetchProforma(ctx, pid, &jp)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, jp)
+	ctx.JSON(http.StatusOK, jp)
 }
 
 func getProformaByCompanyHandler(ctx *gin.Context) {
 	cid, err := util.ParseUint(ctx.Param("cid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	var jps []Proforma
 
-	err = fetchProformaByCompanyRC(ctx, cid, &jps)
+	err = fetchProformasByCompanyForAdmin(ctx, cid, &jps)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, jps)
+	ctx.JSON(http.StatusOK, jps)
 }
 
 func getAllProformasHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	var jps []Proforma
 
-	err = fetchProformaByRCAdmin(ctx, rid, &jps)
+	err = fetchProformaByRCForAdmin(ctx, rid, &jps)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, jps)
+	ctx.JSON(http.StatusOK, jps)
 }
 
 func putProformaHandler(ctx *gin.Context) {
@@ -68,18 +68,18 @@ func putProformaHandler(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&jp)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if jp.ID == 0 {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": "id is required"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		return
 	}
 
 	err = updateProforma(ctx, &jp)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -87,7 +87,7 @@ func putProformaHandler(ctx *gin.Context) {
 
 	logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
 
-	ctx.JSON(200, gin.H{"status": "Updated proforma with id " + fmt.Sprint(jp.ID)})
+	ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(jp.ID)})
 }
 
 type hideProformaRequest struct {
@@ -100,13 +100,13 @@ func hideProformaHandler(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = updateHideProforma(ctx, &req)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -114,7 +114,7 @@ func hideProformaHandler(ctx *gin.Context) {
 
 	logrus.Infof("%v edited a proforma with id %d", user, req.ID)
 
-	ctx.JSON(200, gin.H{"status": "Updated proforma with id " + fmt.Sprint(req.ID)})
+	ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(req.ID)})
 }
 
 func postProformaHandler(ctx *gin.Context) {
@@ -122,34 +122,34 @@ func postProformaHandler(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&jp)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = createProforma(ctx, &jp)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
-	ctx.JSON(200, gin.H{"pid": jp.ID})
+	ctx.JSON(http.StatusOK, gin.H{"pid": jp.ID})
 }
 
 func deleteProformaHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = deleteProforma(ctx, pid)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"status": "deleted proforma"})
+	ctx.JSON(http.StatusOK, gin.H{"status": "deleted proforma"})
 }

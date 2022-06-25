@@ -49,6 +49,19 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 		return
 	}
 
+	pid, err := util.ParseUint(ctx.Param("pid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var proforma Proforma
+	err = fetchProforma(ctx, pid, &proforma)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	var req postStudentsByEventRequest
 	err = ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -62,10 +75,11 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	students := []EventStudent{}
+	var students []EventStudent
 	for _, srcID := range srcIDs {
 		students = append(students, EventStudent{
 			ProformaEventID:           req.EventID,
+			CompanyRecruitmentCycleID: proforma.CompanyRecruitmentCycleID,
 			StudentRecruitmentCycleID: srcID,
 		})
 	}

@@ -2,18 +2,18 @@ package application
 
 import "github.com/gin-gonic/gin"
 
-func createEventStudent(ctx *gin.Context, eventStudent *EventStudent) error {
-	tx := db.WithContext(ctx).FirstOrCreate(eventStudent)
-	return tx.Error
-}
-
 func createEventStudents(ctx *gin.Context, eventStudents *[]EventStudent) error {
 	tx := db.WithContext(ctx).Create(eventStudents)
 	return tx.Error
 }
 
-func getRecruitmentStats(ctx *gin.Context, rid uint, stats *[]EventStudent) error {
-	tx := db.WithContext(ctx).Joins("proforma_event", db.Where("name IN", []EventType{Recruited, PIOPPOACCEPTED})).Where("recruitment_cycle_id = ?", rid).Find(stats)
+func getRecruitmentStats(ctx *gin.Context, rid uint, stats *[]statsResponse) error {
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{Recruited, PIOPPOACCEPTED}).
+		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.recruitment_cycle_id = ?", rid).
+		Select("event_students.student_recruitment_cycle_id, proformas.company_name, proformas.role ,proforma_events.name as type").
+		Order("event_students.student_recruitment_cycle_id").
+		Find(stats)
 	return tx.Error
 }
 
@@ -30,6 +30,8 @@ func fetchStudentsByEvent(ctx *gin.Context, eventID uint, students *[]EventStude
 
 func getCurrentApplicationCount(ctx *gin.Context, sid uint) (int, error) {
 	var count int64
-	tx := db.WithContext(ctx).Model(&EventStudent{}).Where("student_recruitment_cycle_id = ?", sid).Group("company_recruitment_cycle_id").Count(&count)
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Where("student_recruitment_cycle_id = ?", sid).
+		Group("company_recruitment_cycle_id").Count(&count)
 	return int(count), tx.Error
 }

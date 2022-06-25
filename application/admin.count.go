@@ -2,33 +2,32 @@ package application
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getApplicationCount(ctx *gin.Context) {
+func getApplicationCountHandler(ctx *gin.Context) {
 	var roleCount int
-	var PPOPPIOCount int
+	var recruitmentCount int
 
-	rid, err := strconv.ParseUint(ctx.Param("rid"), 10, 64)
+	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	roleCount, err = getRolesCount(ctx, uint(rid))
+	roleCount, err = fetchRolesCount(ctx, rid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	PPOPPIOCount, err = getPPOPIOCount(ctx, uint(rid))
+	recruitmentCount, err = fetchRecruitedCount(ctx, rid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"roles": roleCount, "ppo_pio": PPOPPIOCount})
-
+	ctx.JSON(http.StatusOK, gin.H{"roles": roleCount, "recruited": recruitmentCount})
 }
