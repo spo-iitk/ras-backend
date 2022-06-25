@@ -8,25 +8,25 @@ import (
 
 type Proforma struct {
 	gorm.Model
-	Eligibility               string        `gorm:"index" json:"eligibility"`
-	CPI                       float64       `json:"cpi" gorm:"default:0"`
-	CompanyID                 uint          `gorm:"index" json:"company_id"`
-	CompanyRecruitmentCycleID uint          `gorm:"index" json:"company_recruitment_cycle_id"`
-	RecruitmentCycleID        uint          `gorm:"index" json:"recruitment_cycle_id"`
-	IsApproved                sql.NullBool  `json:"is_approved" gorm:"default:false"`
-	ActionTakenBy             string        `json:"action_taken_by"`
-	SetDeadline               sql.NullInt64 `json:"set_deadline"` // NULL implies unpublished
-	HideDetails               bool          `gorm:"default:false" json:"hide_details"`
-	ActiveHRID                string        `json:"active_hr_id"`
-	NatureOfBusiness          string        `json:"nature_of_business"`
-	TentativeJobLocation      string        `json:"tentative_job_location"`
-	JobDescription            string        `json:"job_description"`
-	CostToCompany             string        `json:"cost_to_company"`
-	PackageDetails            string        `json:"package_details"`
-	BondDetails               string        `json:"bond_details"`
-	MedicalRequirements       string        `json:"medical_requirements"`
-	AdditionalEligibility     string        `json:"additional_eligibility"`
-	MessageForCordinator      string        `json:"message_for_cordinator"`
+	Eligibility               string       `gorm:"index" json:"eligibility"`
+	CPI                       float64      `json:"cpi" gorm:"default:0"`
+	CompanyID                 uint         `gorm:"index" json:"company_id"`
+	CompanyRecruitmentCycleID uint         `gorm:"index" json:"company_recruitment_cycle_id"`
+	RecruitmentCycleID        uint         `gorm:"index" json:"recruitment_cycle_id"`
+	IsApproved                sql.NullBool `json:"is_approved" gorm:"default:false"`
+	ActionTakenBy             string       `json:"action_taken_by"`
+	SetDeadline               uint         `gorm:"default:0" json:"set_deadline"` // 0 implies unpublished
+	HideDetails               bool         `gorm:"default:false" json:"hide_details"`
+	ActiveHRID                string       `json:"active_hr_id"`
+	NatureOfBusiness          string       `json:"nature_of_business"`
+	TentativeJobLocation      string       `json:"tentative_job_location"`
+	JobDescription            string       `json:"job_description"`
+	CostToCompany             string       `json:"cost_to_company"`
+	PackageDetails            string       `json:"package_details"`
+	BondDetails               string       `json:"bond_details"`
+	MedicalRequirements       string       `json:"medical_requirements"`
+	AdditionalEligibility     string       `json:"additional_eligibility"`
+	MessageForCordinator      string       `json:"message_for_cordinator"`
 }
 
 type ApplicationQuestionsType string
