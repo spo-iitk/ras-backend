@@ -39,7 +39,7 @@ func loginHandler(c *gin.Context) {
 
 	err = setLastLogin(c, loginReq.UserID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
