@@ -148,7 +148,7 @@ func getEventsByProformaForCompanyHandler(ctx *gin.Context) {
 	err = fetchEventsByProforma(ctx, pid, &events)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

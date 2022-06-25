@@ -18,7 +18,7 @@ func getStudentsByEventHandler(ctx *gin.Context) {
 	students := []EventStudent{}
 	err = fetchStudentsByEvent(ctx, eid, &students)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -30,7 +30,7 @@ func getStudentsByEventHandler(ctx *gin.Context) {
 	var studentRCs []rc.StudentRecruitmentCycle
 	err = rc.FetchStudents(ctx, studentRCIDs, &studentRCs)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -58,7 +58,7 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 	var proforma Proforma
 	err = fetchProforma(ctx, pid, &proforma)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -71,7 +71,7 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 
 	srcIDs, err := rc.FetchStudentRCIDs(ctx, rid, req.Emails)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -86,7 +86,7 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 
 	err = createEventStudents(ctx, &students)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

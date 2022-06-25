@@ -26,13 +26,13 @@ func proformaEmailHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		studentRCID, err := fetchStudentRCIDByEvents(ctx, request.EventID)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		studentEmails, err := rc.FetchStudentEmailBySRCID(ctx, studentRCID)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 

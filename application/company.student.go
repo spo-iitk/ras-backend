@@ -43,7 +43,7 @@ func getStudentsByEventForCompanyHandler(ctx *gin.Context) {
 	students := []EventStudent{}
 	err = fetchStudentsByEvent(ctx, eid, &students)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -55,7 +55,7 @@ func getStudentsByEventForCompanyHandler(ctx *gin.Context) {
 	var studentRCs []rc.StudentRecruitmentCycle
 	err = rc.FetchStudents(ctx, studentRCIDs, &studentRCs)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

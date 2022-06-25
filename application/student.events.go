@@ -18,7 +18,7 @@ func getEventsByStudentHandler(ctx *gin.Context) {
 	err = fetchEventsByStudent(ctx, sid, &events)
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -42,7 +42,7 @@ func getEventsByProformaForStudentHandler(ctx *gin.Context) {
 	err = fetchEventsByProforma(ctx, pid, &events)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

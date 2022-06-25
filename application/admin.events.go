@@ -24,7 +24,7 @@ func getAllEventsByRCHandler(ctx *gin.Context) {
 
 	err = fetchEventsByRC(ctx, rid, &events)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -43,7 +43,7 @@ func getEventsByProformaHandler(ctx *gin.Context) {
 	err = fetchEventsByProforma(ctx, pid, &events)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -68,7 +68,7 @@ func postEventHandler(ctx *gin.Context) {
 
 	err = createEvent(ctx, &event)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -90,7 +90,7 @@ func putEventHandler(ctx *gin.Context) {
 
 	err = updateEvent(ctx, &event)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -106,7 +106,7 @@ func deleteEventHandler(ctx *gin.Context) {
 
 	err = deleteEvent(ctx, eid)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
