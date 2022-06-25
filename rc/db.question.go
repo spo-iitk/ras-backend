@@ -23,12 +23,10 @@ func deleteStudentQuestion(ctx *gin.Context, qid string) error {
 }
 
 func fetchStudentQuestionsAnswers(ctx *gin.Context, rid, sid uint, questions *[]getStudentEnrollmentResponse) error {
-	tx := db.WithContext(ctx).Debug().Model(&RecruitmentCycleQuestion{}).
-		Joins("LEFT JOIN recruitment_cycle_questions_answers ON recruitment_cycle_questions_answers.recruitment_cycle_question_id = recruitment_cycle_questions.id").
+	tx := db.WithContext(ctx).Model(&RecruitmentCycleQuestion{}).
+		Joins("LEFT JOIN recruitment_cycle_questions_answers ON recruitment_cycle_questions_answers.recruitment_cycle_question_id = recruitment_cycle_questions.id AND recruitment_cycle_questions_answers.student_recruitment_cycle_id = ?", sid).
 		Select("recruitment_cycle_questions.*, recruitment_cycle_questions_answers.answer").
-		Where(
-			"recruitment_cycle_questions.recruitment_cycle_id = ? AND (recruitment_cycle_questions_answers.student_recruitment_cycle_id = ? OR recruitment_cycle_questions_answers.student_recruitment_cycle_id IS NULL)",
-			rid, sid).
+		Where("recruitment_cycle_questions.recruitment_cycle_id = ?", rid).
 		Find(questions)
 	return tx.Error
 }
