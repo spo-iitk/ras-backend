@@ -13,7 +13,7 @@ type Proforma struct {
 	CompanyID                 uint         `gorm:"index" json:"company_id"`
 	CompanyRecruitmentCycleID uint         `gorm:"index" json:"company_recruitment_cycle_id"`
 	RecruitmentCycleID        uint         `gorm:"index" json:"recruitment_cycle_id"`
-	IsApproved                sql.NullBool `json:"is_approved" gorm:"default:false"`
+	IsApproved                sql.NullBool `json:"is_approved" gorm:"default:NULL"`
 	ActionTakenBy             string       `json:"action_taken_by"`
 	SetDeadline               uint         `gorm:"default:0" json:"set_deadline"` // 0 implies unpublished
 	HideDetails               bool         `gorm:"default:false" json:"hide_details"`
