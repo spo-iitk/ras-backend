@@ -20,33 +20,33 @@ type AllResumeResponse struct {
 	ActionTakenBy string       `json:"action_taken_by"`
 }
 
-func getAllResumes(ctx *gin.Context) {
+func getAllResumesHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	var resumes []AllResumeResponse
 	err = fetchAllResumes(ctx, rid, &resumes)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, resumes)
 }
 
-func getResume(ctx *gin.Context) {
+func getResumeHandler(ctx *gin.Context) {
 	rsid, err := util.ParseUint(ctx.Param("rsid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	resume, err := fetchResume(ctx, rsid)
+	resume, err := FetchResume(ctx, rsid)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -57,10 +57,10 @@ type putResumeVerifyRequest struct {
 	Verified bool `json:"verified"`
 }
 
-func putResumeVerify(ctx *gin.Context) {
+func putResumeVerifyHandler(ctx *gin.Context) {
 	rsid, err := util.ParseUint(ctx.Param("rsid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -68,7 +68,7 @@ func putResumeVerify(ctx *gin.Context) {
 
 	err = ctx.BindJSON(&req)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -76,7 +76,7 @@ func putResumeVerify(ctx *gin.Context) {
 
 	ok, err := updateResumeVerify(ctx, rsid, req.Verified, user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -87,5 +87,5 @@ func putResumeVerify(ctx *gin.Context) {
 
 	logrus.Infof("%v verified resume with id %d, changed state to %v", user, rsid, req.Verified)
 
-	ctx.JSON(http.StatusOK, gin.H{"success": true})
+	ctx.JSON(http.StatusOK, gin.H{"status": true})
 }

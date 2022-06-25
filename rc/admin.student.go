@@ -10,23 +10,23 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getAllStudents(ctx *gin.Context) {
+func getAllStudentsHandler(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 	var students []StudentRecruitmentCycle
 
 	err := fetchAllStudents(ctx, rid, &students)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, students)
 }
 
-func getStudentByID(ctx *gin.Context) {
+func getStudentHandler(ctx *gin.Context) {
 	srid, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -34,19 +34,19 @@ func getStudentByID(ctx *gin.Context) {
 
 	err = fetchStudent(ctx, srid, &student)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, student)
 }
 
-func putStudent(ctx *gin.Context) {
+func putStudentHandler(ctx *gin.Context) {
 	var student StudentRecruitmentCycle
 
 	err := ctx.ShouldBindJSON(&student)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -57,7 +57,7 @@ func putStudent(ctx *gin.Context) {
 
 	ok, err := updateStudent(ctx, &student)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -78,18 +78,18 @@ type bulkFreezeStudentRequest struct {
 	Frozen bool     `json:"frozen"`
 }
 
-func bulkFreezeStudents(ctx *gin.Context) {
+func bulkFreezeStudentsHandler(ctx *gin.Context) {
 	var req bulkFreezeStudentRequest
 
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	ok, err := freezeStudentsToggle(ctx, req.Emails, req.Frozen)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -109,10 +109,10 @@ type bulkPostStudentRequest struct {
 	Email []string `json:"email" binding:"required"`
 }
 
-func postStudents(ctx *gin.Context) {
+func postStudentsHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -120,7 +120,7 @@ func postStudents(ctx *gin.Context) {
 
 	err = ctx.ShouldBindJSON(&emails)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -130,7 +130,7 @@ func postStudents(ctx *gin.Context) {
 
 	err = student.FetchStudents(ctx, &studentsGlobal, emailArr)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -148,7 +148,7 @@ func postStudents(ctx *gin.Context) {
 
 	err = createStudents(ctx, &students)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -166,12 +166,12 @@ func postStudents(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "added students"})
 }
 
-func deleteStudentByID(ctx *gin.Context) {
+func deleteStudentHandler(ctx *gin.Context) {
 	srid := ctx.Param("sid")
 
 	err := deleteStudent(ctx, srid)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

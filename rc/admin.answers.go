@@ -7,7 +7,7 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getStudentAnswers(ctx *gin.Context) {
+func getStudentAnswersHandler(ctx *gin.Context) {
 	sid, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -24,11 +24,11 @@ func getStudentAnswers(ctx *gin.Context) {
 
 	err = fetchStudentQuestionsAnswers(ctx, rid, sid, &answers)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, answers)
+	ctx.JSON(http.StatusOK, answers)
 }
 
 // func putStudentAnswer(ctx *gin.Context) {
@@ -36,13 +36,13 @@ func getStudentAnswers(ctx *gin.Context) {
 
 // 	err := ctx.ShouldBindJSON(&answer)
 // 	if err != nil {
-// 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 // 		return
 // 	}
 
 // 	err = updateStudentAnswer(ctx, &answer)
 // 	if err != nil {
-// 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 // 		return
 // 	}
 
@@ -50,7 +50,7 @@ func getStudentAnswers(ctx *gin.Context) {
 
 // 	logrus.Infof("%v updated a student answer with id %d", user, answer.ID)
 
-// 	ctx.JSON(200, gin.H{"status": "updated student answer"})
+// 	ctx.JSON(http.StatusOK, gin.H{"status": "updated student answer"})
 // }
 
 // func deleteStudentAnswerHandler(ctx *gin.Context) {
@@ -59,7 +59,7 @@ func getStudentAnswers(ctx *gin.Context) {
 
 // 	err := deleteStudentAnswer(ctx, qid, sid)
 // 	if err != nil {
-// 		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 // 		return
 // 	}
 
@@ -67,5 +67,5 @@ func getStudentAnswers(ctx *gin.Context) {
 
 // 	logrus.Infof("%v deleted a student answer with id %d", user, sid)
 
-// 	ctx.JSON(200, gin.H{"status": "deleted student answer"})
+// 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student answer"})
 // }

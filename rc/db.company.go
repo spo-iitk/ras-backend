@@ -7,7 +7,7 @@ func fetchAllCompanies(ctx *gin.Context, rid string, companies *[]CompanyRecruit
 	return tx.Error
 }
 
-func fetchCompanyByRCIDAndCID(ctx *gin.Context, rid string, cid string, company *CompanyRecruitmentCycle) error {
+func fetchCompanyByRCIDAndCID(ctx *gin.Context, rid uint, cid uint, company *CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, cid).First(company)
 	return tx.Error
 }

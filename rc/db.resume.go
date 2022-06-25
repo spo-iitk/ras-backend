@@ -24,7 +24,7 @@ func fetchAllResumes(ctx *gin.Context, rid uint, resumes *[]AllResumeResponse) e
 	return tx.Error
 }
 
-func fetchResume(ctx *gin.Context, rsid uint) (string, error) {
+func FetchResume(ctx *gin.Context, rsid uint) (string, error) {
 	var resume string
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).Where("id = ?", rsid).Pluck("resume", &resume)
 	return resume, tx.Error

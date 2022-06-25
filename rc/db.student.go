@@ -1,6 +1,10 @@
 package rc
 
-import "github.com/gin-gonic/gin"
+import (
+	"errors"
+
+	"github.com/gin-gonic/gin"
+)
 
 func fetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(students)
@@ -90,13 +94,19 @@ func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string, cpiEligi
 	primaryID = int(student.ProgramDepartmentID)
 	secondaryID = int(student.SecondaryProgramDepartmentID)
 
-	if student.IsVerified && student.CPI >= cpiEligibility {
-
-		if eligibility[primaryID] == '1' || eligibility[secondaryID] == '1' {
-			return true, nil
-		}
+	if !student.IsVerified {
+		return false, errors.New("student not verified")
 	}
-	return false, nil
+
+	if student.CPI < cpiEligibility {
+		return false, errors.New("cpi cutoff doesnot match")
+	}
+
+	if eligibility[primaryID] != '1' && eligibility[secondaryID] != '1' {
+		return false, errors.New("student branch not eligible")
+	}
+
+	return true, nil
 }
 
 func FetchStudents(ctx *gin.Context, ids []uint, students *[]StudentRecruitmentCycle) error {

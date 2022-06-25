@@ -13,16 +13,16 @@ type getStudentEnrollmentResponse struct {
 	Answer string `json:"answer"`
 }
 
-func getStudentEnrollment(ctx *gin.Context) {
+func getStudentEnrollmentHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	sid, _, err := getStudentRecruitmentCycleID(ctx, rid)
+	sid, _, err := extractStudentRCID(ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -30,36 +30,30 @@ func getStudentEnrollment(ctx *gin.Context) {
 
 	err = fetchStudentQuestionsAnswers(ctx, rid, sid, &result)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, result)
+	ctx.JSON(http.StatusOK, result)
 }
 
-func postEnrollmentAnswer(ctx *gin.Context) {
-	rid, err := util.ParseUint(ctx.Param("rid"))
+func postEnrollmentAnswerHandler(ctx *gin.Context) {
+	var answer RecruitmentCycleQuestionsAnswer
+
+	err := ctx.ShouldBindJSON(&answer)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var answer RecruitmentCycleQuestionsAnswer
-
-	err = ctx.ShouldBindJSON(&answer)
+	srcid, verified, err := extractStudentRCID(ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	srcid, verified, err := getStudentRecruitmentCycleID(ctx, rid)
-	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if verified {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": "Already Verified"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Already Verified"})
 		return
 	}
 
@@ -67,9 +61,9 @@ func postEnrollmentAnswer(ctx *gin.Context) {
 
 	err = createStudentAnswer(ctx, &answer)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"status": fmt.Sprintf("Answer %d created", answer.ID)})
+	ctx.JSON(http.StatusOK, gin.H{"status": fmt.Sprintf("Answer %d created", answer.ID)})
 }

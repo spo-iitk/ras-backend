@@ -16,13 +16,13 @@ type companyWhoamiResponse struct {
 func companyWhoamiHandler(ctx *gin.Context) {
 	companyID, err := extractCompanyID(ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	name, err := company.GetCompanyName(ctx, companyID)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

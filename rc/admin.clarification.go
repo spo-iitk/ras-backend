@@ -1,6 +1,8 @@
 package rc
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -15,32 +17,32 @@ func postClarificationHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		sid, err := util.ParseUint(ctx.Param("sid"))
 		if err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		var student StudentRecruitmentCycle
 		err = fetchStudent(ctx, sid, &student)
 		if err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		rid, err := util.ParseUint(ctx.Param("rid"))
 		if err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		if student.RecruitmentCycleID != rid {
-			ctx.JSON(400, gin.H{"error": "Student does not belong to this recruitment cycle"})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Student does not belong to this recruitment cycle"})
 			return
 		}
 
 		var request postClarificationRequest
 		err = ctx.ShouldBindJSON(&request)
 		if err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
@@ -53,6 +55,6 @@ func postClarificationHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 				"\nSent Mail:\n"+
 				request.Clarification)
 
-		ctx.JSON(200, gin.H{"status": "Clarification Mail sent"})
+		ctx.JSON(http.StatusOK, gin.H{"status": "Clarification Mail sent"})
 	}
 }

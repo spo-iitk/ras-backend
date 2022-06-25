@@ -10,17 +10,17 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-func getAllCompanies(ctx *gin.Context) {
+func getAllCompaniesHandler(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 	var companies []CompanyRecruitmentCycle
 
 	err := fetchAllCompanies(ctx, rid, &companies)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, companies)
+	ctx.JSON(http.StatusOK, companies)
 }
 
 type addNewCompanyRequest struct {
@@ -32,17 +32,17 @@ type addNewCompanyRequest struct {
 	Comments    string `json:"comments"`
 }
 
-func postNewCompany(ctx *gin.Context) {
+func postNewCompanyHandler(ctx *gin.Context) {
 	var addNewCompany addNewCompanyRequest
 
 	err := ctx.ShouldBindJSON(&addNewCompany)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if addNewCompany.CompanyID == 0 {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": "company_id is required"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "company_id is required"})
 		return
 	}
 
@@ -65,69 +65,69 @@ func postNewCompany(ctx *gin.Context) {
 	err = createCompany(ctx, &company)
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, company)
+	ctx.JSON(http.StatusOK, company)
 }
 
-func putCompany(ctx *gin.Context) {
+func putCompanyHandler(ctx *gin.Context) {
 	var editCompanyRequest CompanyRecruitmentCycle
 
 	err := ctx.ShouldBindJSON(&editCompanyRequest)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if editCompanyRequest.CompanyID != 0 || editCompanyRequest.RecruitmentCycleID != 0 {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": "company_id or rid is not allowed"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "company_id or rid is not allowed"})
 		return
 	}
 
 	if editCompanyRequest.ID == 0 {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": "id is required"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		return
 	}
 
 	err = editCompany(ctx, &editCompanyRequest)
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, editCompanyRequest)
+	ctx.JSON(http.StatusOK, editCompanyRequest)
 }
 
-func getCompany(ctx *gin.Context) {
+func getCompanyHandler(ctx *gin.Context) {
 	cid, err := util.ParseUint(ctx.Param("cid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	var company CompanyRecruitmentCycle
 
 	err = FetchCompany(ctx, cid, &company)
 	if err != nil {
-		ctx.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, company)
+	ctx.JSON(http.StatusOK, company)
 }
 
-func deleteCompanybyID(ctx *gin.Context) {
+func deleteCompanyHandler(ctx *gin.Context) {
 	cid, err := util.ParseUint(ctx.Param("cid"))
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = deleteRCCompany(ctx, cid)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

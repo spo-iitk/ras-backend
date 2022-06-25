@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getRCCount(ctx *gin.Context) {
+func getRCCountHandler(ctx *gin.Context) {
 	var studentCount int
 	var companyCount int
 
@@ -29,5 +29,5 @@ func getRCCount(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"registered_student": studentCount, "registered_company": companyCount})
+	ctx.JSON(http.StatusOK, gin.H{"registered_student": studentCount, "registered_company": companyCount})
 }
