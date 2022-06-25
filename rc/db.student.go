@@ -97,5 +97,9 @@ func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string, cpiEligi
 		}
 	}
 	return false, nil
+}
 
+func FetchStudents(ctx *gin.Context, ids []uint, students *[]StudentRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Where("id IN ?", ids).Find(students)
+	return tx.Error
 }

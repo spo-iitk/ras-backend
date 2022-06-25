@@ -17,13 +17,24 @@ func getStudentsByEventHandler(ctx *gin.Context) {
 
 	students := []EventStudent{}
 	err = fetchStudentsByEvent(ctx, eid, &students)
-
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, students)
+	var studentRCIDs []uint
+	for _, student := range students {
+		studentRCIDs = append(studentRCIDs, student.StudentRecruitmentCycleID)
+	}
+
+	var studentRCs []rc.StudentRecruitmentCycle
+	err = rc.FetchStudents(ctx, studentRCIDs, &studentRCs)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, studentRCs)
 }
 
 type postStudentsByEventRequest struct {
