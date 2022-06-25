@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -114,4 +116,24 @@ func getCompany(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, company)
+}
+
+func deleteCompanybyID(ctx *gin.Context) {
+	cid, err := util.ParseUint(ctx.Param("cid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = deleteRCCompany(ctx, cid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v deleted %v from RC", user, cid)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student"})
 }
