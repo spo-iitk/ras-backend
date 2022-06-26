@@ -24,8 +24,6 @@ type studentAdminsideResponse struct {
 	CPI                          float64 `json:"cpi"`
 	ProgramDepartmentID          uint    `json:"program_department_id"`
 	SecondaryProgramDepartmentID uint    `json:"secondary_program_department_id"`
-	CurrentCPI                   float64 `json:"current_cpi"`
-	UGCPI                        float64 `json:"ug_cpi"`
 	TenthBoard                   string  `json:"tenth_board"`
 	TenthYear                    uint    `json:"tenth_year"`
 	TenthMarks                   float64 `json:"tenth_marks"`
@@ -42,6 +40,7 @@ type studentAdminsideResponse struct {
 	FriendPhone                  string  `json:"friend_phone"`
 	Resume                       string  `json:"resume"`
 	StatusName                   string  `json:"status_name"`
+	Frozen                       bool    `json:"frozen"`
 }
 
 func getStudentsByRole(ctx *gin.Context) {
@@ -81,40 +80,43 @@ func getStudentsByRole(ctx *gin.Context) {
 	}
 
 	var validApplicants []studentAdminsideResponse
-	for _, student := range applied {
-		if allStudentsRCMap[student.StudentRCID].IsFrozen {
-			continue
-		}
+	for _, s := range applied {
+		// if allStudentsRCMap[student.StudentRCID].IsFrozen {
+		// 	continue
+		// }
 
 		applicant_details := studentAdminsideResponse{}
-		applicant_details.ID = student.StudentRCID
-		applicant_details.Resume = student.ResumeLink
-		applicant_details.StatusName = student.Name
+		applicant_details.ID = s.StudentRCID
+		applicant_details.Resume = s.ResumeLink
+		applicant_details.StatusName = s.Name
 
-		sid := allStudentsRCMap[student.StudentRCID].StudentID
+		studentRC := allStudentsRCMap[s.StudentRCID]
+		sid := allStudentsRCMap[s.StudentRCID].StudentID
 
-		applicant_details.CPI = allStudentsRCMap[student.StudentRCID].CPI
+		student := allStudentsMap[sid]
 
-		applicant_details.Name = allStudentsMap[sid].Name
-		applicant_details.Email = allStudentsMap[sid].IITKEmail
-		applicant_details.ProgramDepartmentID = allStudentsMap[sid].ProgramDepartmentID
-		applicant_details.SecondaryProgramDepartmentID = allStudentsMap[sid].SecondaryProgramDepartmentID
-		applicant_details.CurrentCPI = allStudentsMap[sid].CurrentCPI
-		applicant_details.UGCPI = allStudentsMap[sid].UGCPI
-		applicant_details.TenthBoard = allStudentsMap[sid].TenthBoard
-		applicant_details.TenthYear = allStudentsMap[sid].TenthYear
-		applicant_details.TenthMarks = allStudentsMap[sid].TenthMarks
-		applicant_details.TwelfthBoard = allStudentsMap[sid].TwelfthBoard
-		applicant_details.TwelfthYear = allStudentsMap[sid].TwelfthYear
-		applicant_details.TwelfthMarks = allStudentsMap[sid].TwelfthMarks
-		applicant_details.EntranceExam = allStudentsMap[sid].EntranceExam
-		applicant_details.EntranceExamRank = allStudentsMap[sid].EntranceExamRank
-		applicant_details.Category = allStudentsMap[sid].Category
-		applicant_details.CategoryRank = allStudentsMap[sid].CategoryRank
-		applicant_details.CurrentAddress = allStudentsMap[sid].CurrentAddress
-		applicant_details.PermanentAddress = allStudentsMap[sid].PermanentAddress
-		applicant_details.FriendName = allStudentsMap[sid].FriendName
-		applicant_details.FriendPhone = allStudentsMap[sid].FriendPhone
+		applicant_details.Name = student.Name
+		applicant_details.Email = student.IITKEmail
+
+		applicant_details.CPI = studentRC.CPI
+		applicant_details.ProgramDepartmentID = studentRC.ProgramDepartmentID
+		applicant_details.SecondaryProgramDepartmentID = studentRC.SecondaryProgramDepartmentID
+
+		applicant_details.TenthBoard = student.TenthBoard
+		applicant_details.TenthYear = student.TenthYear
+		applicant_details.TenthMarks = student.TenthMarks
+		applicant_details.TwelfthBoard = student.TwelfthBoard
+		applicant_details.TwelfthYear = student.TwelfthYear
+		applicant_details.TwelfthMarks = student.TwelfthMarks
+		applicant_details.EntranceExam = student.EntranceExam
+		applicant_details.EntranceExamRank = student.EntranceExamRank
+		applicant_details.Category = student.Category
+		applicant_details.CategoryRank = student.CategoryRank
+		applicant_details.CurrentAddress = student.CurrentAddress
+		applicant_details.PermanentAddress = student.PermanentAddress
+		applicant_details.FriendName = student.FriendName
+		applicant_details.FriendPhone = student.FriendPhone
+		applicant_details.Frozen = studentRC.IsFrozen
 
 		validApplicants = append(validApplicants, applicant_details)
 	}
