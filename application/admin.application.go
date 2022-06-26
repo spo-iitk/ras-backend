@@ -21,9 +21,16 @@ type studentAdminsideResponse struct {
 	ID                           uint    `json:"id"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
-	CPI                          float64 `json:"cpi"`
+	CurrentCPI                   float64 `json:"current_cpi"`
+	UGCPI                        float64 `json:"ug_cpi"`
 	ProgramDepartmentID          uint    `json:"program_department_id"`
 	SecondaryProgramDepartmentID uint    `json:"secondary_program_department_id"`
+	Specialization               string  `json:"specialization"`
+	Preference                   string  `json:"preference"`
+	Gender                       string  `json:"gender"`
+	Disablity                    string  `json:"disability"`
+	DOB                          uint    `json:"dob"`
+	ExpectedGraduationYear       uint    `json:"expected_graduation_year"`
 	TenthBoard                   string  `json:"tenth_board"`
 	TenthYear                    uint    `json:"tenth_year"`
 	TenthMarks                   float64 `json:"tenth_marks"`
@@ -98,10 +105,16 @@ func getStudentsByRole(ctx *gin.Context) {
 		applicant_details.Name = student.Name
 		applicant_details.Email = student.IITKEmail
 
-		applicant_details.CPI = studentRC.CPI
+		applicant_details.CurrentCPI = student.CurrentCPI
+		applicant_details.UGCPI = student.UGCPI
 		applicant_details.ProgramDepartmentID = studentRC.ProgramDepartmentID
 		applicant_details.SecondaryProgramDepartmentID = studentRC.SecondaryProgramDepartmentID
 
+		applicant_details.Specialization = student.Specialization
+		applicant_details.Preference = student.Preference
+		applicant_details.Gender = student.Gender
+		applicant_details.Disablity = student.Disablity
+		applicant_details.DOB = student.DOB
 		applicant_details.TenthBoard = student.TenthBoard
 		applicant_details.TenthYear = student.TenthYear
 		applicant_details.TenthMarks = student.TenthMarks

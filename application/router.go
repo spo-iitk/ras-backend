@@ -57,6 +57,8 @@ func StudentRouter(r *gin.Engine) {
 		student.GET("/proforma/:pid", getProformaForStudentHandler)
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
 
+		// student.GET("/proforma/:pid/students", dummy)
+
 		student.GET("/opening/:pid", getApplicationHandler)
 		student.POST("/opening/:pid", postApplicationHandler)
 		student.DELETE("/opening/:pid", deleteApplicationHandler)
@@ -75,6 +77,7 @@ func CompanyRouter(r *gin.Engine) {
 
 		company.PUT("/proforma", putProformaByCompanyHandler)
 		company.GET("/proforma/:pid", getProformaHandlerForCompany)
+		company.GET("/proforma/:pid/students", getStudentsForCompanyByRole)
 		company.DELETE("/proforma/:pid", deleteProformaByCompanyHandler)
 
 		company.GET("/proforma/:pid/event", getEventsByProformaForCompanyHandler)
