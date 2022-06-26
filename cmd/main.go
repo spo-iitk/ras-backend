@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	_ "github.com/spo-iitk/ras-backend/config"
 	"github.com/spo-iitk/ras-backend/mail"
 	"golang.org/x/sync/errgroup"
@@ -17,6 +18,8 @@ const (
 func main() {
 	var g errgroup.Group
 	mail_channel := make(chan mail.Mail)
+
+	gin.SetMode(gin.ReleaseMode)
 
 	go mail.Service(mail_channel)
 
