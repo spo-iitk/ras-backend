@@ -21,6 +21,7 @@ type studentAdminsideResponse struct {
 	ID                           uint    `json:"id"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
+	RollNo                       string  `json:"roll_no"`
 	CurrentCPI                   float64 `json:"current_cpi"`
 	UGCPI                        float64 `json:"ug_cpi"`
 	ProgramDepartmentID          uint    `json:"program_department_id"`
@@ -110,6 +111,7 @@ func getStudentsByRole(ctx *gin.Context) {
 		applicant_details.ProgramDepartmentID = studentRC.ProgramDepartmentID
 		applicant_details.SecondaryProgramDepartmentID = studentRC.SecondaryProgramDepartmentID
 
+		applicant_details.RollNo = student.RollNo
 		applicant_details.Specialization = student.Specialization
 		applicant_details.Preference = student.Preference
 		applicant_details.Gender = student.Gender
