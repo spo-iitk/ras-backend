@@ -89,3 +89,15 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 
 	return tx.Commit().Error
 }
+
+func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByRole) error {
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
+		Joins("JOIN application_resumes ON application_resumes.proforma_id = proforma_events.id").
+		Where("proforma_events.proforma_id = ? ", pid).
+		Select("event_students.student_recruitment_cycle_id as student_id, application_resumes.resume as resume_link, MAX(proforma_events.Sequence) as status").
+		Group("event_students.student_recruitment_cycle_id").
+		Scan(students)
+
+	return tx.Error
+}

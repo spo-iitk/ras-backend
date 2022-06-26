@@ -3,6 +3,7 @@ package application
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -62,7 +63,7 @@ func postApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
-	proformaEligibility, cpiEligibility, cid, err := getEligibility(ctx, pid)
+	proformaEligibility, cpiEligibility, cid, deadline, err := getEligibility(ctx, pid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -93,6 +94,11 @@ func postApplicationHandler(ctx *gin.Context) {
 
 	if applicationCount >= int(applicationMaxCount) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Application count maxed out"})
+		return
+	}
+
+	if time.Now().UnixMilli() > int64(deadline) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Application deadline passed"})
 		return
 	}
 
@@ -148,6 +154,17 @@ func deleteApplicationHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, _, _, deadline, err := getEligibility(ctx, pid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if time.Now().UnixMilli() > int64(deadline) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Application deadline passed"})
 		return
 	}
 

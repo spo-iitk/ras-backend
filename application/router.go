@@ -44,6 +44,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.POST("/event/:eid/student", postStudentsByEventHandler)
 			// proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
 			// proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
+
+			proforma.GET("/students", getStudentsByRole)
 		}
 	}
 }

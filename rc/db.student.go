@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func fetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitmentCycle) error {
+func FetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(students)
 	return tx.Error
 }

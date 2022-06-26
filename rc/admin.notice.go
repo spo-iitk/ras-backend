@@ -88,7 +88,7 @@ func postReminderHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		var students []StudentRecruitmentCycle
 
-		err = fetchAllStudents(ctx, rid, &students)
+		err = FetchAllStudents(ctx, rid, &students)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
