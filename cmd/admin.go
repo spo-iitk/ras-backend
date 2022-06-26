@@ -19,6 +19,8 @@ func adminRCServer(mail_channel chan mail.Mail) *http.Server {
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
 	engine.Use(middleware.EnsureAdmin())
+	engine.Use(gin.Recovery())
+	engine.Use(gin.Logger())
 
 	rc.AdminRouter(mail_channel, engine)
 
@@ -38,6 +40,8 @@ func adminApplicationServer(mail_channel chan mail.Mail) *http.Server {
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
 	engine.Use(middleware.EnsureAdmin())
+	engine.Use(gin.Recovery())
+	engine.Use(gin.Logger())
 
 	application.AdminRouter(mail_channel, engine)
 
@@ -57,6 +61,8 @@ func adminCompanyServer() *http.Server {
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
 	engine.Use(middleware.EnsureAdmin())
+	engine.Use(gin.Recovery())
+	engine.Use(gin.Logger())
 
 	company.AdminRouter(engine)
 

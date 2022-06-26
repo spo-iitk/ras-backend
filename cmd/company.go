@@ -15,6 +15,8 @@ func companyServer() *http.Server {
 	engine := gin.New()
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
+	engine.Use(gin.Recovery())
+	engine.Use(gin.Logger())
 
 	rc.CompanyRouter(engine)
 	application.CompanyRouter(engine)

@@ -16,6 +16,8 @@ func studentServer() *http.Server {
 	engine := gin.New()
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
+	engine.Use(gin.Recovery())
+	engine.Use(gin.Logger())
 
 	student.StudentRouter(engine)
 	rc.StudentRouter(engine)

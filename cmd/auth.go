@@ -14,6 +14,9 @@ func authServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := viper.GetString("PORT.AUTH")
 	r := gin.New()
 	r.Use(middleware.CORS())
+	r.Use(gin.Recovery())
+	r.Use(gin.Logger())
+
 	auth.Router(mail_channel, r)
 
 	server := &http.Server{
