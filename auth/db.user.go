@@ -8,7 +8,10 @@ import (
 )
 
 func firstOrCreateUser(ctx *gin.Context, user *User) (uint, error) {
-	tx := db.WithContext(ctx).Where("user_id = ? ", user.UserID).FirstOrCreate(user)
+	tx := db.WithContext(ctx).Where("user_id = ?", user.UserID).FirstOrCreate(user)
+	if tx.RowsAffected == 0 {
+		tx = db.WithContext(ctx).Where("user_id = ?", user.UserID).Updates(user)
+	}
 	return user.ID, tx.Error
 }
 
