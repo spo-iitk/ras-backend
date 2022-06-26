@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func updateStudentByIDHandler(ctx *gin.Context) {
@@ -17,6 +18,11 @@ func updateStudentByIDHandler(ctx *gin.Context) {
 
 	if updateStudentRequest.ID == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter student ID"})
+		return
+	}
+
+	if updateStudentRequest.SecondaryProgramDepartmentID > updateStudentRequest.ProgramDepartmentID && util.IsDoubleMajor(updateStudentRequest.SecondaryProgramDepartmentID) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Secondary program department and primary program department seems to be interchanged"})
 		return
 	}
 

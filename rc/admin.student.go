@@ -135,6 +135,11 @@ func postStudentsHandler(ctx *gin.Context) {
 	}
 
 	for _, student := range studentsGlobal {
+		var secondaryProgramDepartmentID uint = 0
+		if util.IsDoubleMajor(student.SecondaryProgramDepartmentID) {
+			secondaryProgramDepartmentID = student.SecondaryProgramDepartmentID
+		}
+
 		students = append(students, StudentRecruitmentCycle{
 			RecruitmentCycleID:           rid,
 			StudentID:                    student.ID,
@@ -143,7 +148,7 @@ func postStudentsHandler(ctx *gin.Context) {
 			RollNo:                       student.RollNo,
 			CPI:                          student.CurrentCPI,
 			ProgramDepartmentID:          student.ProgramDepartmentID,
-			SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID,
+			SecondaryProgramDepartmentID: secondaryProgramDepartmentID,
 		})
 	}
 

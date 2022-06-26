@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func updateStudentHandler(ctx *gin.Context) {
@@ -17,6 +18,11 @@ func updateStudentHandler(ctx *gin.Context) {
 	}
 
 	email := middleware.GetUserID(ctx)
+
+	if updateStudentRequest.SecondaryProgramDepartmentID > updateStudentRequest.ProgramDepartmentID && util.IsDoubleMajor(updateStudentRequest.SecondaryProgramDepartmentID) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Secondary program department and primary program department seems to be interchanged"})
+		return
+	}
 
 	updated, err := updateStudentByEmail(ctx, &updateStudentRequest, email)
 	if err != nil {
