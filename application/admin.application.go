@@ -10,9 +10,10 @@ import (
 )
 
 type ApplicantsByRole struct {
-	StudentID  uint   `json:"student_id"`
-	ResumeLink string `json:"resume_link"`
-	Status     string `json:"status"`
+	StudentRCID uint   `json:"student_rc_id"`
+	ResumeLink  string `json:"resume_link"`
+	ProformaID  uint   `json:"proforma_id"`
+	Status      string `json:"status"`
 }
 
 type studentAdminsideResponse struct {
@@ -42,11 +43,6 @@ type studentAdminsideResponse struct {
 	Status                       string  `json:"status"`
 }
 
-type mergedStudent struct {
-	student.Student
-	rc.StudentRecruitmentCycle
-}
-
 func getStudentsByRole(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
@@ -59,7 +55,7 @@ func getStudentsByRole(ctx *gin.Context) {
 
 	var srids []uint
 	for _, applicant := range applied {
-		srids = append(srids, applicant.StudentID)
+		srids = append(srids, applicant.StudentRCID)
 	}
 
 	var allStudents []rc.StudentRecruitmentCycle

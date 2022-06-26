@@ -91,13 +91,17 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 }
 
 func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByRole) error {
-	tx := db.WithContext(ctx).Model(&EventStudent{}).
+	subquery := db.WithContext(ctx).Model(&EventStudent{}).
 		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
 		Joins("JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id").
 		Where("proforma_events.proforma_id = ? ", pid).
-		Select("event_students.student_recruitment_cycle_id as student_id, application_resumes.resume as resume_link, proforma_events.sequence as status").
+		Select("event_students.student_recruitment_cycle_id as student_id, application_resumes.resume as resume_link, proforma_events.sequence as status, proforma_events.name as name, application_resumes.proforma_id").
 		Order("event_students.student_recruitment_cycle_id ASC").
-		Scan(students)
+		Select("*")
+
+	tx := db.WithContext(ctx).Table("(?) as subquery", subquery).
+		Joins("NATURAL JOIN (select student_id, max(status) as status, proforma_id from ? group by student_id, proforma_id) ms", subquery).
+		Find(students)
 
 	return tx.Error
 }
