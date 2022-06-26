@@ -40,10 +40,13 @@ func postQuestionHandler(ctx *gin.Context) {
 		return
 	}
 
-	if question.ProformaID == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "proforma id is required"})
+	pid, err := util.ParseUint(ctx.Param("pid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	question.ProformaID = pid
 
 	if question.Type == "" {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "type is required"})
