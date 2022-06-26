@@ -134,7 +134,7 @@ func deleteEventByCompanyHandler(ctx *gin.Context) {
 func getEventsByProformaForCompanyHandler(ctx *gin.Context) {
 	_, err := extractCompanyRCID(ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract student rcid"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract company rcid"})
 		return
 	}
 
