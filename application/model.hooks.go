@@ -18,7 +18,7 @@ func (jp *Proforma) AfterUpdate(tx *gorm.DB) (err error) {
 			RecordAttendance: false,
 		}
 
-		tx = tx.Where("proforma_id = ? AND name = ?", event.ProformaID, event.Name).FirstOrCreate(event)
+		tx = tx.Where("proforma_id = ? AND name = ?", event.ProformaID, event.Name).FirstOrCreate(&event)
 		if tx.Error != nil {
 			err = tx.Error
 			return
@@ -34,7 +34,7 @@ func (jp *Proforma) AfterUpdate(tx *gorm.DB) (err error) {
 			RecordAttendance: false,
 		}
 
-		tx := tx.Where("proforma_id = ? AND name = ?", event.ProformaID, event.Name).FirstOrCreate(event)
+		tx := tx.Where("proforma_id = ? AND name = ?", event.ProformaID, event.Name).FirstOrCreate(&event)
 		err = tx.Error
 	}
 	return
