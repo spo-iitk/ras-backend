@@ -61,7 +61,7 @@ func getStatsHandler(ctx *gin.Context) {
 			ID:                           student.ID,
 			Name:                         student.Name,
 			Email:                        student.Email,
-			RollNo:                       student.Email,
+			RollNo:                       student.RollNo,
 			ProgramDepartmentID:          student.ProgramDepartmentID,
 			SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID,
 			CompanyName:                  stat.CompanyName,
@@ -70,6 +70,8 @@ func getStatsHandler(ctx *gin.Context) {
 		}
 		response = append(response, res)
 	}
+
+	
 
 	ctx.JSON(http.StatusOK, response)
 }
