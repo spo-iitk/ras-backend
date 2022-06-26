@@ -140,6 +140,7 @@ func postStudentsHandler(ctx *gin.Context) {
 			StudentID:                    student.ID,
 			Email:                        student.IITKEmail,
 			Name:                         student.Name,
+			RollNo:                       student.RollNo,
 			CPI:                          student.CurrentCPI,
 			ProgramDepartmentID:          student.ProgramDepartmentID,
 			SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID,
