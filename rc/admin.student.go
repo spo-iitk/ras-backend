@@ -14,7 +14,7 @@ func getAllStudentsHandler(ctx *gin.Context) {
 	rid := ctx.Param("rid")
 	var students []StudentRecruitmentCycle
 
-	err := FetchAllStudents(ctx, rid, &students)
+	err := fetchAllStudents(ctx, rid, &students)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

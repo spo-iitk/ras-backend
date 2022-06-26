@@ -12,6 +12,11 @@ func getStudentByID(ctx *gin.Context, student *Student, id uint) error {
 	return tx.Error
 }
 
+func FetchStudentsByID(ctx *gin.Context, id []uint, students *[]Student) error {
+	tx := db.WithContext(ctx).Where("id IN ?", id).First(students).Order("id ASC")
+	return tx.Error
+}
+
 func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 	tx := db.WithContext(ctx).Where("iitk_email =?", email).First(student)
 	return tx.Error

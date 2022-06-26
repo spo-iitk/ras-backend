@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func FetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitmentCycle) error {
+func fetchAllStudents(ctx *gin.Context, rid string, students *[]StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(students)
 	return tx.Error
 }
@@ -18,6 +18,11 @@ func fetchStudentByEmailAndRC(ctx *gin.Context, email string, rid uint, student 
 
 func fetchStudent(ctx *gin.Context, sid uint, student *StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).First(student, sid)
+	return tx.Error
+}
+
+func FetchStudentBySRID(ctx *gin.Context, sid []uint, students *[]StudentRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Where("id IN ?", sid).Find(students).Order("id ASC")
 	return tx.Error
 }
 
