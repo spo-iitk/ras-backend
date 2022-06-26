@@ -18,7 +18,9 @@ func FetchCompany(ctx *gin.Context, cid uint, company *CompanyRecruitmentCycle) 
 }
 
 func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
-	tx := db.WithContext(ctx).Create(company)
+	tx := db.WithContext(ctx).
+		Where("company_id = ? AND recruitment_cycle_id = ?", company.CompanyID, company.RecruitmentCycleID).
+		FirstOrCreate(company)
 	return tx.Error
 }
 

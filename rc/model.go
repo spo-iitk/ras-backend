@@ -84,13 +84,14 @@ const (
 
 type StudentRecruitmentCycle struct {
 	gorm.Model
-	StudentID                    uint                        `gorm:"index" json:"student_id"`
-	RecruitmentCycleID           uint                        `gorm:"index" json:"recruitment_cycle_id"`
+	StudentID                    uint                        `gorm:"index:stu_rec_cycle,unique" json:"student_id"`
+	RecruitmentCycleID           uint                        `gorm:"index:stu_rec_cycle,unique" json:"recruitment_cycle_id"`
 	RecruitmentCycle             RecruitmentCycle            `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	ProgramDepartmentID          uint                        `gorm:"index" json:"program_department_id"`
 	SecondaryProgramDepartmentID uint                        `gorm:"index" json:"secondary_program_department_id"`
 	CPI                          float64                     `json:"cpi"`
 	Email                        string                      `gorm:"index" json:"email"`
+	RollNo                       string                      `gorm:"index" json:"roll_no"`
 	Name                         string                      `json:"name"`
 	Type                         StudentRecruitmentCycleType `json:"type" gorm:"default:Available"`
 	IsFrozen                     bool                        `json:"is_frozen" gorm:"default:false"`
