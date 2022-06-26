@@ -81,7 +81,7 @@ func GetMaxCountfromRC(ctx *gin.Context) (uint, error) {
 
 type editRCRequest struct {
 	ID                  uint `json:"id" binding:"required"`
-	Inactive            bool `json:"inactive" binding:"required"`
+	Inactive            bool `json:"inactive"`
 	ApplicationCountCap uint `json:"application_count_cap"`
 }
 
