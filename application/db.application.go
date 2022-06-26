@@ -63,7 +63,13 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 		return err
 	}
 
-	if err := tx.Create(application).Error; err != nil {
+	err := tx.
+		Where(
+			"proforma_event_id = ? AND student_recruitment_cycle_id = ?",
+			application.ProformaEventID,
+			application.StudentRecruitmentCycleID).
+		FirstOrCreate(application).Error
+	if err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -73,7 +79,10 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 		return err
 	}
 
-	if err := tx.Create(resume).Error; err != nil {
+	err = tx.
+		Where("proforma_id = ? AND student_recruitment_cycle_id = ?", resume.ProformaID, resume.ResumeID).
+		FirstOrCreate(resume).Error
+	if err != nil {
 		tx.Rollback()
 		return err
 	}

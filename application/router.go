@@ -54,9 +54,9 @@ func StudentRouter(r *gin.Engine) {
 		student.GET("/proforma/:pid", getProformaForStudentHandler)
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
 
-		student.GET("/proforma/:pid", getApplicationHandler)
-		student.POST("/proforma/:pid", postApplicationHandler)
-		student.DELETE("/proforma/:pid", deleteApplicationHandler)
+		student.GET("/opening/:pid", getApplicationHandler)
+		student.POST("/opening/:pid", postApplicationHandler)
+		student.DELETE("/opening/:pid", deleteApplicationHandler)
 
 		student.GET("/event", getEventsByStudentHandler)
 		student.GET("/event/:eid", getEventHandler)
