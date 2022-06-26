@@ -12,6 +12,7 @@ type studentCompanysideResponse struct {
 	ID                           uint    `json:"id"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
+	RollNo                       string  `json:"roll_no"`
 	CPI                          float64 `json:"cpi"`
 	ProgramDepartmentID          uint    `json:"program_department_id"`
 	SecondaryProgramDepartmentID uint    `json:"secondary_program_department_id"`
@@ -58,7 +59,7 @@ func getStudentsForCompanyByRole(ctx *gin.Context) {
 
 		applicant_details.Name = studentRC.Name
 		applicant_details.Email = studentRC.Email
-
+		applicant_details.RollNo = studentRC.RollNo
 		applicant_details.CPI = studentRC.CPI
 		applicant_details.ProgramDepartmentID = studentRC.ProgramDepartmentID
 		applicant_details.SecondaryProgramDepartmentID = studentRC.SecondaryProgramDepartmentID
