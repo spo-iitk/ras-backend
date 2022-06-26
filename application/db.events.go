@@ -3,7 +3,8 @@ package application
 import "github.com/gin-gonic/gin"
 
 func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]getAllEventsByRCResponse) error {
-	tx := db.WithContext(ctx).Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
+	tx := db.WithContext(ctx).Model(&ProformaEvent{}).
+		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
 		Where("proformas.deleted_at IS NULL AND proformas.recruitment_cycle_id = ?", rid).
 		Order("start_time").
 		Select("proforma_events.*, proformas.company_name, proformas.role").
