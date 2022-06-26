@@ -91,17 +91,9 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 }
 
 func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByRole) error {
-	subquery := db.WithContext(ctx).Model(&EventStudent{}).
-		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
-		Joins("JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id").
-		Where("proforma_events.proforma_id = ? ", pid).
-		Select("event_students.student_recruitment_cycle_id as student_id, application_resumes.resume as resume_link, proforma_events.sequence as status, proforma_events.name as name, application_resumes.proforma_id").
-		Order("event_students.student_recruitment_cycle_id ASC").
-		Select("*")
-
-	tx := db.WithContext(ctx).Table("(?) as subquery", subquery).
-		Joins("NATURAL JOIN (select student_id, max(status) as status, proforma_id from ? group by student_id, proforma_id) ms", subquery).
-		Find(students)
+	tx := db.WithContext(ctx).
+		Raw("CREATE OR REPLACE VIEW mulstatus AS SELECT event_students.student_recruitment_cycle_id AS student_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id WHERE proforma_events.proforma_id = ? AND event_students.deleted_at IS NULL; SELECT * FROM mulstatus NATURAL JOIN (SELECT student_id, Max(status) AS status, proforma_id FROM mulstatus GROUP BY student_id, proforma_id) ms;", pid).
+		Scan(students)
 
 	return tx.Error
 }

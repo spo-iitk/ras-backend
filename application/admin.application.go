@@ -13,6 +13,7 @@ type ApplicantsByRole struct {
 	StudentRCID uint   `json:"student_rc_id"`
 	ResumeLink  string `json:"resume_link"`
 	ProformaID  uint   `json:"proforma_id"`
+	Name        string `json:"name"`
 	Status      string `json:"status"`
 }
 
@@ -40,7 +41,7 @@ type studentAdminsideResponse struct {
 	FriendName                   string  `json:"friend_name"`
 	FriendPhone                  string  `json:"friend_phone"`
 	Resume                       string  `json:"resume"`
-	Status                       string  `json:"status"`
+	StatusName                   string  `json:"status_name"`
 }
 
 func getStudentsByRole(ctx *gin.Context) {
@@ -88,7 +89,7 @@ func getStudentsByRole(ctx *gin.Context) {
 		applicant_details := studentAdminsideResponse{}
 		applicant_details.ID = student.StudentRCID
 		applicant_details.Resume = student.ResumeLink
-		applicant_details.Status = student.Status
+		applicant_details.StatusName = student.Name
 
 		sid := allStudentsMap[student.StudentRCID].StudentID
 
