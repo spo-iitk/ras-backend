@@ -1,6 +1,8 @@
 package application
 
 import (
+	"database/sql"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -91,11 +93,8 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 }
 
 func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByRole) error {
-	db.WithContext(ctx).
-		Exec("CREATE OR REPLACE VIEW mulstatus AS SELECT event_students.student_recruitment_cycle_id AS student_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id WHERE proforma_events.proforma_id = ? AND event_students.deleted_at IS NULL", pid)
-
 	tx := db.WithContext(ctx).
-		Raw("SELECT * FROM mulstatus NATURAL JOIN (SELECT student_id, Max(status) AS status, proforma_id FROM mulstatus GROUP BY student_id, proforma_id) ms").
+		Raw("SELECT * FROM (SELECT event_students.student_recruitment_cycle_id AS student_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id WHERE proforma_events.proforma_id = @pid AND event_students.deleted_at IS NULL) mulstatus NATURAL JOIN (SELECT student_id, Max(status) AS status, proforma_id FROM (SELECT event_students.student_recruitment_cycle_id AS student_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id WHERE proforma_events.proforma_id = @pid AND event_students.deleted_at IS NULL) mul GROUP BY student_id, proforma_id) ms", sql.Named("pid", pid)).
 		Scan(students)
 
 	return tx.Error
