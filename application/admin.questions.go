@@ -91,3 +91,23 @@ func putQuestionHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "updated question successfully"})
 }
+
+func deleteQuestionHandler(ctx *gin.Context) {
+	qid, err := util.ParseUint(ctx.Param("qid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = deleteProformaQuestion(ctx, qid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v deleted a proforma question with id %d", user, qid)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "deleted question successfully"})
+}

@@ -13,7 +13,12 @@ func updateProformaQuestion(ctx *gin.Context, question *ApplicationQuestion) err
 }
 
 func createProformaQuestion(ctx *gin.Context, question *ApplicationQuestion) error {
-	tx := db.WithContext(ctx).FirstOrCreate(question)
+	tx := db.WithContext(ctx).Create(question)
+	return tx.Error
+}
+
+func deleteProformaQuestion(ctx *gin.Context, qid uint) error {
+	tx := db.WithContext(ctx).Where("id = ?", qid).Delete(&ApplicationQuestion{})
 	return tx.Error
 }
 
