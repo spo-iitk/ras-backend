@@ -95,7 +95,7 @@ func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByR
 		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
 		Joins("JOIN application_resumes ON application_resumes.proforma_id = proforma_events.id").
 		Where("proforma_events.proforma_id = ? ", pid).
-		Select("event_students.student_recruitment_cycle_id as student_id, application_resumes.resume as resume_link, proforma_events.Sequence as status").
+		Select("event_students.student_recruitment_cycle_id as student_id, application_resumes.resume as resume_link, proforma_events.sequence as status").
 		// Group("event_students.student_recruitment_cycle_id").
 		Scan(students)
 
