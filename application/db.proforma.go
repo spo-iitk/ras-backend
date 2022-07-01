@@ -173,7 +173,7 @@ func deleteProforma(ctx *gin.Context, pid uint) error {
 }
 
 func deleteProformaByCompany(ctx *gin.Context, pid uint, cid uint) (bool, error) {
-	tx := db.WithContext(ctx).Where("id = ? AND company_recruitment_cycle_id = ?", pid, cid).Delete(Proforma{})
+	tx := db.WithContext(ctx).Where("id = ? AND company_recruitment_cycle_id = ?", pid, cid).Delete(&Proforma{})
 	return tx.RowsAffected > 0, tx.Error
 }
 
