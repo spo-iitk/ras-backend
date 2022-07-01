@@ -11,6 +11,8 @@ RUN git config --global user.email "pas@iitk.ac.in"
 
 RUN git clone https://github.com/spo-iitk/ras-backend.git .
 
+RUN cp $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml.template $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml
+
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s  $GOPATH/src/github.com/spo-iitk/ras-backend/container/nginx.conf /etc/nginx/sites-enabled/default
