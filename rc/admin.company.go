@@ -135,5 +135,5 @@ func deleteCompanyHandler(ctx *gin.Context) {
 
 	logrus.Infof("%v deleted %v from RC", user, cid)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student"})
+	ctx.JSON(http.StatusOK, gin.H{"status": "Company Deleted from this RC"})
 }

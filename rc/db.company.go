@@ -42,6 +42,6 @@ func getRegisteredCompanyCount(ctx *gin.Context, rid uint) (int, error) {
 }
 
 func deleteRCCompany(ctx *gin.Context, cid uint) error {
-	tx := db.WithContext(ctx).Where("company_id = ?", cid).Delete(&CompanyRecruitmentCycle{})
+	tx := db.WithContext(ctx).Where("id = ?", cid).Delete(&CompanyRecruitmentCycle{})
 	return tx.Error
 }
