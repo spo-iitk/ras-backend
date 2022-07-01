@@ -12,8 +12,7 @@ services:
     volumes:
       - ./container/init.sql:/docker-entrypoint-initdb.d/init.sql
       - data:/var/lib/postgresql/data
-    networks:
-      - bridge
+    network_mode: bridge
   server:
     build:
       context: .
@@ -21,8 +20,7 @@ services:
     restart: always
     depends_on:
       - database
-    networks:
-      - bridge
+    network_mode: bridge
     ports:
       - "80"
 volumes:
