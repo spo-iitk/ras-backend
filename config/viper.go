@@ -21,7 +21,6 @@ func viperConfig() {
 
 	err = viper.MergeInConfig()
 	if err != nil {
-		logrus.Fatalf("Fatal error config file: %s \n", err)
-		panic(err)
+		logrus.Errorf("Fatal error secret file: %s \n", err)
 	}
 }
