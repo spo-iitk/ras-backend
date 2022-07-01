@@ -7,12 +7,19 @@ import (
 )
 
 func viperConfig() {
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("../")
-	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
 
+	viper.SetConfigName("config")
 	err := viper.ReadInConfig()
+	if err != nil {
+		logrus.Fatalf("Fatal error config file: %s \n", err)
+		panic(err)
+	}
+
+	viper.SetConfigName("secret")
+
+	err = viper.MergeInConfig()
 	if err != nil {
 		logrus.Fatalf("Fatal error config file: %s \n", err)
 		panic(err)

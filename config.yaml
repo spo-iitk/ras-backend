@@ -1,22 +1,17 @@
 MAIL:
-  USER: "ias"
-  PASS: ""
   HOST: "smtp.cc.iitk.ac.in"
   PORT: "25"
-  WEBTEAM: "spowebteam@gmail.com"
   # BATCH: 200
 JWT:
   EXPIRATION:
     LONG: 5000
     SHORT: 200
-  PRIVATE_KEY: "pretty-big-secret"
 OTP:
   EXPIRATION: 20
   SIZE: 6
 DATABASE:
-  HOST: "localhost"
+  HOST: "database"
   PORT: "5432"
-  PASSWORD: "b2Led2ke"
   USER: "admin"
 DBNAME:
   APPLICATION: "application"
