@@ -27,7 +27,7 @@ func companySignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		logrus.Infof("A Company %s made signUp request with id %d", signupReq.CompanyName, id)
 		mail_channel <- mail.GenerateMail(signupReq.Email,
 			"Registration requested on RAS",
-			"Dear "+signupReq.CompanyName+",\n\nWe got your request for registration on Recruitment Automation System, IIT Kanpur. We will get back to you soon. For any queries, please get in touch with us at spo@iitk.ac.in.")
+			"Dear "+signupReq.Name+",\n\nWe got your request for registration on Recruitment Automation System, IIT Kanpur. We will get back to you soon. For any queries, please get in touch with us at spo@iitk.ac.in.")
 
 		mail_channel <- mail.GenerateMail("spo@iitk.ac.in",
 			"Registration requested on RAS",

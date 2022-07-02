@@ -4,23 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/constants"
 	"github.com/spo-iitk/ras-backend/middleware"
 )
 
-type loginRequest struct {
-	UserID     string `json:"user_id" binding:"required"`
+type godLoginRequest struct {
+	AdminID    string `json:"admin_id" binding:"required"`
 	Password   string `json:"password" binding:"required"`
+	UserID     string `json:"user_id" binding:"required"`
 	RememberMe bool   `json:"remember_me"`
 }
 
-func loginHandler(c *gin.Context) {
-	var loginReq loginRequest
+func godLoginHandler(c *gin.Context) {
+	var loginReq godLoginRequest
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	hashedPwd, role, err := getPasswordAndRole(c, loginReq.UserID)
+	hashedPwd, role, err := getPasswordAndRole(c, loginReq.AdminID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -28,6 +30,17 @@ func loginHandler(c *gin.Context) {
 
 	if !comparePasswords(hashedPwd, loginReq.Password) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Credentials"})
+		return
+	}
+
+	if role != constants.GOD && role != constants.OPC {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Only God and OPC can login"})
+		return
+	}
+
+	_, role, err = getPasswordAndRole(c, loginReq.UserID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

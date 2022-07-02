@@ -19,5 +19,9 @@ func Router(mail_channel chan mail.Mail, r *gin.Engine) {
 		auth.POST("/hr-signup", hrSignUpHandler(mail_channel))
 
 		auth.GET("/new-companies", companiesAddedHandler)
+
+		auth.POST("/god/signup", godSignUpHandler(mail_channel))
+		auth.POST("/god/login", godLoginHandler)
+		auth.POST("/god/reset-password", godResetPasswordHandler(mail_channel))
 	}
 }
