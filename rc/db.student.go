@@ -83,6 +83,21 @@ func getRegisteredStudentCount(ctx *gin.Context, rid uint) (int, error) {
 	return int(count), tx.Error
 }
 
+type StatsBranchResponse struct {
+	ProgramDepartmentID uint `json:"program_department_id"`
+	Total               uint `json:"total"`
+	PreOffer            uint `json:"pre_offer"`
+	Recruited           uint `json:"recruited"`
+}
+
+func FetchRegisteredStudentCountByBranch(ctx *gin.Context, rid uint, res *[]StatsBranchResponse) error {
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).
+		Where("recruitment_cycle_id = ?", rid).Group("program_department_id").
+		Select("program_department_id, count(*) as total, 0 as pre_offer, 0 as recruited").
+		Scan(&res)
+	return tx.Error
+}
+
 func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string, cpiEligibility float64) (bool, error) {
 
 	var primaryID int

@@ -41,6 +41,13 @@ func getStatsHandler(ctx *gin.Context) {
 		return
 	}
 
+	var branchStats []rc.StatsBranchResponse
+	err = rc.FetchRegisteredStudentCountByBranch(ctx, rid, &branchStats)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var srids []uint
 	for _, stat := range stats {
 		srids = append(srids, stat.StudentRecruitmentCycleID)
@@ -54,7 +61,12 @@ func getStatsHandler(ctx *gin.Context) {
 		studentsMap[students[i].ID] = &students[i]
 	}
 
-	var response []statsRecruitmentResponse
+	var branchMap = make(map[uint]*rc.StatsBranchResponse)
+	for i := range branchStats {
+		branchMap[branchStats[i].ProgramDepartmentID] = &branchStats[i]
+	}
+
+	var studentResponse []statsRecruitmentResponse
 	for _, stat := range stats {
 		student := studentsMap[stat.StudentRecruitmentCycleID]
 		res := statsRecruitmentResponse{
@@ -68,10 +80,22 @@ func getStatsHandler(ctx *gin.Context) {
 			Role:                         stat.Role,
 			Type:                         stat.Type,
 		}
-		response = append(response, res)
+		studentResponse = append(studentResponse, res)
+
+		if res.Type == string(Recruited) {
+			branchMap[res.ProgramDepartmentID].Recruited++
+			if res.SecondaryProgramDepartmentID != 0 {
+				branchMap[res.SecondaryProgramDepartmentID].Recruited++
+			}
+		}
+
+		if res.Type == string(PIOPPOACCEPTED) {
+			branchMap[res.ProgramDepartmentID].PreOffer++
+			if res.SecondaryProgramDepartmentID != 0 {
+				branchMap[res.SecondaryProgramDepartmentID].PreOffer++
+			}
+		}
 	}
 
-	
-
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, gin.H{"student": studentResponse, "branch": branchStats})
 }
