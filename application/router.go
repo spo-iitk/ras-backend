@@ -10,7 +10,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
 		admin.GET("/count", getApplicationCountHandler)
-		admin.GET("/student/stats", getStatsHandler)
+		admin.GET("/stats", getStatsHandler)
 		admin.POST("/pio-ppo", postPPOPIOHandler)
 
 		admin.GET("/event", getAllEventsByRCHandler)
