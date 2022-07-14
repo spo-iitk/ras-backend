@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Pull latest commit
-git pull origin main
+git pull origin main --force
 
 # Install `things`
 go get -d -v ./...
