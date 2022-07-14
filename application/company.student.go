@@ -10,7 +10,7 @@ import (
 
 func getStudentsByEventForCompanyHandler(ctx *gin.Context) {
 	cid := getCompanyRCID(ctx)
-	if cid != 0 {
+	if cid == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}

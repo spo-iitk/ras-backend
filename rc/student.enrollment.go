@@ -21,7 +21,7 @@ func getStudentEnrollmentHandler(ctx *gin.Context) {
 	}
 
 	sid := getStudentRCID(ctx)
-	if sid != 0 {
+	if sid == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}

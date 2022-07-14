@@ -17,7 +17,7 @@ func postEventByCompanyHandler(ctx *gin.Context) {
 	}
 
 	cid := getCompanyRCID(ctx)
-	if cid != 0 {
+	if cid == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
@@ -64,7 +64,7 @@ func putEventByCompanyHandler(ctx *gin.Context) {
 	}
 
 	cid := getCompanyRCID(ctx)
-	if cid != 0 {
+	if cid == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
@@ -98,7 +98,7 @@ func deleteEventByCompanyHandler(ctx *gin.Context) {
 	}
 
 	cid := getCompanyRCID(ctx)
-	if cid != 0 {
+	if cid == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
