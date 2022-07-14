@@ -152,17 +152,21 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 }
 
 func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.StudentRecruitmentCycle, jps *[]Proforma) error {
-	
+
 	eligibility := bytes.Repeat([]byte("_"), 95)
 	eligibility[student.ProgramDepartmentID] = byte('1')
 	if student.SecondaryProgramDepartmentID != 0 {
 		eligibility[student.SecondaryProgramDepartmentID] = byte('1')
 	}
 
+	subQuery := db.WithContext(ctx).Model(&ApplicationResume{}).
+		Where("student_recruitment_cycle_id = ?", student.ID).
+		Select("proforma_id")
+
 	tx := db.WithContext(ctx).
 		Where(
-			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > 0 AND deadline < ? AND eligibility LIKE ?",
-			rid, true, time.Now().UnixMilli(), string(eligibility)+"%").
+			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > 0 AND deadline < ? AND eligibility LIKE ? AND id NOT IN",
+			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", subQuery).
 		Select(
 			"id",
 			"company_name",
