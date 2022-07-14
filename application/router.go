@@ -66,6 +66,7 @@ func StudentRouter(r *gin.Engine) {
 		student.GET("/event", getEventsByStudentHandler)
 		student.GET("/event/:eid", getEventHandler)
 
+		student.GET("/view", viewApplicationsHandler)
 		student.GET("/stats", getStatsHandler)
 	}
 }

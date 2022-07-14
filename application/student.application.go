@@ -200,3 +200,28 @@ func getEventHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, event)
 }
+
+type ViewApplicationsBySIDResponse struct {
+	CompanyName string `json:"company_name"`
+	Role        string `json:"role"`
+	Deadline    int64  `json:"deadline"`
+	ResumeID    string `json:"resume_id"`
+	Resume      string `json:"resume"`
+}
+
+func viewApplicationsHandler(ctx *gin.Context) {
+	sid, err := extractStudentRCID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var response []ViewApplicationsBySIDResponse
+	err = fetchApplications(ctx, sid, &response)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}

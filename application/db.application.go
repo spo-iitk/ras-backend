@@ -99,3 +99,15 @@ func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByR
 
 	return tx.Error
 }
+
+func fetchApplications(ctx *gin.Context, sid uint, response *[]ViewApplicationsBySIDResponse) error {
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
+		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id").
+		Joins("JOIN proforma ON proforma.id = proforma_events.proforma_id").
+		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.sequence = ?", sid, ApplicationSubmitted).
+		Select("proforma.company_name, proforma.role, proforma.deadline, application_resumes.resume_id, application_resumes.resume").
+		Scan(response)
+
+	return tx.Error
+}
