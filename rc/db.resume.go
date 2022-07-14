@@ -37,5 +37,5 @@ func updateResumeVerify(ctx *gin.Context, rsid uint, verified bool, user string)
 	var resume StudentRecruitmentCycleResume
 	tx := db.WithContext(ctx).Model(&resume).Clauses(clause.Returning{}).
 		Where("id = ?", rsid).Update("verified", verified).Update("action_taken_by", user)
-	return tx.RowsAffected == 1, resume.RecruitmentCycleID, tx.Error
+	return tx.RowsAffected == 1, resume.StudentRecruitmentCycleID, tx.Error
 }
