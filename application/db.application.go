@@ -24,6 +24,17 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 		qid = append(qid, question.ID)
 	}
 
+	var events []ProformaEvent
+	err = fetchEventsByProforma(ctx, pid, &events)
+	if err != nil {
+		return err
+	}
+
+	var eid []uint
+	for _, event := range events {
+		eid = append(eid, event.ID)
+	}
+
 	tx := db.WithContext(ctx).Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -35,17 +46,19 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 		return err
 	}
 
-	if err := tx.Where("proforma_event_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(&EventStudent{}).Error; err != nil {
+	if err := tx.Where("proforma_event_id IN ? AND student_recruitment_cycle_id = ?", eid, sid).Delete(&EventStudent{}).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	if err := tx.Where("application_question_id IN ?", qid).Delete(&ApplicationQuestionAnswer{}).Error; err != nil {
-		tx.Rollback()
-		return err
+	if len(qid) > 0 {
+		if err := tx.Where("application_question_id IN ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&ApplicationQuestionAnswer{}).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
-	if err := tx.Where("proforma_id = ?", pid).Delete(&ApplicationResume{}).Error; err != nil {
+	if err := tx.Where("proforma_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(&ApplicationResume{}).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
