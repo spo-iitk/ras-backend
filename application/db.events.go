@@ -13,12 +13,12 @@ func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]getAllEventsByRCRespo
 }
 
 func fetchEvent(ctx *gin.Context, id uint, event *ProformaEvent) error {
-	tx := db.WithContext(ctx).Where("id = ?", id).First(event)
+	tx := db.WithContext(ctx).Where("id = ?", id).Order("sequence").First(event)
 	return tx.Error
 }
 
 func fetchEventsByProforma(ctx *gin.Context, pid uint, events *[]ProformaEvent) error {
-	tx := db.WithContext(ctx).Where("proforma_id = ?", pid).Find(events)
+	tx := db.WithContext(ctx).Where("proforma_id = ?", pid).Order("sequence").Find(events)
 	return tx.Error
 }
 
@@ -38,6 +38,9 @@ func deleteEvent(ctx *gin.Context, id uint) error {
 }
 
 func fetchEventsByStudent(ctx *gin.Context, sid uint, events *[]ProformaEvent) error {
-	tx := db.WithContext(ctx).Joins("event_student", db.Where(&EventStudent{StudentRecruitmentCycleID: sid})).Find(events)
+	tx := db.WithContext(ctx).
+		Joins("NATURAL JOIN event_students").
+		Where("event_students.student_recruitment_cycle_id = ?", sid).
+		Order("start_time DESC, proforma_id, sequence").Find(events)
 	return tx.Error
 }
