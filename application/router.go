@@ -71,6 +71,7 @@ func StudentRouter(r *gin.Engine) {
 }
 func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company/application/rc/:rid")
+	company.Use(ensureCompany())
 	{
 		company.GET("/proforma", getProformaForCompanyHandler)
 		company.POST("/proforma", postProformaByCompanyHandler)

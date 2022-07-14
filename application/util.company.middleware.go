@@ -10,6 +10,17 @@ import (
 
 func ensureCompany() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		rid, err := util.ParseUint(ctx.Param("rid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if !rc.IsRCActive(ctx, rid) {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "RC not active"})
+			return
+		}
+
 		companyID, err := extractCompanyID(ctx)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -17,12 +28,6 @@ func ensureCompany() gin.HandlerFunc {
 		}
 
 		ctx.Set("companyID", companyID)
-
-		rid, err := util.ParseUint(ctx.Param("rid"))
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
 
 		crcid, err := rc.FetchCompanyRCID(ctx, rid, companyID)
 		if err != nil {
