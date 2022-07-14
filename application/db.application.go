@@ -63,7 +63,7 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 		return err
 	}
 
-	return nil
+	return tx.Commit().Error
 }
 
 func createApplication(ctx *gin.Context, application *EventStudent, answers *[]ApplicationQuestionAnswer, resume *ApplicationResume) error {
