@@ -65,7 +65,12 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 		return err
 	}
 
-	err := tx.Create(application).Error
+	err := tx.
+		Where(
+			"proforma_event_id = ? AND student_recruitment_cycle_id = ?",
+			application.ProformaEventID,
+			application.StudentRecruitmentCycleID).
+		FirstOrCreate(application).Error
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -78,7 +83,6 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 			return err
 		}
 	}
-
 	err = tx.
 		Where("proforma_id = ? AND student_recruitment_cycle_id = ?", resume.ProformaID, resume.StudentRecruitmentCycleID).
 		FirstOrCreate(resume).Error
@@ -100,9 +104,9 @@ func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByR
 
 func fetchApplications(ctx *gin.Context, sid uint, response *[]ViewApplicationsBySIDResponse) error {
 	tx := db.WithContext(ctx).Model(&EventStudent{}).
-		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
-		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id").
-		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
+		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id AND proforma_events.deleted_at IS NULL").
+		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id AND application_resumes.deleted_at IS NULL").
+		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.deleted_at IS NULL").
 		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.name = ?", sid, ApplicationSubmitted).
 		Select("proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume").
 		Scan(response)
