@@ -6,7 +6,7 @@ func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]getAllEventsByRCRespo
 	tx := db.WithContext(ctx).Model(&ProformaEvent{}).
 		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
 		Where("proformas.deleted_at IS NULL AND proformas.recruitment_cycle_id = ?", rid).
-		Order("start_time").
+		Order("start_time DESC, proforma_id, sequence").
 		Select("proforma_events.*, proformas.company_name, proformas.role").
 		Find(events)
 	return tx.Error
