@@ -2,6 +2,7 @@ package application
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,18 +31,20 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 		return err
 	}
 
+	log.Println("Failed to delete application")
 	var eid []uint
 	for _, event := range events {
 		eid = append(eid, event.ID)
 	}
 
+	log.Println("Failed to delete applicationsadfg")
 	tx := db.WithContext(ctx).Begin()
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
 		}
 	}()
-
+	log.Println("Failed sfdgto delete applicationsadfg")
 	if err := tx.Error; err != nil {
 		return err
 	}
@@ -50,6 +53,7 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 		tx.Rollback()
 		return err
 	}
+	log.Println("Failed sfgvjhbknlm;,dgto delete applicationsadfg")
 
 	if len(qid) > 0 {
 		if err := tx.Where("application_question_id IN ? AND student_recruitment_cycle_id = ?", qid, sid).Delete(&ApplicationQuestionAnswer{}).Error; err != nil {
@@ -58,6 +62,7 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 		}
 	}
 
+	log.Println("Failelnkm;bhvbjnd sfgvjhbknlm;,dgto delete applicationsadfg")
 	if err := tx.Where("proforma_id = ? AND student_recruitment_cycle_id = ?", pid, sid).Delete(&ApplicationResume{}).Error; err != nil {
 		tx.Rollback()
 		return err
