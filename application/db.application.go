@@ -65,12 +65,7 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 		return err
 	}
 
-	err := tx.
-		Where(
-			"proforma_event_id = ? AND student_recruitment_cycle_id = ?",
-			application.ProformaEventID,
-			application.StudentRecruitmentCycleID).
-		FirstOrCreate(application).Error
+	err := tx.Create(application).Error
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -85,7 +80,7 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 	}
 
 	err = tx.
-		Where("proforma_id = ? AND student_recruitment_cycle_id = ?", resume.ProformaID, resume.ResumeID).
+		Where("proforma_id = ? AND student_recruitment_cycle_id = ?", resume.ProformaID, resume.StudentRecruitmentCycleID).
 		FirstOrCreate(resume).Error
 	if err != nil {
 		tx.Rollback()
