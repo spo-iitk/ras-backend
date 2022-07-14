@@ -25,9 +25,9 @@ func postStudentResumeHandler(ctx *gin.Context) {
 		return
 	}
 
-	sid, _, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
 
@@ -42,14 +42,14 @@ func postStudentResumeHandler(ctx *gin.Context) {
 }
 
 func getStudentResumeHandler(ctx *gin.Context) {
-	sid, _, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
 
 	var resumes []StudentRecruitmentCycleResume
-	err = fetchStudentResume(ctx, sid, &resumes)
+	err := fetchStudentResume(ctx, sid, &resumes)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

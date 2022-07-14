@@ -53,6 +53,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 func StudentRouter(r *gin.Engine) {
 	r.GET("/api/student/rc", getStudentRCHandler)
 	student := r.Group("/api/student/rc/:rid")
+	student.Use(ensureActiveStudent())
 	{
 		student.GET("/notice", getAllNoticesForStudentHandler)
 		student.GET("", studentWhoamiHandler)

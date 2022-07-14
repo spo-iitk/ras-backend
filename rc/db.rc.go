@@ -34,6 +34,11 @@ func fetchRC(ctx *gin.Context, rid string, rc *RecruitmentCycle) error {
 	return tx.Error
 }
 
+func IsRCActive(ctx *gin.Context, rid uint) bool {
+	tx := db.WithContext(ctx).Where("id = ? AND is_active = ?", rid, true).First(&RecruitmentCycle{})
+	return tx.Error == nil
+}
+
 func updateRC(ctx *gin.Context, id uint, inactive bool, countcap uint) (bool, error) {
 	tx := db.WithContext(ctx).Model(&RecruitmentCycle{}).Where("id = ?", id).
 		Update("is_active", !inactive).Updates(&RecruitmentCycle{ApplicationCountCap: countcap})
