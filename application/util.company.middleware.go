@@ -27,7 +27,7 @@ func ensureCompany() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("companyID", companyID)
+		ctx.Set("companyID", int(companyID))
 
 		crcid, err := rc.FetchCompanyRCID(ctx, rid, companyID)
 		if err != nil {
@@ -35,7 +35,7 @@ func ensureCompany() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("companyRCID", crcid)
+		ctx.Set("companyRCID", int(crcid))
 
 		ctx.Next()
 	}

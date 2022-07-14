@@ -15,7 +15,7 @@ func ensureActiveStudent() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("student_rc_id", id)
+		ctx.Set("student_rc_id", int(id))
 	}
 }
 
