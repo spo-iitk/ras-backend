@@ -76,9 +76,12 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 		return err
 	}
 
-	if err := tx.Create(answers).Error; err != nil {
-		tx.Rollback()
-		return err
+	if len(*answers) > 0 {
+		err = tx.Create(answers).Error
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
 	err = tx.
