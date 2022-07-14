@@ -202,6 +202,7 @@ func getEventHandler(ctx *gin.Context) {
 }
 
 type ViewApplicationsBySIDResponse struct {
+	ID          uint   `json:"id"`
 	CompanyName string `json:"company_name"`
 	Role        string `json:"role"`
 	Deadline    int64  `json:"deadline"`
