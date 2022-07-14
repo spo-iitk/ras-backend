@@ -48,6 +48,7 @@ func deleteApplication(ctx *gin.Context, pid uint, sid uint) error {
 	if err := tx.Error; err != nil {
 		return err
 	}
+	log.Println("Failed sfdgto delete applicationsadfg")
 
 	if err := tx.Where("proforma_event_id IN ? AND student_recruitment_cycle_id = ?", eid, sid).Delete(&EventStudent{}).Error; err != nil {
 		tx.Rollback()
