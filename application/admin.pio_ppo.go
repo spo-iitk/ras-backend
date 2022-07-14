@@ -41,7 +41,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = rc.UpdateStudentType(ctx, req.Cid, req.Emails)
+	err = rc.UpdateStudentType(ctx, req.Cid, req.Emails, string(PIOPPOACCEPTED))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

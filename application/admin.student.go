@@ -15,7 +15,7 @@ func getStudentsByEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	students := []EventStudent{}
+	var students []EventStudent
 	err = fetchStudentsByEvent(ctx, eid, &students)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -90,5 +90,24 @@ func postStudentsByEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "Added successfully"})
+	var evnt ProformaEvent
+	err = fetchEvent(ctx, req.EventID, &evnt)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
+		err = rc.UpdateStudentType(ctx, proforma.CompanyRecruitmentCycleID, req.Emails, string(Recruited))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	if len(req.Emails) == len(students) {
+		ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully"})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully but Some students were not added"})
+	}
 }

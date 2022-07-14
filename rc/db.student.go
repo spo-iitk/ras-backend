@@ -46,7 +46,7 @@ func createStudents(ctx *gin.Context, students *[]StudentRecruitmentCycle) error
 	return tx.Error
 }
 
-func UpdateStudentType(ctx *gin.Context, cid uint, emails []string) error {
+func UpdateStudentType(ctx *gin.Context, cid uint, emails []string, action string) error {
 	var c CompanyRecruitmentCycle
 	tx := db.WithContext(ctx).Where("id = ?", cid).First(&c)
 	if tx.Error != nil {
@@ -55,9 +55,9 @@ func UpdateStudentType(ctx *gin.Context, cid uint, emails []string) error {
 
 	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND email IN ?", c.RecruitmentCycleID, emails).Updates(
 		&StudentRecruitmentCycle{
-			Type:     PIOPPO,
+			Type:     StudentRecruitmentCycleType(action),
 			IsFrozen: true,
-			Comment:  "PIO/PPO by " + c.CompanyName,
+			Comment:  action + " by " + c.CompanyName,
 		})
 	return tx.Error
 }
