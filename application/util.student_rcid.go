@@ -16,6 +16,10 @@ func extractStudentRCID(ctx *gin.Context) (uint, error) {
 		return 0, err
 	}
 
+	if !rc.IsRCActive(ctx, rid) {
+		return 0, errors.New("recruitment cycle is not active")
+	}
+
 	user_email := middleware.GetUserID(ctx)
 	if user_email == "" {
 		return 0, errors.New("unauthorized")

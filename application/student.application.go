@@ -23,8 +23,8 @@ func getApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
-	sid, err := extractStudentRCID(ctx)
-	if err != nil {
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -57,9 +57,9 @@ func postApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
-	sid, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
 
@@ -168,9 +168,9 @@ func deleteApplicationHandler(ctx *gin.Context) {
 		return
 	}
 
-	sid, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
 
@@ -211,14 +211,14 @@ type ViewApplicationsBySIDResponse struct {
 }
 
 func viewApplicationsHandler(ctx *gin.Context) {
-	sid, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
 
 	var response []ViewApplicationsBySIDResponse
-	err = fetchApplications(ctx, sid, &response)
+	err := fetchApplications(ctx, sid, &response)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

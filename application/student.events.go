@@ -8,14 +8,14 @@ import (
 )
 
 func getEventsByStudentHandler(ctx *gin.Context) {
-	sid, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sid := getStudentRCID(ctx)
+	if sid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
 
 	var events []ProformaEvent
-	err = fetchEventsByStudent(ctx, sid, &events)
+	err := fetchEventsByStudent(ctx, sid, &events)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -26,12 +26,6 @@ func getEventsByStudentHandler(ctx *gin.Context) {
 }
 
 func getEventsByProformaForStudentHandler(ctx *gin.Context) {
-	_, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract student rcid"})
-		return
-	}
-
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

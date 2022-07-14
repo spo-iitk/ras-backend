@@ -8,12 +8,6 @@ import (
 )
 
 func getProformasForStudentHandler(ctx *gin.Context) {
-	_, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract student rcid"})
-		return
-	}
-
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -32,12 +26,6 @@ func getProformasForStudentHandler(ctx *gin.Context) {
 }
 
 func getProformaForStudentHandler(ctx *gin.Context) {
-	_, err := extractStudentRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract student rcid"})
-		return
-	}
-
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -52,12 +52,11 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 func StudentRouter(r *gin.Engine) {
 	student := r.Group("/api/student/application/rc/:rid")
+	student.Use(ensureActiveStudent())
 	{
 		student.GET("/proforma", getProformasForStudentHandler)
 		student.GET("/proforma/:pid", getProformaForStudentHandler)
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
-
-		// student.GET("/proforma/:pid/students", dummy)
 
 		student.GET("/opening/:pid", getApplicationHandler)
 		student.POST("/opening/:pid", postApplicationHandler)
