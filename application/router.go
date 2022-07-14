@@ -41,7 +41,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.DELETE("/event/:eid", deleteEventHandler)
 
 			proforma.GET("/event/:eid/student", getStudentsByEventHandler)
-			proforma.POST("/event/:eid/student", postStudentsByEventHandler)
+			proforma.POST("/event/:eid/student", postStudentsByEventHandler(mail_channel))
 			// proforma.GET("/event/:eid/coordinator", getCoordinatorsByEventHandler)
 			// proforma.POST("/event/:eid/coordinator", postCoordinatorByEventHandler)
 
@@ -58,6 +58,7 @@ func StudentRouter(r *gin.Engine) {
 		student.GET("/proforma/:pid", getProformaForStudentHandler)
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
 
+		student.GET("/opening", getProformasForEligibleStudentHandler)
 		student.GET("/opening/:pid", getApplicationHandler)
 		student.POST("/opening/:pid", postApplicationHandler)
 		student.DELETE("/opening/:pid", deleteApplicationHandler)

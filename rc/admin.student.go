@@ -5,16 +5,22 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/student"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getAllStudentsHandler(ctx *gin.Context) {
-	rid := ctx.Param("rid")
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var students []StudentRecruitmentCycle
 
-	err := fetchAllStudents(ctx, rid, &students)
+	err = fetchAllStudents(ctx, rid, &students)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -32,7 +38,7 @@ func getStudentHandler(ctx *gin.Context) {
 
 	var student StudentRecruitmentCycle
 
-	err = fetchStudent(ctx, srid, &student)
+	err = FetchStudent(ctx, srid, &student)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -78,31 +84,45 @@ type bulkFreezeStudentRequest struct {
 	Frozen bool     `json:"frozen"`
 }
 
-func bulkFreezeStudentsHandler(ctx *gin.Context) {
-	var req bulkFreezeStudentRequest
+func bulkFreezeStudentsHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req bulkFreezeStudentRequest
 
-	err := ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		err := ctx.ShouldBindJSON(&req)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		ok, err := freezeStudentsToggle(ctx, req.Emails, req.Frozen)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if !ok {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
+			return
+		}
+
+		user := middleware.GetUserID(ctx)
+
+		logrus.Infof("%v froze %v students", user, len(req.Emails))
+
+		msg := "Dear student" + "\n\n"
+		msg += "Your account has been "
+		if req.Frozen {
+			msg += "FROZEN"
+		} else {
+			msg += "UNFROZEN"
+		}
+
+		msg += " by the coordinators.\n\n"
+
+		mail_channel <- mail.GenerateMails(req.Emails, "Action taken on Account", msg)
+
+		ctx.JSON(http.StatusOK, gin.H{"status": "froze students"})
 	}
-
-	ok, err := freezeStudentsToggle(ctx, req.Emails, req.Frozen)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
-		return
-	}
-
-	user := middleware.GetUserID(ctx)
-
-	logrus.Infof("%v froze %v students", user, len(req.Emails))
-
-	ctx.JSON(http.StatusOK, gin.H{"status": "froze students"})
 }
 
 type bulkPostStudentRequest struct {

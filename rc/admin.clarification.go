@@ -22,7 +22,7 @@ func postClarificationHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		}
 
 		var student StudentRecruitmentCycle
-		err = fetchStudent(ctx, sid, &student)
+		err = FetchStudent(ctx, sid, &student)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return

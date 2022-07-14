@@ -2,12 +2,12 @@ package rc
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getAllNoticesHandler(ctx *gin.Context) {
@@ -23,29 +23,51 @@ func getAllNoticesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, notices)
 }
 
-func postNoticeHandler(ctx *gin.Context) {
-	rid := ctx.Param("rid")
-	var notice Notice
+func postNoticeHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		rid, err := util.ParseUint(ctx.Param("rid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	err := ctx.ShouldBindJSON(&notice)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	id, err := strconv.ParseUint(rid, 10, 64)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		var notice Notice
+		err = ctx.ShouldBindJSON(&notice)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
+		CreateNotice(ctx, rid, notice, mail_channel)
+	}
+}
+
+func CreateNotice(ctx *gin.Context, id uint, notice Notice, mail_channel chan mail.Mail) {
 	notice.RecruitmentCycleID = uint(id)
+	notice.LastReminderAt = time.Now().UnixMilli()
 	notice.CreatedBy = middleware.GetUserID(ctx)
 
-	err = createNotice(ctx, &notice)
+	err := createNotice(ctx, &notice)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	var students []StudentRecruitmentCycle
+
+	err = fetchAllStudents(ctx, id, &students)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var emails []string
+
+	for _, student := range students {
+		emails = append(emails, student.Email)
+	}
+
+	mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, notice.Description)
 
 	ctx.JSON(http.StatusOK, notice)
 }
@@ -64,11 +86,16 @@ func deleteNoticeHandler(ctx *gin.Context) {
 
 func postReminderHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		rid := ctx.Param("rid")
+		rid, err := util.ParseUint(ctx.Param("rid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		nid := ctx.Param("nid")
 
 		var notice Notice
-		err := fetchNotice(ctx, nid, &notice)
+		err = fetchNotice(ctx, nid, &notice)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return

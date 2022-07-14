@@ -1,7 +1,11 @@
 package application
 
 import (
+	"bytes"
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/rc"
 )
 
 func fetchProformasByCompanyForAdmin(ctx *gin.Context, cid uint, jps *[]Proforma) error {
@@ -144,6 +148,30 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 			"medical_requirements",
 		).
 		First(jp)
+	return tx.Error
+}
+
+func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.StudentRecruitmentCycle, jps *[]Proforma) error {
+	
+	eligibility := bytes.Repeat([]byte("_"), 95)
+	eligibility[student.ProgramDepartmentID] = byte('1')
+	if student.SecondaryProgramDepartmentID != 0 {
+		eligibility[student.SecondaryProgramDepartmentID] = byte('1')
+	}
+
+	tx := db.WithContext(ctx).
+		Where(
+			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > 0 AND deadline < ? AND eligibility LIKE ?",
+			rid, true, time.Now().UnixMilli(), string(eligibility)+"%").
+		Select(
+			"id",
+			"company_name",
+			"eligibility",
+			"deadline",
+			"role",
+			"cpi_cutoff",
+		).
+		Find(jps)
 	return tx.Error
 }
 

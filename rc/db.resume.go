@@ -1,6 +1,9 @@
 package rc
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
+)
 
 func addStudentResume(ctx *gin.Context, resume string, sid uint, rid uint) error {
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).Create(&StudentRecruitmentCycleResume{
@@ -30,7 +33,9 @@ func FetchResume(ctx *gin.Context, rsid uint) (string, error) {
 	return resume, tx.Error
 }
 
-func updateResumeVerify(ctx *gin.Context, rsid uint, verified bool, user string) (bool, error) {
-	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).Where("id = ?", rsid).Update("verified", verified).Update("action_taken_by", user)
-	return tx.RowsAffected == 1, tx.Error
+func updateResumeVerify(ctx *gin.Context, rsid uint, verified bool, user string) (bool, uint, error) {
+	var resume StudentRecruitmentCycleResume
+	tx := db.WithContext(ctx).Model(&resume).Clauses(clause.Returning{}).
+		Where("id = ?", rsid).Update("verified", verified).Update("action_taken_by", user)
+	return tx.RowsAffected == 1, resume.RecruitmentCycleID, tx.Error
 }
