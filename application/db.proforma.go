@@ -165,7 +165,7 @@ func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.Stu
 
 	tx := db.WithContext(ctx).
 		Where(
-			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > 0 AND deadline < ? AND eligibility LIKE ? AND id NOT IN",
+			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND eligibility LIKE ? AND id NOT IN (?)",
 			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", subQuery).
 		Select(
 			"id",
