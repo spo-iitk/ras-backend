@@ -11,15 +11,15 @@ import (
 )
 
 func getProformaForCompanyHandler(ctx *gin.Context) {
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
 	var jps []Proforma
 
-	err = fetchProformasByCompanyForCompany(ctx, cid, &jps)
+	err := fetchProformasByCompanyForCompany(ctx, cid, &jps)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -29,14 +29,14 @@ func getProformaForCompanyHandler(ctx *gin.Context) {
 }
 
 func postProformaByCompanyHandler(ctx *gin.Context) {
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
 	var jp Proforma
-	err = ctx.ShouldBindJSON(&jp)
+	err := ctx.ShouldBindJSON(&jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -67,14 +67,14 @@ func postProformaByCompanyHandler(ctx *gin.Context) {
 }
 
 func putProformaByCompanyHandler(ctx *gin.Context) {
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
 	var jp Proforma
-	err = ctx.ShouldBindJSON(&jp)
+	err := ctx.ShouldBindJSON(&jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -103,9 +103,9 @@ func deleteProformaByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
@@ -130,9 +130,9 @@ func getProformaHandlerForCompany(ctx *gin.Context) {
 		return
 	}
 
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 

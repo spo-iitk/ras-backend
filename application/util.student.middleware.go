@@ -16,6 +16,8 @@ func ensureActiveStudent() gin.HandlerFunc {
 		}
 
 		ctx.Set("student_rc_id", id)
+
+		ctx.Next()
 	}
 }
 

@@ -49,12 +49,6 @@ func getCompanyRCHRHandler(ctx *gin.Context) {
 		return
 	}
 
-	_, err = extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

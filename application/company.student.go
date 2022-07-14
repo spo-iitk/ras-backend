@@ -9,9 +9,9 @@ import (
 )
 
 func getStudentsByEventForCompanyHandler(ctx *gin.Context) {
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 

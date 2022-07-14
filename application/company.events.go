@@ -16,9 +16,9 @@ func postEventByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
@@ -63,9 +63,9 @@ func putEventByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
@@ -97,9 +97,9 @@ func deleteEventByCompanyHandler(ctx *gin.Context) {
 		return
 	}
 
-	cid, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	cid := getCompanyRCID(ctx)
+	if cid != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "could not get company rcid"})
 		return
 	}
 
@@ -132,12 +132,6 @@ func deleteEventByCompanyHandler(ctx *gin.Context) {
 }
 
 func getEventsByProformaForCompanyHandler(ctx *gin.Context) {
-	_, err := extractCompanyRCID(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Fail to extract company rcid"})
-		return
-	}
-
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
