@@ -105,7 +105,7 @@ func fetchApplications(ctx *gin.Context, sid uint, response *[]ViewApplicationsB
 		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id").
 		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id").
 		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
-		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.sequence = ?", sid, ApplicationSubmitted).
+		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.name = ?", sid, ApplicationSubmitted).
 		Select("proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume").
 		Scan(response)
 
