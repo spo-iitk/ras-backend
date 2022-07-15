@@ -139,7 +139,7 @@ func fetchAdminApplications(ctx *gin.Context, sid uint, response *[]ViewApplicat
 		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id AND application_resumes.deleted_at IS NULL").
 		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.deleted_at IS NULL").
 		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.name = ?", sid, ApplicationSubmitted).
-		Distinct("proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume, event_students.createed_at as applied_on").
+		Distinct("proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume, event_students.created_at as applied_on").
 		Scan(response)
 
 	return tx.Error
