@@ -33,4 +33,4 @@ networks:
           driver: default
           config:
               - subnet: "192.168.3.0/24"
-                gateway: "192.168.3.1"
+                # gateway: "192.168.3.1"
