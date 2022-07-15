@@ -2,6 +2,7 @@ package application
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/rc"
@@ -140,13 +141,13 @@ func getStudentsByRole(ctx *gin.Context) {
 }
 
 type ViewApplicationsBySIDAdminResponse struct {
-	ID          uint   `json:"id"`
-	CompanyName string `json:"company_name"`
-	Role        string `json:"role"`
-	Deadline    int64  `json:"deadline"`
-	ResumeID    string `json:"resume_id"`
-	Resume      string `json:"resume"`
-	AppliedOn   int64  `json:"applied_on"`
+	ID          uint      `json:"id"`
+	CompanyName string    `json:"company_name"`
+	Role        string    `json:"role"`
+	Deadline    int64     `json:"deadline"`
+	ResumeID    string    `json:"resume_id"`
+	Resume      string    `json:"resume"`
+	AppliedOn   time.Time `json:"applied_on"`
 	// Status      string `json:"status"`
 }
 
