@@ -27,6 +27,7 @@ func fetchProformasByCompanyForAdmin(ctx *gin.Context, cid uint, jps *[]Proforma
 			"hide_details",
 			"active_hr",
 			"role",
+			"profile",
 			"tentative_job_location",
 		).
 		Find(jps)
@@ -49,6 +50,7 @@ func fetchProformaForCompany(ctx *gin.Context, pid uint, cid uint, jp *Proforma)
 			"hide_details",
 			"active_hr",
 			"role",
+			"profile",
 			"tentative_job_location",
 			"job_description",
 			"cost_to_company",
@@ -78,6 +80,7 @@ func fetchProformasByCompanyForCompany(ctx *gin.Context, cid uint, jps *[]Profor
 			"hide_details",
 			"active_hr",
 			"role",
+			"profile",
 			"tentative_job_location",
 		).
 		Find(jps)
@@ -93,6 +96,7 @@ func fetchProformasForStudent(ctx *gin.Context, rid uint, jps *[]Proforma) error
 			"eligibility",
 			"deadline",
 			"role",
+			"profile",
 			"cpi_cutoff",
 		).
 		Find(jps)
@@ -118,6 +122,7 @@ func fetchProformaByRCForAdmin(ctx *gin.Context, rid uint, jps *[]Proforma) erro
 			"hide_details",
 			"active_hr",
 			"role",
+			"profile",
 			"tentative_job_location",
 		).
 		Order("updated_at DESC").
@@ -139,6 +144,7 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 			"eligibility",
 			"deadline",
 			"role",
+			"profile",
 			"cpi_cutoff",
 			"tentative_job_location",
 			"job_description",
@@ -173,6 +179,7 @@ func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.Stu
 			"eligibility",
 			"deadline",
 			"role",
+			"profile",
 			"cpi_cutoff",
 		).
 		Find(jps)
