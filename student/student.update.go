@@ -19,7 +19,7 @@ func updateStudentHandler(ctx *gin.Context) {
 
 	email := middleware.GetUserID(ctx)
 
-	if updateStudentRequest.SecondaryProgramDepartmentID > updateStudentRequest.ProgramDepartmentID && util.IsDoubleMajor(updateStudentRequest.SecondaryProgramDepartmentID) {
+	if updateStudentRequest.SecondaryProgramDepartmentID < updateStudentRequest.ProgramDepartmentID && !util.IsDoubleMajor(updateStudentRequest.SecondaryProgramDepartmentID) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Secondary program department and primary program department seems to be interchanged"})
 		return
 	}
