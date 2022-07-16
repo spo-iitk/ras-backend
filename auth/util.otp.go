@@ -49,7 +49,6 @@ func otpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		log.Printf("OTP sent to %s is %s", otpReq.UserID, otp)
 		mail_channel <- mail.GenerateMail(otpReq.UserID, "OTP", fmt.Sprintf("Dear %s,\n\nYour OTP is %s\nThis otp will expire in %d minutes", otpReq.UserID, otp, otpExpiration))
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "OTP sent"})
