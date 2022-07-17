@@ -1,9 +1,12 @@
 package application
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -91,6 +94,34 @@ func putEventHandler(ctx *gin.Context) {
 	err = updateEvent(ctx, &event)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if event.StartTime != 0 || event.EndTime != 0 {
+		var proforma Proforma
+
+		err = fetchProforma(ctx, event.ProformaID, &proforma)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		rc.CreateNotice(ctx, rid, &rc.Notice{
+			Title: fmt.Sprintf("%s of role %s - %s has been scheduled", event.Name, proforma.Role, proforma.CompanyName),
+			Description: fmt.Sprintf(
+				"%s of role %s - %s has been scheduled from %s to %s",
+				event.Name, proforma.Role, proforma.CompanyName,
+				time.UnixMilli(int64(event.StartTime)).Local().String(),
+				time.UnixMilli(int64(event.EndTime)).Local().String()),
+			Tags:       fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID),
+			Attachment: "",
+		})
 		return
 	}
 

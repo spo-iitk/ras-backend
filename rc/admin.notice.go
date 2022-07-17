@@ -23,51 +23,33 @@ func getAllNoticesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, notices)
 }
 
-func postNoticeHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		rid, err := util.ParseUint(ctx.Param("rid"))
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		var notice Notice
-		err = ctx.ShouldBindJSON(&notice)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		CreateNotice(ctx, rid, notice, mail_channel)
+func postNoticeHandler(ctx *gin.Context) {
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
+
+	var notice Notice
+	err = ctx.ShouldBindJSON(&notice)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	CreateNotice(ctx, rid, &notice)
 }
 
-func CreateNotice(ctx *gin.Context, id uint, notice Notice, mail_channel chan mail.Mail) {
+func CreateNotice(ctx *gin.Context, id uint, notice *Notice) {
 	notice.RecruitmentCycleID = uint(id)
-	notice.LastReminderAt = time.Now().UnixMilli()
+	notice.LastReminderAt = 0
 	notice.CreatedBy = middleware.GetUserID(ctx)
 
-	err := createNotice(ctx, &notice)
+	err := createNotice(ctx, notice)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	var students []StudentRecruitmentCycle
-
-	err = fetchAllStudents(ctx, id, &students)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	var emails []string
-
-	for _, student := range students {
-		emails = append(emails, student.Email)
-	}
-
-	mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, notice.Description)
 
 	ctx.JSON(http.StatusOK, notice)
 }

@@ -1,6 +1,9 @@
 package application
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
+)
 
 func fetchEventsByRC(ctx *gin.Context, rid uint, events *[]getAllEventsByRCResponse) error {
 	tx := db.WithContext(ctx).Model(&ProformaEvent{}).
@@ -28,7 +31,7 @@ func createEvent(ctx *gin.Context, event *ProformaEvent) error {
 }
 
 func updateEvent(ctx *gin.Context, event *ProformaEvent) error {
-	tx := db.WithContext(ctx).Where("id = ?", event.ID).Updates(event)
+	tx := db.WithContext(ctx).Clauses(clause.Returning{}).Where("id = ?", event.ID).Updates(event)
 	return tx.Error
 }
 
