@@ -121,7 +121,7 @@ func putEventHandler(ctx *gin.Context) {
 				time.UnixMilli(int64(event.EndTime)).Local().String()),
 			Tags:       fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID),
 			Attachment: "",
-		})
+		}, "Event Scheduled")
 		return
 	}
 

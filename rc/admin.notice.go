@@ -37,10 +37,10 @@ func postNoticeHandler(ctx *gin.Context) {
 		return
 	}
 
-	CreateNotice(ctx, rid, &notice)
+	CreateNotice(ctx, rid, &notice, "notice created")
 }
 
-func CreateNotice(ctx *gin.Context, id uint, notice *Notice) {
+func CreateNotice(ctx *gin.Context, id uint, notice *Notice, status string) {
 	notice.RecruitmentCycleID = uint(id)
 	notice.LastReminderAt = 0
 	notice.CreatedBy = middleware.GetUserID(ctx)
@@ -51,7 +51,7 @@ func CreateNotice(ctx *gin.Context, id uint, notice *Notice) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, notice)
+	ctx.JSON(http.StatusOK, gin.H{"status": status})
 }
 
 func deleteNoticeHandler(ctx *gin.Context) {

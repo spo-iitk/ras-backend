@@ -1,11 +1,13 @@
 package application
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
+	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -77,6 +79,15 @@ func putProformaHandler(ctx *gin.Context) {
 		return
 	}
 
+	var oldJp Proforma
+	err = fetchProforma(ctx, jp.ID, &oldJp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	publishNotice := oldJp.Deadline == 0 && jp.Deadline != 0 && (jp.IsApproved.Bool || oldJp.IsApproved.Bool)
+
 	err = updateProforma(ctx, &jp)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -87,7 +98,18 @@ func putProformaHandler(ctx *gin.Context) {
 
 	logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(jp.ID)})
+	if publishNotice {
+		rc.CreateNotice(ctx, oldJp.RecruitmentCycleID, &rc.Notice{
+			Title: fmt.Sprintf("New Opening for role %s in %s", jp.Role, jp.CompanyName),
+			Description: fmt.Sprintf(
+				"A new opening has been created for the role of %s in the company %s",
+				jp.Role, jp.CompanyName),
+			Tags:       fmt.Sprintf("opening,%s,%s,%d", jp.Role, jp.CompanyName, jp.ID),
+			Attachment: "",
+		}, "Scheduled proforma with id "+util.ParseString(jp.ID))
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(jp.ID)})
+	}
 }
 
 type hideProformaRequest struct {
