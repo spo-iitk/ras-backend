@@ -15,6 +15,7 @@ func Router(mail_channel chan mail.Mail, r *gin.Engine) {
 		auth.POST("/company-signup", companySignUpHandler(mail_channel))
 
 		auth.GET("/whoami", whoamiHandler) // who am i, if not exploited
+		auth.GET("/credits", creditsHandler)
 
 		auth.POST("/hr-signup", hrSignUpHandler(mail_channel))
 

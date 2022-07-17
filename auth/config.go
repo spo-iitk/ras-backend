@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"os"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
@@ -11,6 +13,7 @@ import (
 )
 
 var db *gorm.DB
+var logf *os.File
 
 func openConnection() {
 	host := viper.GetString("DATABASE.HOST")
@@ -44,5 +47,6 @@ func openConnection() {
 
 func init() {
 	openConnection()
+	logf = file()
 	go cleanupOTP()
 }
