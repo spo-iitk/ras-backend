@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
