@@ -1,6 +1,9 @@
 package student
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
+)
 
 func FirstOrCreateStudent(ctx *gin.Context, student *Student) error {
 	tx := db.WithContext(ctx).Where("iitk_email = ?", student.IITKEmail).FirstOrCreate(student)
@@ -34,6 +37,15 @@ func getAllStudents(ctx *gin.Context, students *[]Student) error {
 
 func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
 	tx := db.WithContext(ctx).Where("id = ?", student.ID).Updates(student)
+	return tx.RowsAffected > 0, tx.Error
+}
+
+func verifyStudent(ctx *gin.Context, student *Student) (bool, error) {
+	tx := db.WithContext(ctx).Model(&student).
+		Clauses(clause.Returning{}).
+		Where("id = ?", student.ID).
+		Update("is_verified", student.IsVerified).
+		Update("is_editable", !student.IsVerified)
 	return tx.RowsAffected > 0, tx.Error
 }
 

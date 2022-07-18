@@ -41,3 +41,36 @@ func updateStudentByIDHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
+
+func verifyStudentHandler(ctx *gin.Context) {
+	var verifyStudentRequest Student
+
+	if err := ctx.ShouldBindJSON(&verifyStudentRequest); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if verifyStudentRequest.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter student ID"})
+		return
+	}
+
+	updated, err := verifyStudent(ctx, &verifyStudentRequest)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !updated {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Student not found"})
+		return
+	}
+
+	if verifyStudentRequest.IsVerified {
+		logrus.Infof("A student with id %d is verified", verifyStudentRequest.ID)
+		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully verified"})
+	} else {
+		logrus.Infof("A student with id %d is unverified", verifyStudentRequest.ID)
+		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully unverified"})
+	}
+}

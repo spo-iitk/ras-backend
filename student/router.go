@@ -18,8 +18,9 @@ func AdminRouter(r *gin.Engine) {
 	{
 		admin.DELETE("/:sid", deleteStudentHandler)
 		admin.GET("", getAllStudentsHandler)
-		admin.GET("/:sid", getStudentByIDHandler)
 		admin.PUT("", updateStudentByIDHandler)
+		admin.GET("/:sid", getStudentByIDHandler)
+		admin.PUT("/:sid/verify", verifyStudentHandler)
 		admin.GET("/:sid/history", ras.PlaceHolderController)
 	}
 }
