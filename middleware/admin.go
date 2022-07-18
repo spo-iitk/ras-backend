@@ -19,3 +19,16 @@ func EnsureAdmin() gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func EnsurePsuedoAdmin() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		role := GetRoleID(ctx)
+
+		if role != constants.OPC && role != constants.GOD && role != constants.APC {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			return
+		}
+
+		ctx.Next()
+	}
+}
