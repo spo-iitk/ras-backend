@@ -40,10 +40,10 @@ func deleteEvent(ctx *gin.Context, id uint) error {
 	return tx.Error
 }
 
-func fetchEventsByStudent(ctx *gin.Context, sid uint, events *[]ProformaEvent) error {
+func fetchEventsByStudent(ctx *gin.Context, rid uint, events *[]ProformaEvent) error {
 	tx := db.WithContext(ctx).
-		Joins("NATURAL JOIN event_students").
-		Where("event_students.student_recruitment_cycle_id = ?", sid).
+		Joins("JOIN proformas ON proformas.id=proforma_events.proforma_id AND proformas.recruitment_cycle_id = ?", rid).
+		Where("proforma_events.start_time > 0").
 		Order("start_time DESC, proforma_id, sequence").Find(events)
 	return tx.Error
 }
