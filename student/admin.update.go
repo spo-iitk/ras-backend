@@ -50,11 +50,13 @@ func verifyStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	if verifyStudentRequest.ID == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Enter student ID"})
+	sid, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	verifyStudentRequest.ID = sid
 	updated, err := verifyStudent(ctx, &verifyStudentRequest)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
