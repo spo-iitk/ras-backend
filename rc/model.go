@@ -35,7 +35,7 @@ type RecruitmentCycleQuestion struct {
 	gorm.Model
 	Type               RecruitmentCycleQuestionsType `json:"type"`
 	Question           string                        `json:"question"`
-	RecruitmentCycleID uint                          `gorm:"uniqueIndex;->;<-:create" json:"recruitment_cycle_id"`
+	RecruitmentCycleID uint                          `gorm:"index;->;<-:create" json:"recruitment_cycle_id"`
 	RecruitmentCycle   RecruitmentCycle              `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
 	Mandatory          bool                          `json:"mandatory" gorm:"default:false"`
 	Options            string                        `json:"options"` //csv
