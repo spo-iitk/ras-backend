@@ -50,11 +50,5 @@ func godLoginHandler(c *gin.Context) {
 		return
 	}
 
-	err = setLastLogin(c, loginReq.UserID)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	c.JSON(http.StatusOK, gin.H{"role_id": role, "user_id": loginReq.UserID, "token": token})
 }
