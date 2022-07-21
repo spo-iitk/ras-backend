@@ -26,7 +26,7 @@ func updatePassword(ctx *gin.Context, userID string, password string) (bool, err
 	return tx.RowsAffected > 0, tx.Error
 }
 
-func setLastLogin(ctx *gin.Context, userID string) error {
-	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ?", userID).Update("last_login", time.Now().Unix())
+func setLastLogin(userID string) error {
+	tx := db.Model(&User{}).Where("user_id = ?", userID).Update("last_login", time.Now().UnixMilli())
 	return tx.Error
 }
