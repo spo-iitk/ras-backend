@@ -129,67 +129,73 @@ type bulkPostStudentRequest struct {
 	Email []string `json:"email" binding:"required"`
 }
 
-func postStudentsHandler(ctx *gin.Context) {
-	rid, err := util.ParseUint(ctx.Param("rid"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	var emails bulkPostStudentRequest
-
-	err = ctx.ShouldBindJSON(&emails)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	emailArr := emails.Email
-	var students []StudentRecruitmentCycle
-	var studentsGlobal []student.Student
-
-	err = student.FetchStudents(ctx, &studentsGlobal, emailArr)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	for _, student := range studentsGlobal {
-		var secondaryProgramDepartmentID uint = 0
-		if util.IsDoubleMajor(student.SecondaryProgramDepartmentID) {
-			secondaryProgramDepartmentID = student.SecondaryProgramDepartmentID
+func postStudentsHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		rid, err := util.ParseUint(ctx.Param("rid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 
-		students = append(students, StudentRecruitmentCycle{
-			RecruitmentCycleID:           rid,
-			StudentID:                    student.ID,
-			Email:                        student.IITKEmail,
-			Name:                         student.Name,
-			RollNo:                       student.RollNo,
-			CPI:                          student.CurrentCPI,
-			ProgramDepartmentID:          student.ProgramDepartmentID,
-			SecondaryProgramDepartmentID: secondaryProgramDepartmentID,
-		})
+		var emails bulkPostStudentRequest
+
+		err = ctx.ShouldBindJSON(&emails)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		emailArr := emails.Email
+		var students []StudentRecruitmentCycle
+		var studentsGlobal []student.Student
+		var regEmails []string
+
+		err = student.FetchStudents(ctx, &studentsGlobal, emailArr)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, student := range studentsGlobal {
+			var secondaryProgramDepartmentID uint = 0
+			if util.IsDoubleMajor(student.SecondaryProgramDepartmentID) {
+				secondaryProgramDepartmentID = student.SecondaryProgramDepartmentID
+			}
+
+			regEmails = append(regEmails, student.IITKEmail)
+			students = append(students, StudentRecruitmentCycle{
+				RecruitmentCycleID:           rid,
+				StudentID:                    student.ID,
+				Email:                        student.IITKEmail,
+				Name:                         student.Name,
+				RollNo:                       student.RollNo,
+				CPI:                          student.CurrentCPI,
+				ProgramDepartmentID:          student.ProgramDepartmentID,
+				SecondaryProgramDepartmentID: secondaryProgramDepartmentID,
+			})
+		}
+
+		err = createStudents(ctx, &students)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		mail_channel <- mail.GenerateMails(regEmails, "Registered in Recruitment Cycle", "Dear student,\n\nYou have been registered in a Recruitment Cycle.\n\n Please answer enrollment questions and proceed to the next steps.")
+
+		user := middleware.GetUserID(ctx)
+		num := len(students)
+		reqNum := len(emailArr)
+
+		logrus.Infof("%v added %v new students to RC %d", user, num, rid)
+
+		if num != reqNum {
+			ctx.JSON(http.StatusOK, gin.H{"status": "partially added student"})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{"status": "added students"})
 	}
-
-	err = createStudents(ctx, &students)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	user := middleware.GetUserID(ctx)
-	num := len(students)
-	reqNum := len(emailArr)
-
-	logrus.Infof("%v added %v new students to RC %d", user, num, rid)
-
-	if num != reqNum {
-		ctx.JSON(http.StatusOK, gin.H{"status": "partially added student"})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"status": "added students"})
 }
 
 func deleteStudentHandler(ctx *gin.Context) {

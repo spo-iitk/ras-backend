@@ -32,7 +32,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.POST("/student/:sid/clarification", postClarificationHandler(mail_channel))
 		admin.DELETE("/student/:sid", deleteStudentHandler)
 
-		admin.POST("/student", postStudentsHandler)
+		admin.POST("/student", postStudentsHandler(mail_channel))
 		admin.PUT("/student", putStudentHandler)
 
 		admin.PUT("/student/freeze", bulkFreezeStudentsHandler(mail_channel))
