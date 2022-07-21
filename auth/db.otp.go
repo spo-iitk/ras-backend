@@ -28,7 +28,7 @@ func verifyOTP(ctx *gin.Context, userID string, otp string) (bool, error) {
 
 func cleanupOTP() {
 	for {
+		db.Unscoped().Delete(OTP{}, "expires < ?", time.Now().Add(-24*time.Hour).UnixMilli())
 		time.Sleep(time.Hour * 24)
-		db.Unscoped().Delete(OTP{}, "expires > ?", time.Now().Add(-24*time.Hour).UnixMilli())
 	}
 }
