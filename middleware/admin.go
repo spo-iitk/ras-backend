@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"net/http"
-
+	"log"
+	
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/constants"
 )
@@ -25,6 +26,8 @@ func EnsurePsuedoAdmin() gin.HandlerFunc {
 		role := GetRoleID(ctx)
 
 		if role != constants.OPC && role != constants.GOD && role != constants.APC {
+			log.Println(role)
+			log.Println(GetUserID(ctx))
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}
