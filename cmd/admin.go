@@ -81,7 +81,7 @@ func adminStudentServer() *http.Server {
 	engine := gin.New()
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
-	engine.Use(middleware.EnsurePseudoAdmin())
+	engine.Use(middleware.EnsurePsuedoAdmin())
 
 	student.AdminRouter(engine)
 
