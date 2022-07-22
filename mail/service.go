@@ -25,7 +25,7 @@ func (mail *Mail) BuildMessage() []byte {
 	}
 
 	message += mail.Body
-	message += "\r\n\r\nBest\r\nRecruitment Automation Team\r\n"
+	message += "\r\n\r\n--\r\nRecruitment Automation Sysytem\r\n"
 	message += "Indian Institute of Technology Kanpur\r\n\r\n"
 	message += "This is an auto-generated email. Please do not reply."
 
