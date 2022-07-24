@@ -7,7 +7,7 @@ import (
 )
 
 func fetchAllNotices(ctx *gin.Context, rid string, notices *[]Notice) error {
-	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(notices)
+	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Order("created_at desc").Find(notices)
 	return tx.Error
 }
 
