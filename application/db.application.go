@@ -133,7 +133,8 @@ func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByR
 			WHERE
 				proforma_events.proforma_id = @pid
 				AND event_students.deleted_at IS NULL
-			
+				AND application_resumes.deleted_at IS NULL
+				AND proforma_events.deleted_at IS NULL
 		) mulstatus NATURAL
 		JOIN (
 			SELECT
@@ -156,6 +157,8 @@ func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByR
 					WHERE
 						proforma_events.proforma_id = @pid
 						AND event_students.deleted_at IS NULL
+						AND application_resumes.deleted_at IS NULL
+						AND proforma_events.deleted_at IS NULL
 				) mul
 			GROUP BY
 				student_rc_id,
