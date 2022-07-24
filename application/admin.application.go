@@ -60,7 +60,11 @@ func getStudentsByRole(ctx *gin.Context) {
 	}
 
 	var applied []ApplicantsByRole
-	fetchApplicantDetails(ctx, pid, &applied)
+	err = fetchApplicantDetails(ctx, pid, &applied)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var srids []uint
 	for _, applicant := range applied {
@@ -68,7 +72,16 @@ func getStudentsByRole(ctx *gin.Context) {
 	}
 
 	var allStudentsRC []rc.StudentRecruitmentCycle
-	rc.FetchStudentBySRID(ctx, srids, &allStudentsRC)
+	err = rc.FetchStudentBySRID(ctx, srids, &allStudentsRC)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(allStudentsRC) != len(applied) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Some students are missing from rc"})
+		return
+	}
 
 	var allStudentsRCMap = make(map[uint]*rc.StudentRecruitmentCycle)
 	for i := range allStudentsRC {
@@ -81,7 +94,16 @@ func getStudentsByRole(ctx *gin.Context) {
 	}
 
 	var allStudents []student.Student
-	student.FetchStudentsByID(ctx, sid, &allStudents)
+	err = student.FetchStudentsByID(ctx, sid, &allStudents)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(allStudents) != len(allStudentsRC) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Some students are missing from  master"})
+		return
+	}
 
 	var allStudentsMap = make(map[uint]*student.Student)
 	for i := range allStudents {
