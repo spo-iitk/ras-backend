@@ -22,7 +22,7 @@ func FetchStudent(ctx *gin.Context, sid uint, student *StudentRecruitmentCycle) 
 }
 
 func FetchStudentBySRID(ctx *gin.Context, sid []uint, students *[]StudentRecruitmentCycle) error {
-	tx := db.Debug().WithContext(ctx).Where("id IN ?", sid).Find(students).Order("id ASC")
+	tx := db.WithContext(ctx).Where("id IN ?", sid).Find(students).Order("id ASC")
 	return tx.Error
 }
 

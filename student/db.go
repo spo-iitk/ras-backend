@@ -16,7 +16,7 @@ func getStudentByID(ctx *gin.Context, student *Student, id uint) error {
 }
 
 func FetchStudentsByID(ctx *gin.Context, id []uint, students *[]Student) error {
-	tx := db.Debug().WithContext(ctx).Where("id IN ?", id).First(students).Order("id ASC")
+	tx := db.WithContext(ctx).Where("id IN ?", id).Find(students).Order("id ASC")
 	return tx.Error
 }
 
