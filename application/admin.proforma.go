@@ -86,7 +86,7 @@ func putProformaHandler(ctx *gin.Context) {
 		return
 	}
 
-	publishNotice := oldJp.Deadline == 0 && jp.Deadline != 0 && (jp.IsApproved.Bool || oldJp.IsApproved.Bool)
+	publishNotice := oldJp.Deadline == 0 && jp.Deadline != 0
 
 	err = updateProforma(ctx, &jp)
 	if err != nil {
@@ -99,6 +99,8 @@ func putProformaHandler(ctx *gin.Context) {
 	logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
 
 	if publishNotice {
+		logrus.Infof("%v published a proforma with id %d", user, jp.ID)
+
 		rc.CreateNotice(ctx, oldJp.RecruitmentCycleID, &rc.Notice{
 			Title: fmt.Sprintf("New Opening for role %s in %s", jp.Role, jp.CompanyName),
 			Description: fmt.Sprintf(
@@ -107,6 +109,8 @@ func putProformaHandler(ctx *gin.Context) {
 			Tags:       fmt.Sprintf("opening,%s,%s,%d", jp.Role, jp.CompanyName, jp.ID),
 			Attachment: "",
 		}, "Scheduled proforma with id "+util.ParseString(jp.ID))
+
+		ctx.JSON(http.StatusOK, gin.H{"status": "Proforma with id " + util.ParseString(jp.ID) + " has been published"})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(jp.ID)})
 	}
