@@ -114,85 +114,18 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 }
 
 func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByRole) error {
-	query := `
-	SELECT
-		*
-	FROM
-		(
-			SELECT
-				event_students.student_recruitment_cycle_id AS student_rc_id,
-				application_resumes.resume AS resume_link,
-				proforma_events.sequence AS status,
-				proforma_events.name AS name,
-				application_resumes.proforma_id
-			FROM
-				event_students
-				JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id
-				JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id
-				AND event_students.student_recruitment_cycle_id = application_resumes.student_recruitment_cycle_id
-			WHERE
-				proforma_events.proforma_id = @pid
-				AND event_students.deleted_at IS NULL
-				AND application_resumes.deleted_at IS NULL
-				AND proforma_events.deleted_at IS NULL
-		) mulstatus NATURAL
-		JOIN (
-			SELECT
-				student_rc_id,
-				Max(status) AS status,
-				proforma_id
-			FROM
-				(
-					SELECT
-						event_students.student_recruitment_cycle_id AS student_rc_id,
-						application_resumes.resume AS resume_link,
-						proforma_events.sequence AS status,
-						proforma_events.name AS name,
-						application_resumes.proforma_id
-					FROM
-						event_students
-						JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id
-						JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id
-						AND event_students.student_recruitment_cycle_id = application_resumes.student_recruitment_cycle_id
-					WHERE
-						proforma_events.proforma_id = @pid
-						AND event_students.deleted_at IS NULL
-						AND application_resumes.deleted_at IS NULL
-						AND proforma_events.deleted_at IS NULL
-				) mul
-			GROUP BY
-				student_rc_id,
-				proforma_id
-		) ms
-		ORDER BY
-		student_rc_id`
-	tx := db.WithContext(ctx).
-		Raw(query, sql.Named("pid", pid)).
-		Scan(students)
+	query := "SELECT * FROM( SELECT event_students.student_recruitment_cycle_id AS student_rc_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id AND event_students.student_recruitment_cycle_id = application_resumes.student_recruitment_cycle_id WHERE proforma_events.proforma_id = @pid AND event_students.deleted_at IS NULL AND application_resumes.deleted_at IS NULL AND proforma_events.deleted_at IS NULL) mulstatus NATURAL JOIN ( SELECT student_rc_id, Max(status) AS status, proforma_id FROM ( SELECT event_students.student_recruitment_cycle_id AS student_rc_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id AND event_students.student_recruitment_cycle_id = application_resumes.student_recruitment_cycle_id WHERE proforma_events.proforma_id = @pid AND event_students.deleted_at IS NULL AND application_resumes.deleted_at IS NULL AND proforma_events.deleted_at IS NULL ) mul GROUP BY student_rc_id, proforma_id ) ms ORDER BY student_rc_id"
+	
+	tx := db.WithContext(ctx).Raw(query, sql.Named("pid", pid)).Scan(students)
 
 	return tx.Error
 }
 
-func fetchApplications(ctx *gin.Context, sid uint, response *[]ViewApplicationsBySIDResponse) error {
-	tx := db.WithContext(ctx).Model(&EventStudent{}).
-		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id AND proforma_events.deleted_at IS NULL").
-		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id AND application_resumes.deleted_at IS NULL AND application_resumes.proforma_id = proforma_events.proforma_id").
-		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.deleted_at IS NULL").
-		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.name = ?", sid, ApplicationSubmitted).
-		Distinct("proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume").
-		Scan(response)
+func fetchApplications(ctx *gin.Context, sid uint, response *[]ViewApplicationsResponse) error {
+	query := "WITH applicationview AS( SELECT proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume, event_students.created_at as applied_on, proforma_events.name as status, proforma_events.sequence FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id AND application_resumes.proforma_id = proforma_events.proforma_id JOIN proformas ON proformas.id = proforma_events.proforma_id WHERE event_students.student_recruitment_cycle_id = @sid AND event_students.deleted_at IS NULL AND application_resumes.deleted_at IS NULL AND proforma_events.deleted_at IS NULL AND proformas.deleted_at IS NULL), maxstatus AS ( SELECT id, MAX(sequence) as sequence FROM applicationview GROUP BY id ) SELECT * FROM applicationview NATURAL JOIN maxstatus"
+	
+	tx := db.WithContext(ctx).Raw(query, sql.Named("sid", sid)).Scan(response)
 
 	return tx.Error
 }
 
-func fetchAdminApplications(ctx *gin.Context, sid uint, response *[]ViewApplicationsBySIDAdminResponse) error {
-	tx := db.WithContext(ctx).Model(&EventStudent{}).
-		Joins("JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id AND proforma_events.deleted_at IS NULL").
-		Joins("JOIN application_resumes ON application_resumes.student_recruitment_cycle_id = event_students.student_recruitment_cycle_id AND application_resumes.deleted_at IS NULL AND application_resumes.proforma_id = proforma_events.proforma_id").
-		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.deleted_at IS NULL").
-		Where("event_students.student_recruitment_cycle_id = ? AND event_students.deleted_at IS NULL AND proforma_events.name = ?", sid, ApplicationSubmitted).
-		Distinct("proformas.ID, proformas.company_name, proformas.role, proformas.deadline, application_resumes.resume_id, application_resumes.resume, event_students.created_at as applied_on").
-		Scan(response)
-
-	return tx.Error
-}
