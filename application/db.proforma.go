@@ -161,9 +161,9 @@ func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.Stu
 
 	eligibility := bytes.Repeat([]byte("_"), 95)
 	eligibility[student.ProgramDepartmentID] = byte('1')
-	if student.SecondaryProgramDepartmentID != 0 {
-		eligibility[student.SecondaryProgramDepartmentID] = byte('1')
-	}
+
+	secondary_eligibility := bytes.Repeat([]byte("_"), 95)
+	secondary_eligibility[student.SecondaryProgramDepartmentID] = byte('1')
 
 	subQuery := db.WithContext(ctx).Model(&ApplicationResume{}).
 		Where("student_recruitment_cycle_id = ?", student.ID).
@@ -171,8 +171,8 @@ func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.Stu
 
 	tx := db.WithContext(ctx).
 		Where(
-			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND eligibility LIKE ? AND id NOT IN (?)",
-			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", subQuery).
+			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND (eligibility LIKE ? or eligibility like ?) AND id NOT IN (?)",
+			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", string(secondary_eligibility)+"%", subQuery).
 		Select(
 			"id",
 			"company_name",

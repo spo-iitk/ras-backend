@@ -102,10 +102,10 @@ func putProformaHandler(ctx *gin.Context) {
 		logrus.Infof("%v published a proforma with id %d", user, jp.ID)
 
 		rc.CreateNotice(ctx, oldJp.RecruitmentCycleID, &rc.Notice{
-			Title: fmt.Sprintf("New Opening for role %s in %s", jp.Role, jp.CompanyName),
+			Title: fmt.Sprintf("[%s] | New Job Opening for %s", jp.CompanyName, jp.Profile),
 			Description: fmt.Sprintf(
-				"A new opening has been created for the role of %s in the company %s",
-				jp.Role, jp.CompanyName),
+				"A new opening has been created for the profile of %s in the company %s",
+				jp.Profile, jp.CompanyName),
 			Tags:       fmt.Sprintf("opening,%s,%s,%d", jp.Role, jp.CompanyName, jp.ID),
 			Attachment: "",
 		}, "Scheduled proforma with id "+util.ParseString(jp.ID))

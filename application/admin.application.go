@@ -22,6 +22,8 @@ type studentAdminsideResponse struct {
 	ID                           uint    `json:"id"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
+	Phone                        string  `json:"phone"`
+	PersonalEmail                string  `json:"personal_email"`
 	RollNo                       string  `json:"roll_no"`
 	CurrentCPI                   float64 `json:"current_cpi"`
 	UGCPI                        float64 `json:"ug_cpi"`
@@ -128,6 +130,8 @@ func getStudentsByRole(ctx *gin.Context) {
 
 		applicant_details.Name = student.Name
 		applicant_details.Email = student.IITKEmail
+		applicant_details.Phone = student.Phone
+		applicant_details.PersonalEmail = student.PersonalEmail
 
 		applicant_details.CurrentCPI = student.CurrentCPI
 		applicant_details.UGCPI = student.UGCPI
