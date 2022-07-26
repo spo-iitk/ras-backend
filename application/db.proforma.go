@@ -99,6 +99,7 @@ func fetchProformasForStudent(ctx *gin.Context, rid uint, jps *[]Proforma) error
 			"profile",
 			"cpi_cutoff",
 		).
+		Order("deadline DESC").
 		Find(jps)
 	return tx.Error
 }
