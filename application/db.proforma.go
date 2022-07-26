@@ -171,8 +171,8 @@ func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.Stu
 
 	tx := db.WithContext(ctx).
 		Where(
-			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND (eligibility LIKE ? or eligibility like ?) AND id NOT IN (?)",
-			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", string(secondary_eligibility)+"%", subQuery).
+			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND (eligibility LIKE ? or eligibility like ?) AND cpi_cutoff <= ? AND id NOT IN (?)",
+			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", string(secondary_eligibility)+"%", student.CPI, subQuery).
 		Select(
 			"id",
 			"company_name",
@@ -182,6 +182,7 @@ func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.Stu
 			"profile",
 			"cpi_cutoff",
 		).
+		Order("deadline").
 		Find(jps)
 	return tx.Error
 }
