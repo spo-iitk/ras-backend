@@ -7,7 +7,7 @@ import (
 	"github.com/spo-iitk/ras-backend/util"
 )
 
-type ProformaEventStudentResponse struct {
+type proformaEventStudentResponse struct {
 	ProformaEvent
 	CompanyName string `json:"company_name"`
 	Role        string `json:"role"`
@@ -20,7 +20,7 @@ func getEventsByStudentHandler(ctx *gin.Context) {
 		return
 	}
 
-	var events []ProformaEventStudentResponse
+	var events []proformaEventStudentResponse
 	err = fetchEventsByStudent(ctx, rid, &events)
 
 	if err != nil {
