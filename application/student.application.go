@@ -2,7 +2,6 @@ package application
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -174,8 +173,6 @@ func deleteApplicationHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
 		return
 	}
-
-	log.Println("Deleting application for student", sid)
 
 	err = deleteApplication(ctx, pid, sid)
 	if err != nil {
