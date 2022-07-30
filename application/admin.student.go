@@ -111,7 +111,7 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		msg += "You have advanced to the stage of " + evnt.Name + " for the recruitment process of role "
 		msg += proforma.Role + " by " + proforma.CompanyName + "."
 
-		mail_channel <- mail.GenerateMails(req.Emails, "Action taken on Account", msg)
+		mail_channel <- mail.GenerateMails(req.Emails, "Update on Application", msg)
 
 		if len(req.Emails) == len(students) {
 			ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully"})
