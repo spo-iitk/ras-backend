@@ -38,22 +38,6 @@ func getAllResumesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resumes)
 }
 
-func getResumeHandler(ctx *gin.Context) {
-	rsid, err := util.ParseUint(ctx.Param("rsid"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	resume, err := FetchResume(ctx, rsid)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, resume)
-}
-
 type putResumeVerifyRequest struct {
 	Verified bool `json:"verified"`
 }

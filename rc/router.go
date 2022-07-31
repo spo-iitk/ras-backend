@@ -45,7 +45,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/student/:sid/question/answers", getStudentAnswersHandler)
 
 		admin.GET("/resume", getAllResumesHandler)
-		admin.GET("/resume/:rsid", getResumeHandler)
 		admin.PUT("/resume/:rsid/verify", putResumeVerifyHandler(mail_channel))
 	}
 }
