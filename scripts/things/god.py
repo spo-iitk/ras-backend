@@ -1,6 +1,12 @@
 import secrets
 
-inputs = [
+# enum 
+# MODE = "SIGNUP"
+MODE = "RESET"
+
+TOKEN = "TOKEN"
+
+APC = [
     {
         "name": "Kashishpreet Kaur",
         "email": "ac.2022.kashishpreet@gmail.com"
@@ -87,7 +93,7 @@ inputs = [
     }
 ]
 
-TeamMembers = [
+OPC = [
     {
         "name": "Abhinav D Singh",
         "email": "opc22.abhids@spo.iitk",
@@ -114,25 +120,38 @@ TeamMembers = [
     }
 ]
 
-token = "TOKEN"
+f = open("god.sh", "w")
+f.write("#!/bin/bash\n\n")
 
-f = open("signup.sh", "w")
-f.write("#!/bin/bash\n")
-f.write("\n")
-
-# write:
-# curl 'https://placement.iitk.ac.in/api/auth/god/signup' \
-#   -H 'Content-Type: application/json' \
-#   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWRkeUBzcG8uaWl0ayIsInJvbGVfaWQiOjEwMCwiZXhwIjoxNjU4MjUwOTY4LCJpYXQiOjE2NTc5NTA5NjgsImlzcyI6InJhcyJ9.RXP8t0sz4e_T_Vwo0mZvcXZAyl-QGK0OtdPngYzZe3M' \
-#   -X POST \
-#   -d '{ "user_id": "opc22.gyan@spo.iitk", ""password"": "rdsfsdfg",  "role_id" : 101, ""name"" : "OPC Gyanendra Kumar" }'
-for x in TeamMembers:
-    # print (x)
-    f.write("# signup\n")
-    f.write("curl 'https://placement.iitk.ac.in/api/auth/god/signup' \\\n")
-    f.write("  -H 'Content-Type: application/json' \\\n")
-    f.write("  -H 'Authorization: Bearer "+token+"' \\\n")
-    f.write("  -X POST \\\n")
-    f.write("  -d '{ \"user_id\": \"" + x["email"] + "\", \"password\": \"" +
-            secrets.token_urlsafe(10) + "\",  \"role_id\": 101" + ", \"name\" : \"" + x["name"] + "\" }'\n")
-    f.write("\n")
+if MODE == "SIGNUP":
+    # write:
+    # curl 'https://placement.iitk.ac.in/api/auth/god/signup' \
+    #   -H 'Content-Type: application/json' \
+    #   -H 'Authorization: Bearer eyJhbGsdfdciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWRkeUBzcG8uaWl0ayIsInJvbGVfaWQiOjEwMCwiZXhwIjoxNjU4MjUwOTY4LCJpYXQiOjE2NTc5NTA5NjgsImlzcyI6InJhcyJ9.RXP8t0sz4e_T_Vwo0mZvcXZAyl-QGK0OtdPngYzZe3M' \
+    #   -X POST \
+    #   -d '{ "user_id": "opc22.gyan@spo.iitk", ""password"": "rdsfsdfg",  "role_id" : 101, ""name"" : "OPC Gyanendra Kumar" }'
+    for x in APC:
+        f.write("# signup\n")
+        f.write("curl 'https://placement.iitk.ac.in/api/auth/god/signup' \\\n")
+        f.write("  -H 'Content-Type: application/json' \\\n")
+        f.write("  -H 'Authorization: Bearer "+TOKEN+"' \\\n")
+        f.write("  -X POST \\\n")
+        f.write("  -d '{ \"user_id\": \"" + x["email"] + "\", \"password\": \"" +
+                secrets.token_urlsafe(10) + "\",  \"role_id\": 101" + ", \"name\" : \"" + x["name"] + "\" }'\n")
+        f.write("\n")
+if MODE == "RESET":
+    # Write:
+    # curl 'https://placement.iitk.ac.in/api/auth/god/reset-password' \
+    #   -H 'Content-Type: application/json' \
+    #   -H 'Authorization: Bearer eyJhbGsdfdciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWRkeUBzcG8uaWl0ayIsInJvbGVfaWQiOjEwMCwiZXhwIjoxNjU4MjUwOTY4LCJpYXQiOjE2NTc5NTA5NjgsImlzcyI6InJhcyJ9.RXP8t0sz4e_T_Vwo0mZvcXZAyl-QGK0OtdPngYzZe3M' \
+    #   -X POST \
+    #   -d '{ "user_id": "opc.gyan@spo.iitk", "new_password": "rdsfsdfg" }'
+    for x in APC:
+        f.write("# reset\n")
+        f.write("curl 'https://placement.iitk.ac.in/api/auth/god/reset-password' \\\n")
+        f.write("  -H 'Content-Type: application/json' \\\n")
+        f.write("  -H 'Authorization: Bearer "+TOKEN+"' \\\n")
+        f.write("  -X POST \\\n")
+        f.write("  -d '{ \"user_id\": \"" + x["email"] + "\", \"new_password\": \"" +
+                secrets.token_urlsafe(10) + "\" }'\n")
+        f.write("\n")
