@@ -71,10 +71,49 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
+		var evnt ProformaEvent
+		err = fetchEvent(ctx, req.EventID, &evnt)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		srcIDs, err := rc.FetchStudentRCIDs(ctx, rid, req.Emails)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
+		}
+
+		if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
+			err = rc.UpdateStudentType(ctx, proforma.CompanyRecruitmentCycleID, req.Emails, string(Recruited))
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		}
+
+		if evnt.Name == string(ApplicationSubmitted) {
+			if(len(req.Emails)!=1) {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Only one student can be force enrolled at a time"})
+				return
+			}
+
+			rsid, resume, err := rc.FetchFirstResume(ctx, srcIDs[0])
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Resume not found" + err.Error()})
+				return
+			}
+
+			err = createApplicationResume(ctx, &ApplicationResume{
+				StudentRecruitmentCycleID: srcIDs[0],
+				ProformaID:                pid,
+				ResumeID:                  rsid,
+				Resume:                    resume,
+			})
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
 		}
 
 		var students []EventStudent
@@ -90,21 +129,6 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
-		}
-
-		var evnt ProformaEvent
-		err = fetchEvent(ctx, req.EventID, &evnt)
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
-			err = rc.UpdateStudentType(ctx, proforma.CompanyRecruitmentCycleID, req.Emails, string(Recruited))
-			if err != nil {
-				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
 		}
 
 		msg := "Dear student" + "\n\n"

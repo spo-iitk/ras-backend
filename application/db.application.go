@@ -107,6 +107,13 @@ func createApplication(ctx *gin.Context, application *EventStudent, answers *[]A
 	return tx.Commit().Error
 }
 
+func createApplicationResume(ctx *gin.Context, resume *ApplicationResume) error {
+	tx := db.WithContext(ctx).
+		Where("proforma_id = ? AND student_recruitment_cycle_id = ?", resume.ProformaID, resume.StudentRecruitmentCycleID).
+		FirstOrCreate(resume)
+	return tx.Error
+}
+
 func fetchApplicantDetails(ctx *gin.Context, pid uint, students *[]ApplicantsByRole) error {
 	query := "WITH applications AS( SELECT event_students.student_recruitment_cycle_id AS student_rc_id, application_resumes.resume AS resume_link, proforma_events.sequence AS status, proforma_events.name AS name, application_resumes.proforma_id FROM event_students JOIN proforma_events ON proforma_events.id = event_students.proforma_event_id JOIN application_resumes ON application_resumes.proforma_id = proforma_events.proforma_id AND event_students.student_recruitment_cycle_id = application_resumes.student_recruitment_cycle_id WHERE proforma_events.proforma_id = @pid AND event_students.deleted_at IS NULL AND application_resumes.deleted_at IS NULL AND proforma_events.deleted_at IS NULL), maxapplicationstatus AS( SELECT student_rc_id, MAX(status) AS status, proforma_id FROM applications GROUP BY student_rc_id, proforma_id ) SELECT DISTINCT * FROM applications NATURAL JOIN maxapplicationstatus ORDER BY student_rc_id"
 	tx := db.WithContext(ctx).Raw(query, sql.Named("pid", pid)).Scan(students)
