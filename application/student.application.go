@@ -127,7 +127,7 @@ func postApplicationHandler(ctx *gin.Context) {
 		answers = append(answers, answer)
 	}
 
-	resumeLink, err := rc.FetchResume(ctx, request.ResumeID)
+	resumeLink, err := rc.FetchResume(ctx, request.ResumeID, sid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

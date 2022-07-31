@@ -27,11 +27,19 @@ func fetchAllResumes(ctx *gin.Context, rid uint, resumes *[]AllResumeResponse) e
 	return tx.Error
 }
 
-func FetchResume(ctx *gin.Context, rsid uint) (string, error) {
+func FetchResume(ctx *gin.Context, rsid uint, sid uint) (string, error) {
 	var resume string
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).
-		Where("id = ? AND verified = ?", rsid, true).Pluck("resume", &resume)
+		Where("id = ? AND student_recruitment_cycle_id = ? AND verified = ?", rsid, sid, true).
+		Pluck("resume", &resume)
 	return resume, tx.Error
+}
+
+func FetchFirstResume(ctx *gin.Context, sid uint) (uint, string, error) {
+	var resume StudentRecruitmentCycleResume
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).
+		Where("student_recruitment_cycle_id = ? AND verified = ?", sid, true).First(&resume)
+	return resume.ID, resume.Resume, tx.Error
 }
 
 func updateResumeVerify(ctx *gin.Context, rsid uint, verified bool, user string) (bool, uint, error) {
