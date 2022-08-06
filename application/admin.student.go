@@ -84,13 +84,7 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
-			err = rc.UpdateStudentType(ctx, proforma.CompanyRecruitmentCycleID, req.Emails, string(Recruited))
-			if err != nil {
-				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-		}
+
 
 		if evnt.Name == string(ApplicationSubmitted) {
 			if(len(req.Emails)!=1) {
@@ -131,11 +125,25 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		msg := "Dear student" + "\n\n"
-		msg += "You have advanced to the stage of " + evnt.Name + " for the recruitment process of role "
-		msg += proforma.Role + " by " + proforma.CompanyName + "."
+		if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
+			err = rc.UpdateStudentType(ctx, proforma.CompanyRecruitmentCycleID, req.Emails, string(Recruited))
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
 
-		mail_channel <- mail.GenerateMails(req.Emails, "Update on Application", msg)
+			msg := "Dear student" + "\n\nCongratulations\n"
+			msg += "You have been recruited by " + proforma.CompanyName
+			msg += " in the profile of " + proforma.Profile
+
+			mail_channel <- mail.GenerateMails(req.Emails, "Congratulations", msg)
+		} else {
+			msg := "Dear student" + "\n\n"
+			msg += "You have advanced to the stage of " + evnt.Name + " for the recruitment process of profile "
+			msg += proforma.Profile + " by " + proforma.CompanyName + "."
+
+			mail_channel <- mail.GenerateMails(req.Emails, "Update on Application", msg)
+		}
 
 		if len(req.Emails) == len(students) {
 			ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully"})
