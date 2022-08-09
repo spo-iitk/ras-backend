@@ -78,7 +78,7 @@ func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, []s
 
 	tx := db.WithContext(ctx).
 		Where("recruitment_cycle_id = ? AND email IN ? AND is_frozen = ?", rid, emails, false).
-		Select("id", "email").Scan(&students)
+		Select("id", "email").Find(&students)
 
 	for i := range students {
 		studentIDs = append(studentIDs, students[i].ID)
