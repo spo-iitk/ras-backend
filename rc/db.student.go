@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/student"
 )
 
 func fetchAllStudents(ctx *gin.Context, rid uint, students *[]StudentRecruitmentCycle) error {
@@ -75,10 +76,16 @@ func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, []s
 		studentIDs     []uint
 		filteredEmails []string
 	)
+
 	tx := db.WithContext(ctx).
 		Where("recruitment_cycle_id = ? AND email IN ? AND is_frozen = ?", rid, emails, false).
-		Select("id, email").Find(&students).
-		Pluck("id", &studentIDs).Pluck("email", &filteredEmails)
+		Select("id, email").Scan(&students)
+
+	for i := range students {
+		studentIDs = append(studentIDs, students[i].ID)
+		filteredEmails = append(filteredEmails, students[i].Email)
+	}
+
 	return studentIDs, filteredEmails, tx.Error
 }
 
