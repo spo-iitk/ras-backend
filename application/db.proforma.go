@@ -239,7 +239,14 @@ func fetchRolesCount(ctx *gin.Context, rid uint) (int, error) {
 
 func fetchRecruitedCount(ctx *gin.Context, rid uint) (int, error) {
 	var count int64
-	tx := db.WithContext(ctx).Joins("JOIN proformas ON proformas.id=proforma_events.proforma_id").Model(&ProformaEvent{}).
-		Where("name IN ? AND recruitment_cycle_id = ?", []EventType{Recruited, PIOPPOACCEPTED}, rid).Count(&count)
+	queryProforma := db.WithContext(ctx).Model(&Proforma{}).
+		Where("recruitment_cycle_id = ? AND is_approved = ?", rid, true).
+		Select("id")
+	queryEvents := db.WithContext(ctx).Model(&ProformaEvent{}).
+		Where("name IN (?) AND proforma_id IN (?)", []EventType{Recruited, PIOPPOACCEPTED}, queryProforma).
+		Select("id")
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Where("proforma_event_id IN (?)", queryEvents).
+		Count(&count)
 	return int(count), tx.Error
 }
