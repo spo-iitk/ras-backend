@@ -69,15 +69,17 @@ func UpdateStudentType(ctx *gin.Context, cid uint, emails []string, action strin
 	return tx.Error
 }
 
-func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails *[]string) ([]uint, error) {
-	var students []StudentRecruitmentCycle
-	var studentIDs []uint
-
+func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, []string, error) {
+	var (
+		students       []StudentRecruitmentCycle
+		studentIDs     []uint
+		filteredEmails []string
+	)
 	tx := db.WithContext(ctx).
 		Where("recruitment_cycle_id = ? AND email IN ? AND is_frozen = ?", rid, emails, false).
 		Select("id, email").Find(&students).
-		Pluck("id", &studentIDs).Pluck("email", emails)
-	return studentIDs, tx.Error
+		Pluck("id", &studentIDs).Pluck("email", filteredEmails)
+	return studentIDs, filteredEmails, tx.Error
 }
 
 func FetchStudentRCID(ctx *gin.Context, rid uint, email string) (uint, error) {

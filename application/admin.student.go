@@ -78,7 +78,8 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		srcIDs, err := rc.FetchStudentRCIDs(ctx, rid, &req.Emails)
+		var srcIDs []uint
+		srcIDs, req.Emails, err = rc.FetchStudentRCIDs(ctx, rid, req.Emails)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
