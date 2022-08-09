@@ -78,7 +78,7 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		srcIDs, err := rc.FetchStudentRCIDs(ctx, rid, req.Emails)
+		srcIDs, err := rc.FetchStudentRCIDs(ctx, rid, &req.Emails)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -87,7 +87,7 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 
 		if evnt.Name == string(ApplicationSubmitted) {
-			if(len(req.Emails)!=1) {
+			if(len(srcIDs)!=1) {
 				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Only one student can be force enrolled at a time"})
 				return
 			}

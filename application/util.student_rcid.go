@@ -25,14 +25,14 @@ func extractStudentRCID(ctx *gin.Context) (uint, error) {
 		return 0, errors.New("unauthorized")
 	}
 
-	sIDs, err := rc.FetchStudentRCIDs(ctx, rid, []string{user_email})
+	studentrcid, err := rc.FetchStudentRCID(ctx, rid, user_email)
 	if err != nil {
 		return 0, err
 	}
 
-	if len(sIDs) != 1 || sIDs[0] == 0 {
+	if studentrcid == 0 {
 		return 0, errors.New("RCID not found")
 	}
 
-	return sIDs[0], nil
+	return studentrcid, nil
 }
