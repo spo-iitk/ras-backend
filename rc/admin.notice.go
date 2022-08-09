@@ -95,18 +95,10 @@ func postReminderHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		var students []StudentRecruitmentCycle
-
-		err = fetchAllStudents(ctx, rid, &students)
+		emails, err := fetchAllUnfrozenEmails(ctx, rid)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
-		}
-
-		var emails []string
-
-		for _, student := range students {
-			emails = append(emails, student.Email)
 		}
 
 		mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, notice.Description)

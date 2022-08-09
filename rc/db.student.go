@@ -11,6 +11,13 @@ func fetchAllStudents(ctx *gin.Context, rid uint, students *[]StudentRecruitment
 	return tx.Error
 }
 
+func fetchAllUnfrozenEmails(ctx *gin.Context, rid uint) ([]string, error) {
+	var emails []string
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).
+		Where("recruitment_cycle_id = ? AND is_frozen = ?", rid, false).Pluck("email", &emails)
+	return emails, tx.Error
+}
+
 func fetchStudentByEmailAndRC(ctx *gin.Context, email string, rid uint, student *StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("email = ? AND recruitment_cycle_id = ?", email, rid).First(student)
 	return tx.Error
