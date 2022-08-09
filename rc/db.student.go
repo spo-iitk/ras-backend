@@ -78,7 +78,7 @@ func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, []s
 	tx := db.WithContext(ctx).
 		Where("recruitment_cycle_id = ? AND email IN ? AND is_frozen = ?", rid, emails, false).
 		Select("id, email").Find(&students).
-		Pluck("id", &studentIDs).Pluck("email", filteredEmails)
+		Pluck("id", &studentIDs).Pluck("email", &filteredEmails)
 	return studentIDs, filteredEmails, tx.Error
 }
 
