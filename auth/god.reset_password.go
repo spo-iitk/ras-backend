@@ -18,7 +18,7 @@ type godResetPasswordRequest struct {
 func godResetPasswordHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		middleware.Authenticator()(ctx)
-		if middleware.GetRoleID(ctx) != constants.GOD || middleware.GetRoleID(ctx) != constants.OPC {
+		if middleware.GetRoleID(ctx) != constants.GOD && middleware.GetRoleID(ctx) != constants.OPC {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Only OPC and GOD can access"})
 			return
 		}
