@@ -32,7 +32,7 @@ func godResetPasswordHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		hashedPwd := hashAndSalt(resetPasswordReq.NewPassword)
 
-		ok, err := updatePassword(ctx, resetPasswordReq.UserID, hashedPwd)
+		ok, err := updatePasswordbyGod(ctx, resetPasswordReq.UserID, hashedPwd)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
