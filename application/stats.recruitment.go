@@ -11,7 +11,7 @@ import (
 type statsResponse struct {
 	StudentRecruitmentCycleID uint   `json:"student_recruitment_cycle_id"`
 	CompanyName               string `json:"company_name"`
-	Role                      string `json:"role"`
+	Profile                   string `json:"profile"`
 	Type                      string `json:"type"`
 }
 
@@ -23,7 +23,7 @@ type statsRecruitmentResponse struct {
 	ProgramDepartmentID          uint   `json:"program_department_id"`
 	SecondaryProgramDepartmentID uint   `json:"secondary_program_department_id"`
 	CompanyName                  string `json:"company_name"`
-	Role                         string `json:"role"`
+	Profile                      string `json:"profile"`
 	Type                         string `json:"type"`
 }
 
@@ -77,7 +77,7 @@ func getStatsHandler(ctx *gin.Context) {
 			ProgramDepartmentID:          student.ProgramDepartmentID,
 			SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID,
 			CompanyName:                  stat.CompanyName,
-			Role:                         stat.Role,
+			Profile:                      stat.Profile,
 			Type:                         stat.Type,
 		}
 		studentResponse = append(studentResponse, res)
