@@ -85,10 +85,8 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-
-
 		if evnt.Name == string(ApplicationSubmitted) {
-			if(len(srcIDs)!=1) {
+			if len(srcIDs) != 1 {
 				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Only one student can be force enrolled at a time"})
 				return
 			}
@@ -146,10 +144,6 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			mail_channel <- mail.GenerateMails(req.Emails, "Update on Application", msg)
 		}
 
-		if len(req.Emails) == len(students) {
-			ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully"})
-		} else {
-			ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully but Some students were not added"})
-		}
+		ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully"})
 	}
 }
