@@ -32,7 +32,7 @@ func main() {
 	})
 
 	g.Go(func() error {
-		return studentServer().ListenAndServe()
+		return studentServer(mail_channel).ListenAndServe()
 	})
 
 	g.Go(func() error {

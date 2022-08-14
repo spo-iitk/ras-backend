@@ -51,7 +51,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	}
 }
 
-func StudentRouter(r *gin.Engine) {
+func StudentRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	student := r.Group("/api/student/application/rc/:rid")
 	student.Use(ensureActiveStudent())
 	{
@@ -61,7 +61,7 @@ func StudentRouter(r *gin.Engine) {
 
 		student.GET("/opening", getProformasForEligibleStudentHandler)
 		student.GET("/opening/:pid", getApplicationHandler)
-		student.POST("/opening/:pid", postApplicationHandler)
+		student.POST("/opening/:pid", postApplicationHandler(mail_channel))
 		student.DELETE("/opening/:pid", deleteApplicationHandler)
 
 		student.GET("/event", getEventsByStudentHandler)
