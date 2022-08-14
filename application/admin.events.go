@@ -119,8 +119,8 @@ func putEventHandler(ctx *gin.Context) {
 			Description: fmt.Sprintf(
 				"%s of role %s - %s has been scheduled from %s to %s",
 				event.Name, proforma.Role, proforma.CompanyName,
-				time.UnixMilli(int64(event.StartTime)).In(loc).String(),
-				time.UnixMilli(int64(event.EndTime)).In(loc).String()),
+				time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
+				time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04")),
 			Tags:       fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID),
 			Attachment: "",
 		}, "Event Scheduled")
