@@ -3,6 +3,7 @@ package mail
 import (
 	"fmt"
 	"net/smtp"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +15,8 @@ type Mail struct {
 }
 
 func (mail *Mail) BuildMessage() []byte {
-	message := fmt.Sprintf("From: Recruitment Automation System IITK<%s>\r\n", sender)
+	message := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\r\n"
+	message += fmt.Sprintf("From: Recruitment Automation System IITK<%s>\r\n", sender)
 	message += fmt.Sprintf("Subject: %s | Recruitment Automation System\r\n", mail.Subject)
 
 	// If mass mailing, BCC all the users
@@ -24,9 +26,9 @@ func (mail *Mail) BuildMessage() []byte {
 		message += fmt.Sprintf("To: Undisclosed Recipients<%s>\r\n\r\n", webteam)
 	}
 
-	message += mail.Body
-	message += "\r\n\r\n--\r\nRecruitment Automation Sysytem\r\n"
-	message += "Indian Institute of Technology Kanpur\r\n\r\n"
+	message += strings.Replace(mail.Body, "\n", "<br>", -1)
+	message += "<br><br>--<br>Recruitment Automation Sysytem<br>"
+	message += "Indian Institute of Technology Kanpur<br><br>"
 	message += "This is an auto-generated email. Please do not reply."
 
 	return []byte(message)
