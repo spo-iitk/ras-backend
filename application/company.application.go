@@ -46,9 +46,9 @@ func getStudentsForCompanyByRole(ctx *gin.Context) {
 
 	var validApplicants []studentCompanysideResponse
 	for _, s := range applied {
-		// if allStudentsRCMap[student.StudentRCID].IsFrozen {
-		// 	continue
-		// }
+		if allStudentsRCMap[s.StudentRCID].IsFrozen {
+			continue
+		}
 
 		applicant_details := studentCompanysideResponse{}
 		applicant_details.ID = s.StudentRCID
@@ -63,7 +63,6 @@ func getStudentsForCompanyByRole(ctx *gin.Context) {
 		applicant_details.CPI = studentRC.CPI
 		applicant_details.ProgramDepartmentID = studentRC.ProgramDepartmentID
 		applicant_details.SecondaryProgramDepartmentID = studentRC.SecondaryProgramDepartmentID
-		applicant_details.Frozen = studentRC.IsFrozen
 
 		validApplicants = append(validApplicants, applicant_details)
 	}
