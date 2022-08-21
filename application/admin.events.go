@@ -115,7 +115,7 @@ func putEventHandler(ctx *gin.Context) {
 		loc, _ := time.LoadLocation("Asia/Kolkata")
 
 		rc.CreateNotice(ctx, rid, &rc.Notice{
-			Title: fmt.Sprintf("%s of role %s - %s has been scheduled", event.Name, proforma.Role, proforma.CompanyName),
+			Title: fmt.Sprintf("%s of profile %s - %s has been scheduled", event.Name, proforma.Profile, proforma.CompanyName),
 			Description: fmt.Sprintf(
 				"%s of profile %s - %s has been scheduled from %s to %s",
 				event.Name, proforma.Profile, proforma.CompanyName,
