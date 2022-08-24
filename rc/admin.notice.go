@@ -54,6 +54,34 @@ func CreateNotice(ctx *gin.Context, id uint, notice *Notice, status string) {
 	ctx.JSON(http.StatusOK, gin.H{"status": status})
 }
 
+func putNoticeHandler(ctx *gin.Context){
+	var editNoticeRequest Notice
+
+	err := ctx.ShouldBindJSON(&editNoticeRequest)
+	if(err!=nil){
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if editCompanyRequest.RecruitmentCycleID != 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recruitment-cycle-id or rid is not allowed"})
+		return
+	}
+
+	if editNoticeRequest.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "ID is required"})
+		return
+	}
+
+	err = updateNotice(ctx, &editNoticeRequest)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOk, editNoticeRequest)
+}
+
 func deleteNoticeHandler(ctx *gin.Context) {
 	nid := ctx.Param("nid")
 
