@@ -16,5 +16,12 @@ func whoamiHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"role_id": role_id, "user_id": user_id})
+	var user User
+	err := fetchUser(ctx, &user, user_id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"role_id": role_id, "user_id": user_id, "name": user.Name})
 }

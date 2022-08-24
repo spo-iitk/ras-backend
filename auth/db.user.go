@@ -15,6 +15,11 @@ func firstOrCreateUser(ctx *gin.Context, user *User) (uint, error) {
 	return user.ID, tx.Error
 }
 
+func fetchUser(ctx *gin.Context, user *User, userID string) error {
+	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
+	return tx.Error
+}
+
 func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role, error) {
 	var user User
 	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
