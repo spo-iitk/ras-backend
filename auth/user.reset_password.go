@@ -43,12 +43,12 @@ func resetPasswordHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		}
 
 		if !ok {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such student exists"})
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "No such user exists"})
 			return
 		}
 
 		logrus.Infof("Password of %s reset successfully", resetPasswordReq.UserID)
-		mail_channel <- mail.GenerateMail(resetPasswordReq.UserID, "Password Reset Successfully", "Your password has been reset successfully.")
+		mail_channel <- mail.GenerateMail(resetPasswordReq.UserID, "Password Reset Successful", "Your password has been reset successfully.")
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully reset password"})
 	}

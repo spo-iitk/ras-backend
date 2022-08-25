@@ -27,7 +27,7 @@ func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role
 }
 
 func updatePassword(ctx *gin.Context, userID string, password string) (bool, error) {
-	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ? AND role_id = ?", userID, constants.STUDENT).Update("password", password)
+	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ?", userID).Update("password", password)
 	return tx.RowsAffected > 0, tx.Error
 }
 
