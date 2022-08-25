@@ -11,6 +11,7 @@ type proformaEventStudentResponse struct {
 	ProformaEvent
 	CompanyName string `json:"company_name"`
 	Role        string `json:"role"`
+	Profile     string `json:"profile"`
 }
 
 func getEventsByStudentHandler(ctx *gin.Context) {

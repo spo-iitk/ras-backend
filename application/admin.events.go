@@ -14,6 +14,7 @@ type getAllEventsByRCResponse struct {
 	ProformaEvent
 	CompanyName string `json:"company_name"`
 	Role        string `json:"role"`
+	Profile     string `json:"profile"`
 }
 
 func getAllEventsByRCHandler(ctx *gin.Context) {
