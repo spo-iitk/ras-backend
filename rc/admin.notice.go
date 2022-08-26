@@ -54,16 +54,16 @@ func CreateNotice(ctx *gin.Context, id uint, notice *Notice, status string) {
 	ctx.JSON(http.StatusOK, gin.H{"status": status})
 }
 
-func putNoticeHandler(ctx *gin.Context){
+func putNoticeHandler(ctx *gin.Context) {
 	var editNoticeRequest Notice
 
 	err := ctx.ShouldBindJSON(&editNoticeRequest)
-	if(err!=nil){
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if editCompanyRequest.RecruitmentCycleID != 0 {
+	if editNoticeRequest.RecruitmentCycleID != 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recruitment-cycle-id or rid is not allowed"})
 		return
 	}
@@ -79,7 +79,7 @@ func putNoticeHandler(ctx *gin.Context){
 		return
 	}
 
-	ctx.JSON(http.StatusOk, editNoticeRequest)
+	ctx.JSON(http.StatusOK, editNoticeRequest)
 }
 
 func deleteNoticeHandler(ctx *gin.Context) {
