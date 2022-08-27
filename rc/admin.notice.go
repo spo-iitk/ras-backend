@@ -64,7 +64,7 @@ func putNoticeHandler(ctx *gin.Context) {
 	}
 
 	if editNoticeRequest.RecruitmentCycleID != 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recruitment-cycle-id or rid is not allowed"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recruitment cycle id is not allowed"})
 		return
 	}
 
