@@ -38,8 +38,8 @@ func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, er
 	return tx.RowsAffected > 0, tx.Error
 }
 
-func freezeStudentsToggle(ctx *gin.Context, emails []string, frozen bool) (bool, error) {
-	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("email IN ?", emails).Update("is_frozen", frozen)
+func freezeStudentsToggle(ctx *gin.Context, ids []string, frozen bool) (bool, error) {
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("email IN ? OR roll_no IN ?", ids, ids).Update("is_frozen", frozen)
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -69,7 +69,7 @@ func UpdateStudentType(ctx *gin.Context, cid uint, emails []string, action strin
 	return tx.Error
 }
 
-func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, []string, error) {
+func FetchStudentRCIDs(ctx *gin.Context, rid uint, ids []string) ([]uint, []string, error) {
 	var (
 		students       []StudentRecruitmentCycle
 		studentIDs     []uint
@@ -77,7 +77,7 @@ func FetchStudentRCIDs(ctx *gin.Context, rid uint, emails []string) ([]uint, []s
 	)
 
 	tx := db.WithContext(ctx).
-		Where("recruitment_cycle_id = ? AND email IN ? AND is_frozen = ?", rid, emails, false).
+		Where("recruitment_cycle_id = ? AND (email IN ? OR roll_no IN ?) AND is_frozen = ?", rid, ids, ids, false).
 		Select("id", "email").Find(&students)
 
 	for i := range students {

@@ -40,7 +40,7 @@ func getStudentsByEventHandler(ctx *gin.Context) {
 
 type postStudentsByEventRequest struct {
 	EventID uint     `json:"event_id" binding:"required"`
-	Emails  []string `json:"emails" binding:"required"`
+	Emails  []string `json:"emails" binding:"required"` // this is now roll no too
 }
 
 func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {

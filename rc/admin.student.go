@@ -80,7 +80,7 @@ func putStudentHandler(ctx *gin.Context) {
 }
 
 type bulkFreezeStudentRequest struct {
-	Emails []string `json:"email"`
+	Emails []string `json:"email"` // supports roll no
 	Frozen bool     `json:"frozen"`
 }
 
@@ -145,12 +145,12 @@ func postStudentsHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		emailArr := emails.Email
+		ids := emails.Email
 		var students []StudentRecruitmentCycle
 		var studentsGlobal []student.Student
 		var regEmails []string
 
-		err = student.FetchStudents(ctx, &studentsGlobal, emailArr)
+		err = student.FetchStudents(ctx, &studentsGlobal, ids)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -185,7 +185,7 @@ func postStudentsHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 
 		user := middleware.GetUserID(ctx)
 		num := len(students)
-		reqNum := len(emailArr)
+		reqNum := len(ids)
 
 		logrus.Infof("%v added %v new students to RC %d", user, num, rid)
 
