@@ -70,7 +70,9 @@ func CompanyRouter(r *gin.Engine) {
 	r.GET("/api/company/whoami", companyWhoamiHandler)
 	company := r.Group("/api/company/rc")
 	{
-		company.GET("", getCompanyRCHandler) // get registered rc
+		company.GET("", getCompanyRCHandler)                    // get registered rc
+		company.GET("/all", getAllRCHandlerForCompany)          // get all rc
+		company.POST("/:rid/enrollment", postNewCompanyHandler) // enroll a company to a rc
 		company.GET("/:rid/hr", getCompanyRCHRHandler)
 	}
 }
