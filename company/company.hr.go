@@ -40,34 +40,34 @@ func postNewHRHandler(ctx *gin.Context) {
 
 }
 
-type updateHRRequest struct {
-	Name        string `json:"name"`
-	Phone       string `json:"phone"`
-	Designation string `json:"designation"`
-}
+// type updateHRRequest struct {
+// 	Name        string `json:"name"`
+// 	Phone       string `json:"phone"`
+// 	Designation string `json:"designation"`
+// }
 
-func putHRHandler(ctx *gin.Context) {
-	var req updateHRRequest
+// func putHRHandler(ctx *gin.Context) {
+// 	var req updateHRRequest
 
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err := ctx.ShouldBindJSON(&req); err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	hrid := middleware.GetUserID(ctx)
-	companyID, err := FetchCompanyIDByEmail(ctx, hrid)
+// 	hrid := middleware.GetUserID(ctx)
+// 	companyID, err := FetchCompanyIDByEmail(ctx, hrid)
 
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	err = updateHR(ctx, companyID, hrid, &req)
+// 	err = updateHR(ctx, companyID, hrid, &req)
 
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	if err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
-}
+// 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
+// }

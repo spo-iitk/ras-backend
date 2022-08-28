@@ -38,7 +38,7 @@ func getCompanyRCHandler(ctx *gin.Context) {
 type getAllRCHandlerForCompanyResponse struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
-	Enrolled uint   `json:"enrolled"`
+	Enrolled bool   `json:"enrolled"`
 }
 
 func getAllRCHandlerForCompany(ctx *gin.Context) {
@@ -74,15 +74,15 @@ func getAllRCHandlerForCompany(ctx *gin.Context) {
 
 	var companyAllRCResponse []getAllRCHandlerForCompanyResponse
 	for _, rc := range allRCMap {
-		isEnrolled := 0
+		isEnrolled := false
 		if _, ok := enrolledRCMap[rc.ID]; ok {
-			isEnrolled = 1
+			isEnrolled = true
 		}
 
 		companyAllRCResponse = append(companyAllRCResponse, getAllRCHandlerForCompanyResponse{
 			ID:       rc.ID,
 			Name:     string(rc.Type) + " " + rc.AcademicYear,
-			Enrolled: uint(isEnrolled),
+			Enrolled: isEnrolled,
 		})
 	}
 

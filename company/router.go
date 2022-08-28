@@ -33,6 +33,6 @@ func CompanyRouter(r *gin.Engine) {
 	{
 		company.GET("/hr", getAllHRHandler)
 		company.POST("/hr", postNewHRHandler)
-		company.PUT("/hr/:hrid", putHRHandler)
+		// company.PUT("/hr", putHRHandler)
 	}
 }
