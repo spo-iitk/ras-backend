@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/application"
+	"github.com/spo-iitk/ras-backend/company"
 	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/rc"
 )
@@ -20,6 +21,7 @@ func companyServer() *http.Server {
 
 	rc.CompanyRouter(engine)
 	application.CompanyRouter(engine)
+	company.CompanyRouter(engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,

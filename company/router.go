@@ -31,7 +31,7 @@ func AdminRouter(r *gin.Engine) {
 func CompanyRouter(r *gin.Engine) {
 	company := r.Group("/api/company")
 	{
-		company.GET("/hr", getAllHRHandler)
+		company.GET("/hr", getCompanyHRHandler)
 		company.POST("/hr", postNewHRHandler)
 		// company.PUT("/hr", putHRHandler)
 	}

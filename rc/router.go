@@ -72,7 +72,7 @@ func CompanyRouter(r *gin.Engine) {
 	{
 		company.GET("", getCompanyRCHandler)                    // get registered rc
 		company.GET("/all", getAllRCHandlerForCompany)          // get all rc
-		company.POST("/:rid/enrollment", postNewCompanyHandler) // enroll a company to a rc
+		company.POST("/:rid/enrollment", enrollCompanyHandler) // enroll a company to a rc
 		company.GET("/:rid/hr", getCompanyRCHRHandler)
 	}
 }

@@ -123,3 +123,49 @@ func getCompanyRCHRHandler(ctx *gin.Context) {
 		HR3:  company.HR3,
 	})
 }
+
+type EnrollCompanyRequest struct {
+	CompanyName string `json:"company_name" binding:"required"`
+	HR1         string `json:"hr1" binding:"required"`
+	HR2         string `json:"hr2"`
+	HR3         string `json:"hr3"`
+}
+
+func enrollCompanyHandler(ctx *gin.Context) {
+	var enrollCompany EnrollCompanyRequest
+
+	err := ctx.ShouldBindJSON(&enrollCompany)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var company = CompanyRecruitmentCycle{
+		CompanyID:          companyID,
+		CompanyName:        enrollCompany.CompanyName,
+		RecruitmentCycleID: uint(rid),
+		HR1:                enrollCompany.HR1,
+		HR2:                enrollCompany.HR2,
+		HR3:                enrollCompany.HR3,
+	}
+
+	err = createCompany(ctx, &company)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, company)
+}

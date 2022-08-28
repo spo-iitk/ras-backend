@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spo-iitk/ras-backend/middleware"
 )
 
 func postNewHRHandler(ctx *gin.Context) {
 	var addHRRequest CompanyHR
 
-	if err := ctx.ShouldBindJSON(&addHRRequest); err != nil {
+	err := ctx.ShouldBindJSON(&addHRRequest)
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -20,15 +20,11 @@ func postNewHRHandler(ctx *gin.Context) {
 		return
 	}
 
-	// companyID, err := rc.ExtractCompanyID(ctx)
-	user_email := middleware.GetUserID(ctx)
-	companyID, err := FetchCompanyIDByEmail(ctx, user_email)
+	addHRRequest.CompanyID, err = extractCompanyID(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	addHRRequest.CompanyID = companyID
 
 	err = addHR(ctx, &addHRRequest)
 	if err != nil {
@@ -40,34 +36,21 @@ func postNewHRHandler(ctx *gin.Context) {
 
 }
 
-// type updateHRRequest struct {
-// 	Name        string `json:"name"`
-// 	Phone       string `json:"phone"`
-// 	Designation string `json:"designation"`
-// }
+func getCompanyHRHandler(ctx *gin.Context) {
+	var HRs []CompanyHR
 
-// func putHRHandler(ctx *gin.Context) {
-// 	var req updateHRRequest
+	cid, err := extractCompanyID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-// 	if err := ctx.ShouldBindJSON(&req); err != nil {
-// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
+	err = getAllHR(ctx, &HRs, cid)
 
-// 	hrid := middleware.GetUserID(ctx)
-// 	companyID, err := FetchCompanyIDByEmail(ctx, hrid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-// 	if err != nil {
-// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	err = updateHR(ctx, companyID, hrid, &req)
-
-// 	if err != nil {
-// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
-// }
+	ctx.JSON(http.StatusOK, HRs)
+}
