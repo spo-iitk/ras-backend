@@ -35,6 +35,55 @@ func getCompanyRCHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rcsr)
 }
 
+type getAllRCHandlerForCompanyResponse struct {
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	Enrolled uint   `json:"enrolled"`
+}
+
+func getAllRCHandlerForCompany(ctx *gin.Context) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var enrolledRcs []RecruitmentCycle
+	err = fetchRCsByCompanyID(ctx, companyID, &enrolledRcs)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var allRcs []RecruitmentCycle
+	err = fetchAllRCs(ctx, &allRcs)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var companyAllRCResponse []getAllRCHandlerForCompanyResponse
+	for _, rc := range allRcs {
+		for _, enrolledRC := range enrolledRcs {
+			if rc.ID == enrolledRC.ID {
+				companyAllRCResponse = append(companyAllRCResponse, getAllRCHandlerForCompanyResponse{
+					ID:       rc.ID,
+					Name:     string(rc.Type) + " " + rc.AcademicYear,
+					Enrolled: 1,
+				})
+			} else {
+				companyAllRCResponse = append(companyAllRCResponse, getAllRCHandlerForCompanyResponse{
+					ID:       rc.ID,
+					Name:     string(rc.Type) + " " + rc.AcademicYear,
+					Enrolled: 0,
+				})
+			}
+		}
+	}
+
+	ctx.JSON(http.StatusOK, companyAllRCResponse)
+}
+
 type companyRCHRResponse struct {
 	Name string `json:"name"`
 	HR1  string `json:"hr1"`
