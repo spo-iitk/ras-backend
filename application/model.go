@@ -45,6 +45,7 @@ type ApplicationQuestion struct {
 	Proforma   Proforma                `json:"-" gorm:"foreignkey:ProformaID"`
 	Type       ApplicationQuestionType `json:"type"`
 	Question   string                  `json:"question"`
+	QuestionID uint                    `json:"question_id"`
 	Options    string                  `json:"options"` //csv
 }
 

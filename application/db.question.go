@@ -30,3 +30,10 @@ func fetchApplicationQuestionsAnswers(ctx *gin.Context, pid, sid uint, questions
 		Find(questions)
 	return tx.Error
 }
+
+func fetchProformaQuestionAnswer(ctx *gin.Context, qid uint, rcid uint, answer *ApplicationQuestionAnswer) error {
+	tx := db.WithContext(ctx).
+		Select("*").Where("application_question_id = ? AND student_recruitment_cycle_id = ?", qid, rcid).
+		First(answer)
+	return tx.Error
+}

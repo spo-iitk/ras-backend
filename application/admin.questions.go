@@ -15,6 +15,11 @@ func getQuestionsByProformaHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	rcid, err := util.ParseUint(ctx.Param("rcid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var questions []ApplicationQuestion
 	err = fetchProformaQuestion(ctx, pid, &questions)
@@ -23,6 +28,11 @@ func getQuestionsByProformaHandler(ctx *gin.Context) {
 		return
 	}
 
+	for i := 0; i < len(questions); i++ {
+		var answer ApplicationQuestionAnswer
+		err = fetchProformaQuestionAnswer(ctx, questions[i].QuestionID, rcid, &answer)
+
+	}
 	ctx.JSON(http.StatusOK, questions)
 }
 
@@ -110,4 +120,21 @@ func deleteQuestionHandler(ctx *gin.Context) {
 	logrus.Infof("%v deleted a proforma question with id %d", user, qid)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted question successfully"})
+}
+
+func fetchQuestionAnswers(ctx *gin.Context, qid uint, rcid uint) {
+	rcid, err := util.ParseUint(ctx.Param("rcid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var answer ApplicationQuestionAnswer
+	err = fetchProformaQuestionAnswer(ctx, qid, rcid, &answer)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"error": err.Error()})
 }
