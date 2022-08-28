@@ -23,7 +23,6 @@ func postNewHRHandler(ctx *gin.Context) {
 	// companyID, err := rc.ExtractCompanyID(ctx)
 	user_email := middleware.GetUserID(ctx)
 	companyID, err := FetchCompanyIDByEmail(ctx, user_email)
-
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -32,7 +31,6 @@ func postNewHRHandler(ctx *gin.Context) {
 	addHRRequest.CompanyID = companyID
 
 	err = addHR(ctx, &addHRRequest)
-
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -56,15 +54,15 @@ func putHRHandler(ctx *gin.Context) {
 		return
 	}
 
-	user_email := middleware.GetUserID(ctx)
-	companyID, err := FetchCompanyIDByEmail(ctx, user_email)
+	hrid := middleware.GetUserID(ctx)
+	companyID, err := FetchCompanyIDByEmail(ctx, hrid)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = updateHR(ctx, companyID, &req)
+	err = updateHR(ctx, companyID, hrid, &req)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

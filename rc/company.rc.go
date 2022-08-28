@@ -62,23 +62,28 @@ func getAllRCHandlerForCompany(ctx *gin.Context) {
 		return
 	}
 
-	var companyAllRCResponse []getAllRCHandlerForCompanyResponse
+	var enrolledRCMap = make(map[uint]RecruitmentCycle)
+	for _, rc := range enrolledRcs {
+		enrolledRCMap[rc.ID] = rc
+	}
+
+	var allRCMap = make(map[uint]RecruitmentCycle)
 	for _, rc := range allRcs {
-		for _, enrolledRC := range enrolledRcs {
-			if rc.ID == enrolledRC.ID {
-				companyAllRCResponse = append(companyAllRCResponse, getAllRCHandlerForCompanyResponse{
-					ID:       rc.ID,
-					Name:     string(rc.Type) + " " + rc.AcademicYear,
-					Enrolled: 1,
-				})
-			} else {
-				companyAllRCResponse = append(companyAllRCResponse, getAllRCHandlerForCompanyResponse{
-					ID:       rc.ID,
-					Name:     string(rc.Type) + " " + rc.AcademicYear,
-					Enrolled: 0,
-				})
-			}
+		allRCMap[rc.ID] = rc
+	}
+
+	var companyAllRCResponse []getAllRCHandlerForCompanyResponse
+	for _, rc := range allRCMap {
+		isEnrolled := 0
+		if _, ok := enrolledRCMap[rc.ID]; ok {
+			isEnrolled = 1
 		}
+
+		companyAllRCResponse = append(companyAllRCResponse, getAllRCHandlerForCompanyResponse{
+			ID:       rc.ID,
+			Name:     string(rc.Type) + " " + rc.AcademicYear,
+			Enrolled: uint(isEnrolled),
+		})
 	}
 
 	ctx.JSON(http.StatusOK, companyAllRCResponse)
