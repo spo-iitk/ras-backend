@@ -27,3 +27,12 @@ func AdminRouter(r *gin.Engine) {
 		admin.DELETE("/:cid/history/:hid", ras.PlaceHolderController)
 	}
 }
+
+func CompanyRouter(r *gin.Engine) {
+	company := r.Group("/api/company")
+	{
+		company.GET("/hr", getAllHRHandler)
+		company.POST("/hr", postNewHRHandler)
+		// company.PUT("/hr", putHRHandler)
+	}
+}
