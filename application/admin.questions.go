@@ -15,23 +15,11 @@ func getQuestionsByProformaHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	rcid, err := util.ParseUint(ctx.Param("rcid"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	var questions []ApplicationQuestion
 	err = fetchProformaQuestion(ctx, pid, &questions)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-
-	for i := 0; i < len(questions); i++ {
-		var answer ApplicationQuestionAnswer
-		err = fetchProformaQuestionAnswer(ctx, questions[i].QuestionID, rcid, &answer)
-
 	}
 	ctx.JSON(http.StatusOK, questions)
 }
@@ -122,19 +110,42 @@ func deleteQuestionHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted question successfully"})
 }
 
-func fetchQuestionAnswers(ctx *gin.Context, qid uint, rcid uint) {
+type proformaQuestionAnswerCombined struct {
+	question ApplicationQuestion
+	answer   ApplicationQuestionAnswer
+}
+
+func fetchQuestionAnswers(ctx *gin.Context) {
+	pid, err := util.ParseUint(ctx.Param("pid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	rcid, err := util.ParseUint(ctx.Param("rcid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var answer ApplicationQuestionAnswer
-	err = fetchProformaQuestionAnswer(ctx, qid, rcid, &answer)
+	var questions []ApplicationQuestion
+	err = fetchProformaQuestion(ctx, pid, &questions)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	var output []proformaQuestionAnswerCombined
 
-	ctx.JSON(http.StatusOK, gin.H{"error": err.Error()})
+	for i := 0; i < len(questions); i++ {
+		var answer ApplicationQuestionAnswer
+		err = fetchProformaQuestionAnswer(ctx, questions[i].QuestionID, rcid, &answer)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		var addOutput proformaQuestionAnswerCombined
+		addOutput.question = questions[i]
+		addOutput.answer = answer
+		output = append(output, addOutput)
+	}
+	ctx.JSON(http.StatusOK, output)
 }
