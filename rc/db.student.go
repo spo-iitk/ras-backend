@@ -92,7 +92,7 @@ func FetchStudentRCID(ctx *gin.Context, rid uint, email string) (uint, error) {
 	var student StudentRecruitmentCycle
 
 	tx := db.WithContext(ctx).
-		Where("recruitment_cycle_id = ? OR email = ? AND is_frozen = ?", rid, email, false).
+		Where("recruitment_cycle_id = ? AND email = ? AND is_frozen = ?", rid, email, false).
 		Select("id").First(&student)
 	return student.ID, tx.Error
 }
