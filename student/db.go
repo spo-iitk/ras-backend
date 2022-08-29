@@ -26,7 +26,7 @@ func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 }
 
 func FetchStudents(ctx *gin.Context, students *[]Student, ids []string) error {
-	tx := db.WithContext(ctx).Where("(iitk_email IN ? AND roll_no IN ?) AND is_verified = ?", ids, ids, true).Find(students)
+	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ?", ids, ids, true).Find(students)
 	return tx.Error
 }
 
