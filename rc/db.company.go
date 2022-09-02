@@ -21,6 +21,13 @@ func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).
 		Where("company_id = ? AND recruitment_cycle_id = ?", company.CompanyID, company.RecruitmentCycleID).
 		FirstOrCreate(company)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	tx = db.WithContext(ctx).
+		Where("company_id = ? AND recruitment_cycle_id = ?", company.CompanyID, company.RecruitmentCycleID).
+		Updates(company)
 	return tx.Error
 }
 
