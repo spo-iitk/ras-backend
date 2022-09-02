@@ -161,7 +161,7 @@ func enrollCompanyHandler(ctx *gin.Context) {
 		HR3:                enrollCompany.HR3,
 	}
 
-	err = createCompany(ctx, &company)
+	err = upsertCompany(ctx, &company)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

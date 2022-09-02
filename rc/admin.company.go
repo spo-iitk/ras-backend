@@ -62,7 +62,7 @@ func postNewCompanyHandler(ctx *gin.Context) {
 		Comments:           addNewCompany.Comments,
 	}
 
-	err = createCompany(ctx, &company)
+	err = upsertCompany(ctx, &company)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

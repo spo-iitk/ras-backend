@@ -17,17 +17,19 @@ func FetchCompany(ctx *gin.Context, cid uint, company *CompanyRecruitmentCycle) 
 	return tx.Error
 }
 
-func createCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
+func upsertCompany(ctx *gin.Context, company *CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).
 		Where("company_id = ? AND recruitment_cycle_id = ?", company.CompanyID, company.RecruitmentCycleID).
-		FirstOrCreate(company)
+		Updates(company)
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	tx = db.WithContext(ctx).
-		Where("company_id = ? AND recruitment_cycle_id = ?", company.CompanyID, company.RecruitmentCycleID).
-		Updates(company)
+	if tx.RowsAffected == 0 {
+		tx = db.WithContext(ctx).
+			Where("company_id = ? AND recruitment_cycle_id = ?", company.CompanyID, company.RecruitmentCycleID).
+			FirstOrCreate(company)
+	}
 	return tx.Error
 }
 
