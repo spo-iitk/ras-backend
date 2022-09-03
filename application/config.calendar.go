@@ -17,5 +17,4 @@ func gCalendarConnect() {
 		log.Fatalf("Unable to retrieve Calendar client: %v", err)
 	}
 	cal_srv = srv
-
 }

@@ -142,7 +142,7 @@ func putEventHandler(ctx *gin.Context) {
 	}
 
 	if cID == "" {
-		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:149"})
+		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:144"})
 		return
 	}
 
@@ -216,7 +216,7 @@ func deleteEventHandler(ctx *gin.Context) {
 	}
 
 	if cID == "" {
-		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:227"})
+		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:218"})
 		return
 	}
 
