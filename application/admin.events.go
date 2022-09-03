@@ -147,10 +147,10 @@ func putEventHandler(ctx *gin.Context) {
 	}
 
 	cevent := &calendar.Event{
-		Summary:  event.Name,
+		Summary:  fmt.Sprintf("%s of profile %s - %s", event.Name, proforma.Profile, proforma.CompanyName),
 		Location: event.Venue,
 		Description: fmt.Sprintf(
-			"%s of profile %s - %s has been scheduled from %s to %s\nhttps://placement.iitk.ac.in/admin/rc/%d/event/%d",
+			"%s of profile %s - %s has been scheduled from %s to %s\nhttps://placement.iitk.ac.in/student/rc/%d/event/%d",
 			event.Name, proforma.Profile, proforma.CompanyName,
 			time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
 			time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04"),
