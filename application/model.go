@@ -60,7 +60,7 @@ type ProformaEvent struct {
 	gorm.Model
 	ProformaID       uint     `json:"proforma_id" gorm:"index;->;<-:create"`
 	Proforma         Proforma `json:"-" gorm:"foreignkey:ProformaID"`
-	CalID            string   `json:"cal_id"`
+	CalID            string   `json:"-"`
 	Name             string   `json:"name"`
 	Duration         string   `json:"duration"`
 	Venue            string   `json:"venue"`

@@ -44,6 +44,7 @@ func openConnection() {
 
 func init() {
 	openConnection()
+	gCalendarConnect()
 }
 
 type EventType string

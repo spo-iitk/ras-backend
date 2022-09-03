@@ -37,21 +37,21 @@ func postNoticeHandler(ctx *gin.Context) {
 		return
 	}
 
-	CreateNotice(ctx, rid, &notice, "notice created")
-}
-
-func CreateNotice(ctx *gin.Context, id uint, notice *Notice, status string) {
-	notice.RecruitmentCycleID = uint(id)
-	notice.LastReminderAt = 0
-	notice.CreatedBy = middleware.GetUserID(ctx)
-
-	err := createNotice(ctx, notice)
+	err = CreateNotice(ctx, rid, &notice)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": status})
+	ctx.JSON(http.StatusOK, gin.H{"status": "notice created"})
+}
+
+func CreateNotice(ctx *gin.Context, id uint, notice *Notice) error {
+	notice.RecruitmentCycleID = uint(id)
+	notice.LastReminderAt = 0
+	notice.CreatedBy = middleware.GetUserID(ctx)
+
+	return createNotice(ctx, notice)
 }
 
 func putNoticeHandler(ctx *gin.Context) {
