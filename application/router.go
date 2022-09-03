@@ -33,7 +33,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 			proforma.POST("/question", postQuestionHandler)
 			proforma.PUT("/question/:qid", putQuestionHandler)
 			proforma.DELETE("/question/:qid", deleteQuestionHandler)
-
+			proforma.GET("/answers", getAnswersForProforma)
 			proforma.POST("/email", proformaEmailHandler(mail_channel))
 
 			proforma.GET("/event", getEventsByProformaHandler)
