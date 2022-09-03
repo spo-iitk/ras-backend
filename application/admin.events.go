@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/util"
-	"google.golang.org/api/calendar/v3"
 )
 
 type getAllEventsByRCResponse struct {
@@ -122,15 +121,20 @@ func putEventHandler(ctx *gin.Context) {
 	time_zone := "Asia/Kolkata"
 	loc, _ := time.LoadLocation(time_zone)
 
-	rc.CreateNotice(ctx, rid, &rc.Notice{
-		Title: fmt.Sprintf("%s of profile %s - %s has been scheduled", event.Name, proforma.Profile, proforma.CompanyName),
-		Description: fmt.Sprintf(
+	if event.CalID == "" {
+		var notice rc.Notice
+
+		notice.Title = fmt.Sprintf("%s of profile %s - %s has been scheduled", event.Name, proforma.Profile, proforma.CompanyName)
+		notice.Tags = fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID)
+
+		notice.Description = fmt.Sprintf(
 			"%s of profile %s - %s has been scheduled from %s to %s",
 			event.Name, proforma.Profile, proforma.CompanyName,
 			time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
-			time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04")),
-		Tags: fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID),
-	})
+			time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04"))
+
+		rc.CreateNotice(ctx, rid, &notice)
+	}
 
 	var cID string
 	if proforma.RecruitmentCycleID == 1 {
@@ -146,48 +150,9 @@ func putEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	cevent := &calendar.Event{
-		Summary:  fmt.Sprintf("%s - %s, %s", event.Name, proforma.Profile, proforma.CompanyName),
-		Location: event.Venue,
-		Description: fmt.Sprintf(
-			"%s of profile %s - %s has been scheduled from %s to %s\nhttps://placement.iitk.ac.in/student/rc/%d/events/%d",
-			event.Name, proforma.Profile, proforma.CompanyName,
-			time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
-			time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04"),
-			proforma.RecruitmentCycleID, event.ID),
-		Start: &calendar.EventDateTime{
-			DateTime: time.UnixMilli(int64(event.StartTime)).In(loc).Format(time.RFC3339),
-			TimeZone: time_zone,
-		},
-		End: &calendar.EventDateTime{
-			DateTime: time.UnixMilli(int64(event.EndTime)).In(loc).Format(time.RFC3339),
-			TimeZone: time_zone,
-		},
-	}
-
-	if event.CalID == "" {
-		cevent, err = cal_srv.Events.Insert(cID, cevent).Do()
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		event.CalID = cevent.Id
-
-		err = updateEvent(ctx, &event)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-	}
-
-	_, err = cal_srv.Events.Update(cID, event.CalID, cevent).Do()
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	ctx.JSON(http.StatusOK, event)
+
+	go insertCalenderEvent(&event, &proforma, loc, time_zone, cID)
 }
 
 func deleteEventHandler(ctx *gin.Context) {
@@ -226,11 +191,7 @@ func deleteEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = cal_srv.Events.Delete(cID, cevent.CalID).Do()
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted event"})
+
+	go deleteCalenderEvent(cID, &cevent)
 }
