@@ -8,7 +8,7 @@ func fetchProformaQuestion(ctx *gin.Context, pid uint, questions *[]ApplicationQ
 }
 func fetchAllAnswers(ctx *gin.Context, pid uint, questionID []uint, answers *[]ApplicationQuestionAnswer) error {
 
-	tx := db.WithContext(ctx).Where("id IN ?", questionID).Find(&answers)
+	tx := db.WithContext(ctx).Where("application_question_id IN ?", questionID).Find(answers)
 	return tx.Error
 }
 

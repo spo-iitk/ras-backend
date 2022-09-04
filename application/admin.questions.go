@@ -117,16 +117,10 @@ type returningAnswerArray struct {
 	answer     string
 }
 
-func getAnswersForProforma(ctx *gin.Context) {
-	pid, err := util.ParseUint(ctx.Param("pid"))
-
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint][]returningAnswerArray {
 	var questions []ApplicationQuestion
 
-	err = fetchProformaQuestion(ctx, pid, &questions)
+	err := fetchProformaQuestion(ctx, pid, &questions)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusExpectationFailed, gin.H{"error": err.Error()})
@@ -154,5 +148,5 @@ func getAnswersForProforma(ctx *gin.Context) {
 		appendIntoArray.questionID = ID
 		returnedAnswerArray[ans.StudentRecruitmentCycleID] = append(returnedAnswerArray[ans.StudentRecruitmentCycleID], appendIntoArray)
 	}
-	ctx.JSON(http.StatusOK, returnedAnswerArray)
+	return returnedAnswerArray
 }
