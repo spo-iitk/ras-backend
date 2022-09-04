@@ -111,3 +111,42 @@ func deleteQuestionHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted question successfully"})
 }
+
+type returningAnswerArray struct {
+	questionID uint
+	answer     string
+}
+
+func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint][]returningAnswerArray {
+	var questions []ApplicationQuestion
+
+	err := fetchProformaQuestion(ctx, pid, &questions)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusExpectationFailed, gin.H{"error": err.Error()})
+	}
+
+	var questionID []uint
+
+	for _, ques := range questions {
+		questionID = append(questionID, ques.ID)
+	}
+	var answers []ApplicationQuestionAnswer
+
+	err = fetchAllAnswers(ctx, pid, questionID, &answers)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	var returnedAnswerArray = make(map[uint][]returningAnswerArray)
+
+	for _, ans := range answers {
+		var ID uint = ans.ApplicationQuestionID
+		var answer string = ans.Answer
+		var appendIntoArray returningAnswerArray
+		appendIntoArray.answer = answer
+		appendIntoArray.questionID = ID
+		returnedAnswerArray[ans.StudentRecruitmentCycleID] = append(returnedAnswerArray[ans.StudentRecruitmentCycleID], appendIntoArray)
+	}
+	return returnedAnswerArray
+}
