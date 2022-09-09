@@ -35,22 +35,23 @@ func getAllResumesHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, resumes)
 }
 
-func getResumeHandler(ctx *gin.Context){
-	sid, err:= util.ParseUint(ctx.Param("sid"))
-	if err!=nil {
+func getResumeHandler(ctx *gin.Context) {
+	sid, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	rid, err:= util.ParseUint((ctx.Param("rid")))
-	if err!=nil {
+
+	rid, err := util.ParseUint((ctx.Param("rid")))
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	var resume AllResumeResponse
-	err = fetchStudentResume_Admin(ctx,rid,sid,&resume)
+	err = fetchStudentResumeAdmin(ctx, rid, sid, &resume)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
