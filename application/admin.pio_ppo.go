@@ -42,12 +42,6 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = rc.UpdateStudentType(ctx, req.Cid, req.Emails, string(PIOPPOACCEPTED))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	var jp Proforma
 	err = getEmptyProformaByCID(ctx, req.Cid, &jp)
 	if err != nil {
@@ -68,6 +62,12 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		return
 	}
 
+	err = rc.UpdateStudentType(ctx, req.Cid, req.Emails, string(PIOPPOACCEPTED))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var event = ProformaEvent{
 		ProformaID: jp.ID,
 		Name:       string(PIOPPOACCEPTED),
@@ -79,7 +79,6 @@ func postPPOPIOHandler(ctx *gin.Context) {
 	}
 
 	var ses []EventStudent
-
 	for _, studentID := range studentIDs {
 		ses = append(ses, EventStudent{
 			ProformaEventID:           event.ID,
