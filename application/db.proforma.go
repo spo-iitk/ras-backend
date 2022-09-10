@@ -218,7 +218,7 @@ func deleteProformaByCompany(ctx *gin.Context, pid uint, cid uint) (bool, error)
 	return tx.RowsAffected > 0, tx.Error
 }
 
-func firstOrCreateEmptyPerfoma(ctx *gin.Context, jp *Proforma) error {
+func firstOrCreatePPOProforma(ctx *gin.Context, jp *Proforma) error {
 	tx := db.WithContext(ctx).
 		Where("company_recruitment_cycle_id = ? AND role = ?", jp.CompanyRecruitmentCycleID, jp.Role).
 		FirstOrCreate(jp)

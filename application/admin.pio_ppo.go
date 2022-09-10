@@ -20,11 +20,12 @@ func getEmptyProformaByCID(ctx *gin.Context, cid uint, jp *Proforma) error {
 	jp.CompanyRecruitmentCycleID = companyRC.ID
 	jp.RecruitmentCycleID = companyRC.RecruitmentCycleID
 	jp.CompanyName = companyRC.CompanyName
-	jp.IsApproved = sql.NullBool{Bool: false, Valid: true}
+	jp.IsApproved = sql.NullBool{Bool: true, Valid: true}
 	jp.ActionTakenBy = middleware.GetUserID(ctx)
 	jp.Role = string(PIOPPOACCEPTED)
+	jp.Profile = string(PIOPPOACCEPTED)
 
-	return firstOrCreateEmptyPerfoma(ctx, jp)
+	return firstOrCreatePPOProforma(ctx, jp)
 }
 
 type pioppoRequest struct {
@@ -69,7 +70,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 
 	var event = ProformaEvent{
 		ProformaID: jp.ID,
-		Name:       "PIO-PPO",
+		Name:       string(PIOPPOACCEPTED),
 	}
 	err = createEvent(ctx, &event)
 	if err != nil {
@@ -83,6 +84,7 @@ func postPPOPIOHandler(ctx *gin.Context) {
 		ses = append(ses, EventStudent{
 			ProformaEventID:           event.ID,
 			StudentRecruitmentCycleID: studentID,
+			CompanyRecruitmentCycleID: jp.CompanyRecruitmentCycleID,
 			Present:                   true,
 		})
 	}
