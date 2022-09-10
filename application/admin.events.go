@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/rc"
 	"github.com/spo-iitk/ras-backend/util"
 )
@@ -105,7 +104,7 @@ func putEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	if event.StartTime == 0 && event.EndTime == 0 {
+	if (event.StartTime == 0 && event.EndTime == 0) || event.Name == string(ApplicationSubmitted) || event.Name == string(Recruited) || event.Name == string(PIOPPOACCEPTED) {
 		ctx.JSON(http.StatusOK, event)
 		return
 	}
@@ -136,17 +135,10 @@ func putEventHandler(ctx *gin.Context) {
 		rc.CreateNotice(ctx, rid, &notice)
 	}
 
-	var cID string
-	if proforma.RecruitmentCycleID == 1 {
-		cID = viper.GetString("CALENDAR.CID1")
-	}
-
-	if proforma.RecruitmentCycleID == 2 {
-		cID = viper.GetString("CALENDAR.CID2")
-	}
+	cID := getCalenderID(proforma.RecruitmentCycleID)
 
 	if cID == "" {
-		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:144"})
+		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:218"})
 		return
 	}
 
@@ -169,16 +161,13 @@ func deleteEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	rid := ctx.Param("rid")
-
-	var cID string
-	if rid == "1" {
-		cID = viper.GetString("CALENDAR.CID1")
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	if rid == "2" {
-		cID = viper.GetString("CALENDAR.CID2")
-	}
+	cID := getCalenderID(rid)
 
 	if cID == "" {
 		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:218"})

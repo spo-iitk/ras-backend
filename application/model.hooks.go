@@ -10,6 +10,21 @@ func (jp *Proforma) AfterUpdate(tx *gorm.DB) (err error) {
 	if jp.IsApproved.Valid && jp.IsApproved.Bool {
 		event := ProformaEvent{
 			ProformaID:       jp.ID,
+			Name:             string(Recruited),
+			Duration:         "-",
+			StartTime:        0,
+			EndTime:          0,
+			Sequence:         1000,
+			RecordAttendance: false,
+		}
+
+		err = tx.Where("proforma_id = ? AND name = ?", event.ProformaID, event.Name).FirstOrCreate(&event).Error
+		if err != nil {
+			return
+		}
+
+		event = ProformaEvent{
+			ProformaID:       jp.ID,
 			Name:             string(ApplicationSubmitted),
 			Duration:         "-",
 			StartTime:        0,
@@ -23,17 +38,9 @@ func (jp *Proforma) AfterUpdate(tx *gorm.DB) (err error) {
 			return
 		}
 
-		event = ProformaEvent{
-			ProformaID:       jp.ID,
-			Name:             string(Recruited),
-			Duration:         "-",
-			StartTime:        0,
-			EndTime:          0,
-			Sequence:         1000,
-			RecordAttendance: false,
+		if jp.Deadline > 0 {
+			go insertCalenderApplicationDeadline(jp, &event)
 		}
-
-		err = tx.Where("proforma_id = ? AND name = ?", event.ProformaID, event.Name).FirstOrCreate(&event).Error
 	}
 	return
 }
