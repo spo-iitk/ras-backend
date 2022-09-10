@@ -44,6 +44,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.DELETE("/student/question/:qid", deleteStudentQuestionHandler)
 
 		admin.GET("/student/:sid/question/answers", getStudentAnswersHandler)
+		admin.GET("/student/:sid/resume", getResumeHandler)
 
 		admin.GET("/resume", getAllResumesHandler)
 		admin.PUT("/resume/:rsid/verify", putResumeVerifyHandler(mail_channel))
