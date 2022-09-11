@@ -175,6 +175,7 @@ type ViewApplicationsResponse struct {
 	ID          uint      `json:"id"`
 	CompanyName string    `json:"company_name"`
 	Role        string    `json:"role"`
+	Profile     string    `json:"profile"`
 	Deadline    int64     `json:"deadline"`
 	ResumeID    string    `json:"resume_id"`
 	Resume      string    `json:"resume"`
