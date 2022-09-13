@@ -86,6 +86,8 @@ func putProformaHandler(ctx *gin.Context) {
 		return
 	}
 
+	jp.ActionTakenBy = middleware.GetUserID(ctx)
+
 	publishNotice := oldJp.Deadline == 0 && jp.Deadline != 0
 
 	err = updateProforma(ctx, &jp)

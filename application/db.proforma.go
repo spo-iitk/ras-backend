@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/rc"
 )
 
@@ -199,7 +200,9 @@ func updateProforma(ctx *gin.Context, jp *Proforma) error {
 }
 
 func updateHideProforma(ctx *gin.Context, jp *hideProformaRequest) error {
-	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", jp.ID).Update("hide_details", jp.HideDetails)
+	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", jp.ID).
+		Update("hide_details", jp.HideDetails).
+		Update("action_taken_by", middleware.GetUserID(ctx))
 	return tx.Error
 }
 
