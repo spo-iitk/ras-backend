@@ -47,7 +47,7 @@ func (jp *Proforma) AfterUpdate(tx *gorm.DB) (err error) {
 
 // Set default eligibility to none
 func (p *Proforma) BeforeCreate(tx *gorm.DB) (err error) {
-	p.Eligibility = strings.Repeat("0", 110)
+	p.Eligibility = strings.Repeat("0", 130)
 	return
 }
 
