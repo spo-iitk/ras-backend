@@ -161,10 +161,10 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 
 func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.StudentRecruitmentCycle, jps *[]Proforma) error {
 
-	eligibility := bytes.Repeat([]byte("_"), 115)
+	eligibility := bytes.Repeat([]byte("_"), 117)
 	eligibility[student.ProgramDepartmentID] = byte('1')
 
-	secondary_eligibility := bytes.Repeat([]byte("_"), 115)
+	secondary_eligibility := bytes.Repeat([]byte("_"), 117)
 	secondary_eligibility[student.SecondaryProgramDepartmentID] = byte('1')
 
 	subQuery := db.WithContext(ctx).Model(&ApplicationResume{}).
