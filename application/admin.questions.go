@@ -117,7 +117,7 @@ type ApplicationAnswerResponse struct {
 	Answer     string `json:"answer"`
 }
 
-func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint][]ApplicationAnswerResponse {
+func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint](map[uint]string) {
 	var questions []ApplicationQuestion
 
 	err := fetchProformaQuestion(ctx, pid, &questions)
@@ -138,15 +138,12 @@ func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint][]ApplicationAns
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	var returnedAnswerArray = make(map[uint][]ApplicationAnswerResponse)
+	var returnedAnswerArray = make(map[uint](map[uint]string))
 
 	for _, ans := range answers {
 		var ID uint = ans.ApplicationQuestionID
 		var answer string = ans.Answer
-		var appendIntoArray ApplicationAnswerResponse
-		appendIntoArray.Answer = answer
-		appendIntoArray.QuestionID = ID
-		returnedAnswerArray[ans.StudentRecruitmentCycleID] = append(returnedAnswerArray[ans.StudentRecruitmentCycleID], appendIntoArray)
+		returnedAnswerArray[ans.StudentRecruitmentCycleID][ID] = answer
 	}
 	return returnedAnswerArray
 }
