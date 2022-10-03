@@ -112,11 +112,6 @@ func deleteQuestionHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted question successfully"})
 }
 
-type ApplicationAnswerResponse struct {
-	QuestionID uint   `json:"question_id"`
-	Answer     string `json:"answer"`
-}
-
 func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint](map[uint]string) {
 	var questions []ApplicationQuestion
 
