@@ -127,23 +127,28 @@ func getAnswersForProforma(ctx *gin.Context, pid uint) map[uint](map[uint]string
 	}
 
 	var questionID []uint
-
 	for _, ques := range questions {
 		questionID = append(questionID, ques.ID)
 	}
+
 	var answers []ApplicationQuestionAnswer
 
 	err = fetchAllAnswers(ctx, pid, questionID, &answers)
-
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	var returnedAnswerArray = make(map[uint](map[uint]string))
+
+	var answers_map = make(map[uint](map[uint]string))
 
 	for _, ans := range answers {
-		var ID uint = ans.ApplicationQuestionID
-		var answer string = ans.Answer
-		returnedAnswerArray[ans.StudentRecruitmentCycleID][ID] = answer
+		qid := ans.ApplicationQuestionID
+		sid := ans.StudentRecruitmentCycleID
+
+		if answers_map[sid] == nil {
+			answers_map[sid] = make(map[uint]string)
+		}
+
+		answers_map[sid][qid] = ans.Answer
 	}
-	return returnedAnswerArray
+	return answers_map
 }
