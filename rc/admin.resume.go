@@ -39,23 +39,20 @@ func getAllResumesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resumes)
 }
 
-func getResumeHandler(ctx *gin.Context) {
+func getResumesHandler(ctx *gin.Context) {
 	sid, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	rid, err := util.ParseUint((ctx.Param("rid")))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-
-	var resume AllResumeResponse
-	err = fetchStudentResumeAdmin(ctx, rid, sid, &resume)
+	var resumes []StudentRecruitmentCycleResume
+	err = fetchStudentResume(ctx, sid, &resumes)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	ctx.JSON(http.StatusOK, resumes)
 }
 
 type putResumeVerifyRequest struct {
