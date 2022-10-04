@@ -104,37 +104,73 @@ func putEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	if event.StartTime != 0 || event.EndTime != 0 {
-		var proforma Proforma
+	if (event.StartTime == 0 && event.EndTime == 0) || event.Name == string(ApplicationSubmitted) || event.Name == string(Recruited) || event.Name == string(PIOPPOACCEPTED) {
+		ctx.JSON(http.StatusOK, event)
+		return
+	}
 
-		err = fetchProforma(ctx, event.ProformaID, &proforma)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+	var proforma Proforma
 
-		loc, _ := time.LoadLocation("Asia/Kolkata")
+	err = fetchProforma(ctx, event.ProformaID, &proforma)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-		rc.CreateNotice(ctx, rid, &rc.Notice{
-			Title: fmt.Sprintf("%s of profile %s - %s has been scheduled", event.Name, proforma.Profile, proforma.CompanyName),
-			Description: fmt.Sprintf(
-				"%s of profile %s - %s has been scheduled from %s to %s",
-				event.Name, proforma.Profile, proforma.CompanyName,
-				time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
-				time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04")),
-			Tags:       fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID),
-			Attachment: "",
-		}, "Event Scheduled")
+	time_zone := "Asia/Kolkata"
+	loc, _ := time.LoadLocation(time_zone)
+
+	if event.CalID == "" {
+		var notice rc.Notice
+
+		notice.Title = fmt.Sprintf("%s of profile %s - %s has been scheduled", event.Name, proforma.Profile, proforma.CompanyName)
+		notice.Tags = fmt.Sprintf("scheduled,%s,%s,%s,%d", event.Name, proforma.Role, proforma.CompanyName, event.ID)
+
+		notice.Description = fmt.Sprintf(
+			"%s of profile %s - %s has been scheduled from %s to %s",
+			event.Name, proforma.Profile, proforma.CompanyName,
+			time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
+			time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04"))
+
+		rc.CreateNotice(ctx, rid, &notice)
+	}
+
+	cID := getCalenderID(proforma.RecruitmentCycleID)
+
+	if cID == "" {
+		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:218"})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, event)
+
+	go insertCalenderEvent(&event, &proforma, loc, time_zone, cID)
 }
 
 func deleteEventHandler(ctx *gin.Context) {
 	eid, err := util.ParseUint(ctx.Param("eid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var cevent ProformaEvent
+	err = fetchEvent(ctx, eid, &cevent)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	cID := getCalenderID(rid)
+
+	if cID == "" {
+		ctx.JSON(http.StatusNotImplemented, gin.H{"error": "Please as web head to generate a new calender in admin.events:218"})
 		return
 	}
 
@@ -145,4 +181,6 @@ func deleteEventHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully deleted event"})
+
+	go deleteCalenderEvent(cID, &cevent)
 }

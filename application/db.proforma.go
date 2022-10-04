@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/rc"
 )
 
@@ -160,10 +161,10 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 
 func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.StudentRecruitmentCycle, jps *[]Proforma) error {
 
-	eligibility := bytes.Repeat([]byte("_"), 95)
+	eligibility := bytes.Repeat([]byte("_"), 117)
 	eligibility[student.ProgramDepartmentID] = byte('1')
 
-	secondary_eligibility := bytes.Repeat([]byte("_"), 95)
+	secondary_eligibility := bytes.Repeat([]byte("_"), 117)
 	secondary_eligibility[student.SecondaryProgramDepartmentID] = byte('1')
 
 	subQuery := db.WithContext(ctx).Model(&ApplicationResume{}).
@@ -199,7 +200,9 @@ func updateProforma(ctx *gin.Context, jp *Proforma) error {
 }
 
 func updateHideProforma(ctx *gin.Context, jp *hideProformaRequest) error {
-	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", jp.ID).Update("hide_details", jp.HideDetails)
+	tx := db.WithContext(ctx).Model(&Proforma{}).Where("id = ?", jp.ID).
+		Update("hide_details", jp.HideDetails).
+		Update("action_taken_by", middleware.GetUserID(ctx))
 	return tx.Error
 }
 
@@ -218,7 +221,7 @@ func deleteProformaByCompany(ctx *gin.Context, pid uint, cid uint) (bool, error)
 	return tx.RowsAffected > 0, tx.Error
 }
 
-func firstOrCreateEmptyPerfoma(ctx *gin.Context, jp *Proforma) error {
+func firstOrCreatePPOProforma(ctx *gin.Context, jp *Proforma) error {
 	tx := db.WithContext(ctx).
 		Where("company_recruitment_cycle_id = ? AND role = ?", jp.CompanyRecruitmentCycleID, jp.Role).
 		FirstOrCreate(jp)
