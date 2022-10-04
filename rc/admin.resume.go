@@ -22,6 +22,14 @@ type AllResumeResponse struct {
 	RollNo        string       `json:"roll_no"`
 }
 
+type StudentResumeResponse struct {
+	Sid           uint         `json:"sid"`
+	Rsid          uint         `json:"rsid"`
+	Resume        string       `json:"resume"`
+	Verified      sql.NullBool `json:"verified"`
+	ActionTakenBy string       `json:"action_taken_by"`
+}
+
 func getAllResumesHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
@@ -50,7 +58,7 @@ func getResumeHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	var resume AllResumeResponse
+	var resume StudentResumeResponse
 	err = fetchStudentResumeAdmin(ctx, rid, sid, &resume)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
