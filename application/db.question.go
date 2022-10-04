@@ -6,6 +6,11 @@ func fetchProformaQuestion(ctx *gin.Context, pid uint, questions *[]ApplicationQ
 	tx := db.WithContext(ctx).Where("proforma_id = ?", pid).Find(&questions)
 	return tx.Error
 }
+func fetchAllAnswers(ctx *gin.Context, pid uint, questionID []uint, answers *[]ApplicationQuestionAnswer) error {
+
+	tx := db.WithContext(ctx).Where("application_question_id IN ?", questionID).Find(answers)
+	return tx.Error
+}
 
 func updateProformaQuestion(ctx *gin.Context, question *ApplicationQuestion) error {
 	tx := db.WithContext(ctx).Where("id = ?", question.ID).Updates(question)

@@ -60,12 +60,14 @@ func UpdateStudentType(ctx *gin.Context, cid uint, emails []string, action strin
 		return tx.Error
 	}
 
-	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND email IN ?", c.RecruitmentCycleID, emails).Updates(
-		&StudentRecruitmentCycle{
-			Type:     StudentRecruitmentCycleType(action),
-			IsFrozen: true,
-			Comment:  action + " by " + c.CompanyName,
-		})
+	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).
+		Where("recruitment_cycle_id = ? AND (email IN ? OR roll_no IN ?)", c.RecruitmentCycleID, emails, emails).
+		Updates(
+			&StudentRecruitmentCycle{
+				Type:     StudentRecruitmentCycleType(action),
+				IsFrozen: true,
+				Comment:  action + " by " + c.CompanyName,
+			})
 	return tx.Error
 }
 

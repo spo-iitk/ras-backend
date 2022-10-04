@@ -86,6 +86,8 @@ func putProformaHandler(ctx *gin.Context) {
 		return
 	}
 
+	jp.ActionTakenBy = middleware.GetUserID(ctx)
+
 	publishNotice := oldJp.Deadline == 0 && jp.Deadline != 0
 
 	err = updateProforma(ctx, &jp)
@@ -101,14 +103,17 @@ func putProformaHandler(ctx *gin.Context) {
 	if publishNotice {
 		logrus.Infof("%v published a proforma with id %d", user, jp.ID)
 
-		rc.CreateNotice(ctx, oldJp.RecruitmentCycleID, &rc.Notice{
+		err = rc.CreateNotice(ctx, oldJp.RecruitmentCycleID, &rc.Notice{
 			Title: fmt.Sprintf("[%s] | New Job Opening for %s", jp.CompanyName, jp.Profile),
 			Description: fmt.Sprintf(
 				"A new opening has been created for the profile of %s in the company %s",
 				jp.Profile, jp.CompanyName),
-			Tags:       fmt.Sprintf("opening,%s,%s,%d", jp.Role, jp.CompanyName, jp.ID),
-			Attachment: "",
-		}, "Scheduled proforma with id "+util.ParseString(jp.ID))
+			Tags: fmt.Sprintf("opening,%s,%s", jp.Role, jp.CompanyName),
+		})
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "Proforma with id " + util.ParseString(jp.ID) + " has been published"})
 	} else {

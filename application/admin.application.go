@@ -19,39 +19,40 @@ type ApplicantsByRole struct {
 }
 
 type studentAdminsideResponse struct {
-	ID                           uint    `json:"id"`
-	Name                         string  `json:"name"`
-	Email                        string  `json:"email"`
-	Phone                        string  `json:"phone"`
-	PersonalEmail                string  `json:"personal_email"`
-	RollNo                       string  `json:"roll_no"`
-	CurrentCPI                   float64 `json:"current_cpi"`
-	UGCPI                        float64 `json:"ug_cpi"`
-	ProgramDepartmentID          uint    `json:"program_department_id"`
-	SecondaryProgramDepartmentID uint    `json:"secondary_program_department_id"`
-	Specialization               string  `json:"specialization"`
-	Preference                   string  `json:"preference"`
-	Gender                       string  `json:"gender"`
-	Disablity                    string  `json:"disability"`
-	DOB                          uint    `json:"dob"`
-	ExpectedGraduationYear       uint    `json:"expected_graduation_year"`
-	TenthBoard                   string  `json:"tenth_board"`
-	TenthYear                    uint    `json:"tenth_year"`
-	TenthMarks                   float64 `json:"tenth_marks"`
-	TwelfthBoard                 string  `json:"twelfth_board"`
-	TwelfthYear                  uint    `json:"twelfth_year"`
-	TwelfthMarks                 float64 `json:"twelfth_marks"`
-	EntranceExam                 string  `json:"entrance_exam"`
-	EntranceExamRank             uint    `json:"entrance_exam_rank"`
-	Category                     string  `json:"category"`
-	CategoryRank                 uint    `json:"category_rank"`
-	CurrentAddress               string  `json:"current_address"`
-	PermanentAddress             string  `json:"permanent_address"`
-	FriendName                   string  `json:"friend_name"`
-	FriendPhone                  string  `json:"friend_phone"`
-	Resume                       string  `json:"resume"`
-	StatusName                   string  `json:"status_name"`
-	Frozen                       bool    `json:"frozen"`
+	ID                           uint            `json:"id"`
+	Name                         string          `json:"name"`
+	Email                        string          `json:"email"`
+	Phone                        string          `json:"phone"`
+	PersonalEmail                string          `json:"personal_email"`
+	RollNo                       string          `json:"roll_no"`
+	CurrentCPI                   float64         `json:"current_cpi"`
+	UGCPI                        float64         `json:"ug_cpi"`
+	ProgramDepartmentID          uint            `json:"program_department_id"`
+	SecondaryProgramDepartmentID uint            `json:"secondary_program_department_id"`
+	Specialization               string          `json:"specialization"`
+	Preference                   string          `json:"preference"`
+	Gender                       string          `json:"gender"`
+	Disablity                    string          `json:"disability"`
+	DOB                          uint            `json:"dob"`
+	ExpectedGraduationYear       uint            `json:"expected_graduation_year"`
+	TenthBoard                   string          `json:"tenth_board"`
+	TenthYear                    uint            `json:"tenth_year"`
+	TenthMarks                   float64         `json:"tenth_marks"`
+	TwelfthBoard                 string          `json:"twelfth_board"`
+	TwelfthYear                  uint            `json:"twelfth_year"`
+	TwelfthMarks                 float64         `json:"twelfth_marks"`
+	EntranceExam                 string          `json:"entrance_exam"`
+	EntranceExamRank             uint            `json:"entrance_exam_rank"`
+	Category                     string          `json:"category"`
+	CategoryRank                 uint            `json:"category_rank"`
+	CurrentAddress               string          `json:"current_address"`
+	PermanentAddress             string          `json:"permanent_address"`
+	FriendName                   string          `json:"friend_name"`
+	FriendPhone                  string          `json:"friend_phone"`
+	Resume                       string          `json:"resume"`
+	StatusName                   string          `json:"status_name"`
+	Frozen                       bool            `json:"frozen"`
+	Answers                      map[uint]string `json:"questions"`
 }
 
 func getStudentsByRole(ctx *gin.Context) {
@@ -113,6 +114,8 @@ func getStudentsByRole(ctx *gin.Context) {
 	}
 
 	var validApplicants []studentAdminsideResponse
+	returnedAnswerArray := getAnswersForProforma(ctx, pid)
+
 	for _, s := range applied {
 		// if allStudentsRCMap[student.StudentRCID].IsFrozen {
 		// 	continue
@@ -159,7 +162,7 @@ func getStudentsByRole(ctx *gin.Context) {
 		applicant_details.FriendName = student.FriendName
 		applicant_details.FriendPhone = student.FriendPhone
 		applicant_details.Frozen = studentRC.IsFrozen
-
+		applicant_details.Answers = returnedAnswerArray[s.StudentRCID]
 		validApplicants = append(validApplicants, applicant_details)
 	}
 
@@ -170,6 +173,7 @@ type ViewApplicationsResponse struct {
 	ID          uint      `json:"id"`
 	CompanyName string    `json:"company_name"`
 	Role        string    `json:"role"`
+	Profile     string    `json:"profile"`
 	Deadline    int64     `json:"deadline"`
 	ResumeID    string    `json:"resume_id"`
 	Resume      string    `json:"resume"`

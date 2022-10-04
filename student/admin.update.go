@@ -37,7 +37,7 @@ func updateStudentByIDHandler(ctx *gin.Context) {
 		return
 	}
 
-	logrus.Infof("A student with id %d is updated", updateStudentRequest.ID)
+	logrus.Infof("A student with id %d is updated by %s", updateStudentRequest.ID, ctx.GetString("userID"))
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully updated"})
 }
