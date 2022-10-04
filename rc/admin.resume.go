@@ -22,14 +22,6 @@ type AllResumeResponse struct {
 	RollNo        string       `json:"roll_no"`
 }
 
-type StudentResumeResponse struct {
-	Sid           uint         `json:"sid"`
-	Rsid          uint         `json:"rsid"`
-	Resume        string       `json:"resume"`
-	Verified      sql.NullBool `json:"verified"`
-	ActionTakenBy string       `json:"action_taken_by"`
-}
-
 func getAllResumesHandler(ctx *gin.Context) {
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
@@ -47,23 +39,20 @@ func getAllResumesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resumes)
 }
 
-func getResumeHandler(ctx *gin.Context) {
+func getResumesHandler(ctx *gin.Context) {
 	sid, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	rid, err := util.ParseUint((ctx.Param("rid")))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-
-	var resume StudentResumeResponse
-	err = fetchStudentResumeAdmin(ctx, rid, sid, &resume)
+	var resumes []StudentRecruitmentCycleResume
+	err = fetchStudentResume(ctx, sid, &resumes)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	ctx.JSON(http.StatusOK, resumes)
 }
 
 type putResumeVerifyRequest struct {

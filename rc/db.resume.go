@@ -27,14 +27,6 @@ func fetchAllResumes(ctx *gin.Context, rid uint, resumes *[]AllResumeResponse) e
 	return tx.Error
 }
 
-func fetchStudentResumeAdmin(ctx *gin.Context, rid uint, sid uint, resume *StudentResumeResponse) error {
-	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).
-		Select("student_recruitment_cycle_resumes.student_recruitment_cycle_id as sid, student_recruitment_cycle_resumes.id as rsid, student_recruitment_cycle_resumes.resume as resume, student_recruitment_cycle_resumes.verified as verified, student_recruitment_cycle_resumes.action_taken_by as action_taken_by").
-		Where("student_recruitment_cycle_resumes.recruitment_cycle_id = ? AND student_recruitment_cycle_id = ?",rid, sid).
-		Scan(resume)
-	return tx.Error
-}
-
 func FetchResume(ctx *gin.Context, rsid uint, sid uint) (string, error) {
 	var resume string
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).
