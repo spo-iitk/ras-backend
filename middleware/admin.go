@@ -24,7 +24,7 @@ func EnsurePsuedoAdmin() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		role := GetRoleID(ctx)
 
-		if role != constants.OPC && role != constants.GOD && role != constants.APC {
+		if role != constants.OPC && role != constants.GOD && role != constants.APC && role != constants.CHAIR {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}

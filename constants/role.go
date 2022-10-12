@@ -10,7 +10,7 @@ const (
 	GOD   Role = 100
 	OPC   Role = 101
 	APC   Role = 102
-	DPC   Role = 103
+	CHAIR Role = 103
 	COCO  Role = 104
 	STAFF Role = 105
 )
