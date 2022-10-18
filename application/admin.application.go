@@ -136,10 +136,11 @@ func getStudentsByRole(ctx *gin.Context) {
 		applicant_details.Phone = student.Phone
 		applicant_details.PersonalEmail = student.PersonalEmail
 
-		applicant_details.CurrentCPI = student.CurrentCPI
-		applicant_details.UGCPI = student.UGCPI
+		applicant_details.CurrentCPI = studentRC.CPI
 		applicant_details.ProgramDepartmentID = studentRC.ProgramDepartmentID
-		applicant_details.SecondaryProgramDepartmentID = studentRC.SecondaryProgramDepartmentID
+
+		applicant_details.UGCPI = student.UGCPI
+		applicant_details.SecondaryProgramDepartmentID = student.SecondaryProgramDepartmentID
 
 		applicant_details.RollNo = student.RollNo
 		applicant_details.Specialization = student.Specialization
@@ -163,6 +164,7 @@ func getStudentsByRole(ctx *gin.Context) {
 		applicant_details.FriendPhone = student.FriendPhone
 		applicant_details.Frozen = studentRC.IsFrozen
 		applicant_details.Answers = returnedAnswerArray[s.StudentRCID]
+
 		validApplicants = append(validApplicants, applicant_details)
 	}
 
