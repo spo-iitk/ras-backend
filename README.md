@@ -70,7 +70,6 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -229,7 +228,7 @@ Will be updated soon!
 - [Font Awesome](https://fontawesome.com)
 - [React Icons](https://react-icons.github.io/react-icons/search) -->
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
