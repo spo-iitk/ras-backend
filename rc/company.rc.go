@@ -56,7 +56,7 @@ func getAllRCHandlerForCompany(ctx *gin.Context) {
 	}
 
 	var allRcs []RecruitmentCycle
-	err = fetchAllRCs(ctx, &allRcs)
+	err = fetchAllActiveRCs(ctx, &allRcs)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
