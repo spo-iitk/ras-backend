@@ -22,7 +22,7 @@ func fetchUser(ctx *gin.Context, user *User, userID string) error {
 
 func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role, error) {
 	var user User
-	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
+	tx := db.WithContext(ctx).Where("user_id = ? AND is_active = ?", userID, true).First(&user)
 	return user.Password, user.RoleID, tx.Error
 }
 
