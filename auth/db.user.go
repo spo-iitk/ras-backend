@@ -20,10 +20,10 @@ func fetchUser(ctx *gin.Context, user *User, userID string) error {
 	return tx.Error
 }
 
-func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role, error) {
+func getPasswordAndRole(ctx *gin.Context, userID string) (string, constants.Role, bool, error) {
 	var user User
 	tx := db.WithContext(ctx).Where("user_id = ? AND is_active = ?", userID, true).First(&user)
-	return user.Password, user.RoleID, tx.Error
+	return user.Password, user.RoleID, user.IsActive, tx.Error
 }
 
 func updatePassword(ctx *gin.Context, userID string, password string) (bool, error) {

@@ -20,7 +20,7 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	hashedPwd, role, err := getPasswordAndRole(c, loginReq.UserID)
+	hashedPwd, role, isActive, err := getPasswordAndRole(c, loginReq.UserID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -28,6 +28,11 @@ func loginHandler(c *gin.Context) {
 
 	if !comparePasswords(hashedPwd, loginReq.Password) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Credentials"})
+		return
+	}
+
+	if !isActive {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "User is not active"})
 		return
 	}
 

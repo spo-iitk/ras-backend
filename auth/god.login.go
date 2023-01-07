@@ -22,7 +22,7 @@ func godLoginHandler(c *gin.Context) {
 		return
 	}
 
-	hashedPwd, role, err := getPasswordAndRole(c, loginReq.AdminID)
+	hashedPwd, role, isActive, err := getPasswordAndRole(c, loginReq.AdminID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -38,7 +38,12 @@ func godLoginHandler(c *gin.Context) {
 		return
 	}
 
-	_, role, err = getPasswordAndRole(c, loginReq.UserID)
+	if !isActive {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Admin is not active"})
+		return
+	}
+
+	_, role, _, err = getPasswordAndRole(c, loginReq.UserID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
