@@ -101,6 +101,13 @@ func getCalenderID(rid uint) (cID string) {
 	if rid == 2 {
 		cID = viper.GetString("CALENDAR.CID2")
 	}
+	if rid == 3 {
+		cID = viper.GetString("CALENDAR.CID3")
+	}
+	if rid == 4 {
+		cID = viper.GetString("CALENDAR.CID4")
+	}
 
 	return
 }
+	
