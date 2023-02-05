@@ -110,4 +110,3 @@ func getCalenderID(rid uint) (cID string) {
 
 	return
 }
-	
