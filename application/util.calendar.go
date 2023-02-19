@@ -93,20 +93,7 @@ func insertCalenderApplicationDeadline(proforma *Proforma, event *ProformaEvent)
 }
 
 func getCalenderID(rid uint) (cID string) {
-	cID = viper.GetString(`CALENDAR.CID` + fmt.Sprint(rid))
-	// if rid == 1 {
-	// 	cID = viper.GetString("CALENDAR.CID1")
-	// }
-
-	// if rid == 2 {
-	// 	cID = viper.GetString("CALENDAR.CID2")
-	// }
-	// if rid == 3 {
-	// 	cID = viper.GetString("CALENDAR.CID3")
-	// }
-	// if rid == 4 {
-	// 	cID = viper.GetString("CALENDAR.CID4")
-	// }
+	cID = viper.GetString(fmt.Sprintf("CALENDAR.CID%d", rid))
 
 	return
 }
