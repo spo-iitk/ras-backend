@@ -2,6 +2,11 @@ package company
 
 import "github.com/gin-gonic/gin"
 
+func getAllHRUserDB(ctx *gin.Context, HRs *[]CompanyHR) error {
+	tx := db.WithContext(ctx).Select("ID","CreatedAt","UpdatedAt","DeletedAt","Name","Email","Phone").Find(HRs)
+	return tx.Error
+}
+
 func getAllHR(ctx *gin.Context, HRs *[]CompanyHR, cid uint) error {
 	tx := db.WithContext(ctx).Where("company_id = ?", cid).Find(HRs)
 	return tx.Error
