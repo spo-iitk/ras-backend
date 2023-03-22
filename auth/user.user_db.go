@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,8 +24,7 @@ type UpdateRoleRequest struct {
 	NewRoleID constants.Role `json:"new_role_id" binding:"required"`
 }
 
-func getUserDetailsHandler(ctx *gin.Context) {
-	fmt.Printf("User details handler called")
+func getAllAdminDetailsHandler(ctx *gin.Context) {
 	var users []User
 
 	middleware.Authenticator()(ctx)
@@ -45,7 +43,21 @@ func getUserDetailsHandler(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"users": users})
 }
+func getAdminDetailsHandler(ctx *gin.Context) {
+	var user User
 
+	middleware.Authenticator()(ctx)
+	if middleware.GetUserID(ctx) == "" {
+		return
+	}
+
+	err := fetchAdmin(ctx, &user, ctx.Param("userID"))
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	ctx.JSON(http.StatusOK, user)
+}
 func updateUserRole(ctx *gin.Context) {
 
 	var updateReq UpdateRoleRequest

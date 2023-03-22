@@ -19,7 +19,10 @@ func fetchUser(ctx *gin.Context, user *User, userID string) error {
 	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
 	return tx.Error
 }
-
+func fetchAdmin(ctx *gin.Context, user *User, ID string) error {
+	tx := db.WithContext(ctx).Where("id = ?", ID).First(&user)
+	return tx.Error
+}
 func fetchAdmins(ctx *gin.Context, users *[]User) error {
 	tx := db.WithContext(ctx).Where("role_id >= 100").Find(&users)
 	return tx.Error
@@ -42,7 +45,7 @@ func updatePasswordbyGod(ctx *gin.Context, userID string, password string) (bool
 }
 
 func updateRole(ctx *gin.Context, userID string, roleID constants.Role) error {
-	tx := db.WithContext(ctx).Model(&User{}).Where("user_id = ?", userID).Update("role_id", roleID)
+	tx := db.WithContext(ctx).Model(&User{}).Where("id = ?", userID).Update("role_id", roleID)
 	return tx.Error
 }
 
