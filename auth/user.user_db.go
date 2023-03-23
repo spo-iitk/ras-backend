@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -10,7 +11,7 @@ import (
 )
 
 type UserDetails struct {
-	UserID       string         `json:"user_id" binding:"required"`
+	UserID       uint           `json:"user_id" binding:"required"`
 	Password     string         `json:"password" binding:"required"`
 	RoleID       constants.Role `json:"role_id" binding:"required"` // student role by default
 	Name         string         `json:"name" binding:"required"`
@@ -20,7 +21,7 @@ type UserDetails struct {
 }
 
 type UpdateRoleRequest struct {
-	UserID    string         `json:"user_id" binding:"required"`
+	UserID    uint           `json:"user_id" binding:"required"`
 	NewRoleID constants.Role `json:"new_role_id" binding:"required"`
 }
 
@@ -28,6 +29,7 @@ func getAllAdminDetailsHandler(ctx *gin.Context) {
 	var users []User
 
 	middleware.Authenticator()(ctx)
+	middleware.EnsurePsuedoAdmin()(ctx)
 	if middleware.GetUserID(ctx) == "" {
 		return
 	}
@@ -47,6 +49,7 @@ func getAdminDetailsHandler(ctx *gin.Context) {
 	var user User
 
 	middleware.Authenticator()(ctx)
+	middleware.EnsurePsuedoAdmin()(ctx)
 	if middleware.GetUserID(ctx) == "" {
 		return
 	}
@@ -68,18 +71,26 @@ func updateUserRole(ctx *gin.Context) {
 	}
 
 	var currentRoleID constants.Role
-	_, currentRoleID, _, err := getPasswordAndRole(ctx, updateReq.UserID)
+	currentRoleID, err := getUserRole(ctx, updateReq.UserID)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	middleware.Authenticator()(ctx)
+	middleware.EnsurePsuedoAdmin()(ctx)
 	if middleware.GetUserID(ctx) == "" {
 		return
 	}
+	var userId = middleware.GetUserID(ctx)
 
-	if middleware.GetRoleID(ctx) > currentRoleID {
+	_, userRole, _, err := getPasswordAndRole(ctx, userId)
+
+	if(err != nil) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	if userRole > currentRoleID || userRole > updateReq.NewRoleID {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized to update this user's role"})
 		return
 	}
@@ -91,6 +102,35 @@ func updateUserRole(ctx *gin.Context) {
 
 	logrus.New().Infof("User %d role changed from %d to %d", updateReq.UserID, currentRoleID, updateReq.NewRoleID)
 	ctx.JSON(http.StatusOK, gin.H{"message": "User role updated successfully"})
+}
+
+func updateUserActiveStatus(ctx *gin.Context) {
+	user_id, err := strconv.ParseUint(ctx.Param("userID"), 10, 16)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	middleware.Authenticator()(ctx)
+	middleware.EnsurePsuedoAdmin()(ctx)
+
+	var currentRoleID constants.Role
+	currentRoleID, err = getUserRole(ctx, uint(user_id))
+	if middleware.GetRoleID(ctx) > currentRoleID {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized to update this user's activity status"})
+		return
+	}
+
+	active, err := toggleActive(ctx, uint(user_id))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
+	}
+
+	logrus.New().Infof("User %d active status set to %b", user_id, active)
+	ctx.JSON(http.StatusOK, gin.H{"message": "User status updated successfully"})
+
 }
 
 // Active inactive ka dekhna hai
