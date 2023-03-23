@@ -1,5 +1,5 @@
 MAIL:
-  HOST: ""
+  HOST: "smtp.cc.iitk.ac.in"
   PORT: "25"
   # BATCH: 200
 JWT:
@@ -10,10 +10,9 @@ OTP:
   EXPIRATION: 20
   SIZE: 6
 DATABASE:
-  HOST: "localhost"
+  HOST: "database"
   PORT: "5432"
   USER: "admin"
-  PASSWORD: "b2Led2ke"
 DBNAME:
   APPLICATION: "application"
   COMPANY: "company"
