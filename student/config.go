@@ -28,7 +28,7 @@ func openConnection() {
 	})
 	if err != nil {
 		logrus.Fatal("Failed to connect to student database: ", err)
-		//panic(err) //doing this because of issue with studentadmin privileges in DB
+		panic(err)
 	}
 
 	db = database
