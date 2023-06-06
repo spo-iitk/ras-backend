@@ -31,7 +31,7 @@ func postStudentQuestionHandler(ctx *gin.Context) {
 		return
 	}
 
-	rid, err := strconv.ParseUint(ctx.Param("rid"), 10, 64)
+	rid, err := strconv.ParseUint(ctx.Param("rid"), 10, 32)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -11,7 +11,7 @@ import (
 func getAllHRHandler(ctx *gin.Context) {
 	var HRs []CompanyHR
 
-	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 64)
+	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 32)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -29,7 +29,7 @@ func getAllHRHandler(ctx *gin.Context) {
 
 func deleteHRHandler(ctx *gin.Context) {
 
-	hrid, err := strconv.ParseUint(ctx.Param("hrid"), 10, 64)
+	hrid, err := strconv.ParseUint(ctx.Param("hrid"), 10, 32)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

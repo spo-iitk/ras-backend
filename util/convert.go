@@ -6,7 +6,7 @@ import (
 )
 
 func ParseUint(s string) (uint, error) {
-	i, err := strconv.ParseUint(s, 10, 64)
+	i, err := strconv.ParseUint(s, 10, 32)
 	if err != nil {
 		return 0, err
 	}

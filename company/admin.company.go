@@ -79,7 +79,7 @@ func updateCompanyHandler(ctx *gin.Context) {
 
 func deleteCompanyHandler(ctx *gin.Context) {
 
-	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 64)
+	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 32)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
