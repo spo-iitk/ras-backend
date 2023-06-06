@@ -10,7 +10,7 @@ import (
 func getStudentByIDHandler(ctx *gin.Context) {
 	var student Student
 
-	id, err := strconv.ParseUint(ctx.Param("sid"), 10, 64)
+	id, err := strconv.ParseUint(ctx.Param("sid"), 10, 32)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

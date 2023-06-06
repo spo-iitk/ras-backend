@@ -10,7 +10,7 @@ import (
 
 func deleteStudentHandler(ctx *gin.Context) {
 
-	sid, err := strconv.ParseUint(ctx.Param("sid"), 10, 64)
+	sid, err := strconv.ParseUint(ctx.Param("sid"), 10, 32)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
