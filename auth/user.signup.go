@@ -32,7 +32,6 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
 		if !verified {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid User OTP"})
 			return
@@ -43,7 +42,6 @@ func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
 		if !verified {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Roll No OTP"})
 			return

@@ -17,6 +17,7 @@ func AdminRouter(r *gin.Engine) {
 
 		admin.DELETE("/:cid", deleteCompanyHandler)
 
+		admin.GET("/hr", getAllCompanyHRsHandler)
 		admin.GET("/:cid/hr", getAllHRHandler)
 		admin.POST("/hr", addHRHandler)
 		admin.DELETE("/hr/:hrid", deleteHRHandler)
