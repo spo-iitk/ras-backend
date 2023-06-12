@@ -38,7 +38,7 @@ func getAllAdminDetailsHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Only admin can access this page"})
 		return
 	}
-	err := fetchAdmins(ctx, &users)
+	err := fetchAdminsByAdmin(ctx, &users)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -54,7 +54,7 @@ func getAdminDetailsHandler(ctx *gin.Context) {
 		return
 	}
 
-	err := fetchAdmin(ctx, &user, ctx.Param("userID"))
+	err := fetchAdminByAdmin(ctx, &user, ctx.Param("userID"))
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -95,7 +95,7 @@ func updateUserRole(ctx *gin.Context) {
 		return
 	}
 
-	err = updateRole(ctx, updateReq.UserID, updateReq.NewRoleID)
+	err = updateRoleByAdmin(ctx, updateReq.UserID, updateReq.NewRoleID)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	}

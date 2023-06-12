@@ -19,11 +19,14 @@ func fetchUser(ctx *gin.Context, user *User, userID string) error {
 	tx := db.WithContext(ctx).Where("user_id = ?", userID).First(&user)
 	return tx.Error
 }
-func fetchAdmin(ctx *gin.Context, user *User, ID string) error {
+
+// Admin refers to the user with roleID >= 100
+
+func fetchAdminByAdmin(ctx *gin.Context, user *User, ID string) error {
 	tx := db.WithContext(ctx).Where("id = ?", ID).First(&user)
 	return tx.Error
 }
-func fetchAdmins(ctx *gin.Context, users *[]User) error {
+func fetchAdminsByAdmin(ctx *gin.Context, users *[]User) error {
 	tx := db.WithContext(ctx).Where("role_id >= 100").Find(&users)
 	return tx.Error
 }
@@ -50,7 +53,7 @@ func updatePasswordbyGod(ctx *gin.Context, userID string, password string) (bool
 	return tx.RowsAffected > 0, tx.Error
 }
 
-func updateRole(ctx *gin.Context, ID uint, roleID constants.Role) error {
+func updateRoleByAdmin(ctx *gin.Context, ID uint, roleID constants.Role) error {
 	tx := db.WithContext(ctx).Model(&User{}).Where("ID = ?", ID).Update("role_id", roleID)
 	return tx.Error
 }
