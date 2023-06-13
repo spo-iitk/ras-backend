@@ -38,7 +38,7 @@ func getAllAdminDetailsHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Only admin can access this page"})
 		return
 	}
-	err := fetchAdminsByAdmin(ctx, &users)
+	err := fetchAllAdminDetails(ctx, &users)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -54,7 +54,7 @@ func getAdminDetailsHandler(ctx *gin.Context) {
 		return
 	}
 
-	err := fetchAdminByAdmin(ctx, &user, ctx.Param("userID"))
+	err := fetchAdminDetailsById(ctx, &user, ctx.Param("userID"))
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -86,11 +86,11 @@ func updateUserRole(ctx *gin.Context) {
 
 	_, userRole, _, err := getPasswordAndRole(ctx, userId)
 
-	if(err != nil) {
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	if userRole > currentRoleID || userRole > updateReq.NewRoleID {
+	if userRole > currentRoleID || userRole > updateReq.NewRoleID || userRole > 101 {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized to update this user's role"})
 		return
 	}
@@ -100,12 +100,12 @@ func updateUserRole(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	}
 
-	logrus.New().Infof("User %d role changed from %d to %d", updateReq.UserID, currentRoleID, updateReq.NewRoleID)
+	logrus.Infof("User %d role changed from %d to %d - Action taken by user with id %d", updateReq.UserID, currentRoleID, updateReq.NewRoleID, userId)
 	ctx.JSON(http.StatusOK, gin.H{"message": "User role updated successfully"})
 }
 
 func updateUserActiveStatus(ctx *gin.Context) {
-	user_id, err := strconv.ParseUint(ctx.Param("userID"), 10, 16)
+	requestedUserId, err := strconv.ParseUint(ctx.Param("userID"), 10, 16)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -115,22 +115,23 @@ func updateUserActiveStatus(ctx *gin.Context) {
 	middleware.Authenticator()(ctx)
 	middleware.EnsurePsuedoAdmin()(ctx)
 
-	var currentRoleID constants.Role
-	currentRoleID, err = getUserRole(ctx, uint(user_id))
-	if middleware.GetRoleID(ctx) > currentRoleID {
+	userId := middleware.GetUserID(ctx)
+	roleId := middleware.GetRoleID(ctx)
+
+	var requestedUserRoleID constants.Role
+	requestedUserRoleID, err = getUserRole(ctx, uint(requestedUserId))
+	if roleId > requestedUserRoleID && roleId > 101 {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized to update this user's activity status"})
 		return
 	}
 
-	active, err := toggleActive(ctx, uint(user_id))
+	active, err := toggleActive(ctx, uint(requestedUserId))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 		return
 	}
 
-	logrus.New().Infof("User %d active status set to %b", user_id, active)
+	logrus.Infof("User %d active status set to %b - Action taken by user with id %d", requestedUserId, active, userId)
 	ctx.JSON(http.StatusOK, gin.H{"message": "User status updated successfully"})
 
 }
-
-// Active inactive ka dekhna hai
