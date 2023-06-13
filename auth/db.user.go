@@ -22,11 +22,11 @@ func fetchUser(ctx *gin.Context, user *User, userID string) error {
 
 // Admin refers to the user with roleID >= 100
 
-func fetchAdminByAdmin(ctx *gin.Context, user *User, ID string) error {
+func fetchAdminDetailsById(ctx *gin.Context, user *User, ID string) error {
 	tx := db.WithContext(ctx).Where("id = ?", ID).First(&user)
 	return tx.Error
 }
-func fetchAdminsByAdmin(ctx *gin.Context, users *[]User) error {
+func fetchAllAdminDetails(ctx *gin.Context, users *[]User) error {
 	tx := db.WithContext(ctx).Where("role_id >= 100").Find(&users)
 	return tx.Error
 }
