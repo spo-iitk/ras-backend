@@ -46,7 +46,7 @@ func postStudentQuestionHandler(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v created a student question with id %d", user, question.ID)
+	logrus.Infof("%v created a student question with id %v", user, question.ID)
 
 	ctx.JSON(http.StatusOK, question)
 }
@@ -94,7 +94,7 @@ func deleteStudentQuestionHandler(ctx *gin.Context) {
 
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v deleted a student question with id %d", user, qid)
+	logrus.Infof("%v deleted a student question with id %v", user, qid)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student question"})
 }

@@ -174,7 +174,7 @@ func postApplicationHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		// 	mail_channel <- mail.GenerateMails(recipeints, "New Application by student", msg)
 		// }
 
-		logrus.Infof("Application for %d submitted against Performa %d with application ID %s", sid, pid, application.ID)
+		logrus.Infof("Application for %d submitted against Performa %d with application ID %v", sid, pid, application.ID)
 		ctx.JSON(http.StatusOK, gin.H{"status": "application submitted with id: " + fmt.Sprint(application.ID)})
 	}
 }

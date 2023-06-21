@@ -42,6 +42,8 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
+	// @1-Harshit and Copilot ❤️
+	//nolint:all
 	go setLastLogin(loginReq.UserID)
 
 	c.JSON(http.StatusOK, gin.H{"role_id": role, "user_id": loginReq.UserID, "token": token})

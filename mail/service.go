@@ -40,18 +40,11 @@ func Service(mailQueue chan Mail) {
 
 	for mail := range mailQueue {
 		message := mail.BuildMessage()
-
-		// for i := 0; i < len(mail.To); i += batch {
-		// 	end := i + batch
-		// 	if end > len(mail.To) {
-		// 		end = len(mail.To)
-		// 	}
-
 		to := append(mail.To, webteam)
 
 		if err := smtp.SendMail(addr, auth, sender, to, message); err != nil {
-			logrus.Errorf("Error sending mail: %v", to, err)
+			logrus.Errorf("Error sending mail: %v", to)
+			logrus.Errorf("Error: %v", err)
 		}
-		// }
 	}
 }
