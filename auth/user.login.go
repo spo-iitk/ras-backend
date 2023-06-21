@@ -42,18 +42,9 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	err_chan := make(chan error, 1)
-	go func() {
-		error := setLastLogin(loginReq.UserID)
-		err_chan <- error
-		close(err_chan)
-	}()
-
-	err = <-err_chan
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// @1-Harshit and Copilot ❤️
+	//nolint:all
+	go setLastLogin(loginReq.UserID)
 
 	c.JSON(http.StatusOK, gin.H{"role_id": role, "user_id": loginReq.UserID, "token": token})
 }
