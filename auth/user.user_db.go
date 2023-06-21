@@ -100,7 +100,7 @@ func updateUserRole(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 	}
 
-	logrus.Infof("User %d role changed from %d to %d - Action taken by user with id %d", updateReq.UserID, currentRoleID, updateReq.NewRoleID, userId)
+	logrus.Infof("User %v role changed from %v to %v - Action taken by user with id %v", updateReq.UserID, currentRoleID, updateReq.NewRoleID, userId)
 	ctx.JSON(http.StatusOK, gin.H{"message": "User role updated successfully"})
 }
 
@@ -120,6 +120,11 @@ func updateUserActiveStatus(ctx *gin.Context) {
 
 	var requestedUserRoleID constants.Role
 	requestedUserRoleID, err = getUserRole(ctx, uint(requestedUserId))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	if roleId > requestedUserRoleID && roleId > 101 {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized to update this user's activity status"})
 		return
@@ -131,7 +136,7 @@ func updateUserActiveStatus(ctx *gin.Context) {
 		return
 	}
 
-	logrus.Infof("User %d active status set to %b - Action taken by user with id %d", requestedUserId, active, userId)
+	logrus.Infof("User %v active status set to %v - Action taken by user with id %v", requestedUserId, active, userId)
 	ctx.JSON(http.StatusOK, gin.H{"message": "User status updated successfully"})
 
 }

@@ -29,7 +29,11 @@ func getStudentsForCompanyByRole(ctx *gin.Context) {
 	}
 
 	var applied []ApplicantsByRole
-	fetchApplicantDetails(ctx, pid, &applied)
+	err = fetchApplicantDetails(ctx, pid, &applied)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var srids []uint
 	for _, applicant := range applied {
@@ -37,7 +41,11 @@ func getStudentsForCompanyByRole(ctx *gin.Context) {
 	}
 
 	var allStudentsRC []rc.StudentRecruitmentCycle
-	rc.FetchStudentBySRID(ctx, srids, &allStudentsRC)
+	err = rc.FetchStudentBySRID(ctx, srids, &allStudentsRC)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var allStudentsRCMap = make(map[uint]*rc.StudentRecruitmentCycle)
 	for i := range allStudentsRC {

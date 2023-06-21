@@ -54,7 +54,11 @@ func getStatsHandler(ctx *gin.Context) {
 	}
 
 	var students []rc.StudentRecruitmentCycle
-	rc.FetchStudentBySRID(ctx, srids, &students)
+	err = rc.FetchStudentBySRID(ctx, srids, &students)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var studentsMap = make(map[uint]*rc.StudentRecruitmentCycle)
 	for i := range students {

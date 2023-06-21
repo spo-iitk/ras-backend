@@ -132,7 +132,11 @@ func putEventHandler(ctx *gin.Context) {
 			time.UnixMilli(int64(event.StartTime)).In(loc).Format("2006-01-02 15:04"),
 			time.UnixMilli(int64(event.EndTime)).In(loc).Format("2006-01-02 15:04"))
 
-		rc.CreateNotice(ctx, rid, &notice)
+		err = rc.CreateNotice(ctx, rid, &notice)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	cID := getCalenderID(proforma.RecruitmentCycleID)
