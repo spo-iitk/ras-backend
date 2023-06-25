@@ -38,3 +38,28 @@ func getCompanyHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, company)
 }
+
+func getLimitedCompaniesHandler(ctx *gin.Context) {
+	var companies []Company
+
+	pageSize := ctx.DefaultQuery("pageSize", "100")
+	lastFetchedId := ctx.Query("lastFetchedId")
+	pageSizeInt, err := strconv.ParseInt(pageSize, 10, 32)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	lastFetchedIdInt, err := strconv.ParseUint(lastFetchedId, 10, 32)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = getLimitedCompanies(ctx, &companies, uint(lastFetchedIdInt), int(pageSizeInt))
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, companies)
+}
