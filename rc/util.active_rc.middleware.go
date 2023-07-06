@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ensurePseudoAdminAccess() gin.HandlerFunc {
+func checkAdminAccessToRC() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		roleID := ctx.GetInt("roleID")
 		if(roleID > 101 && !checkIsActiveRC(ctx)){
