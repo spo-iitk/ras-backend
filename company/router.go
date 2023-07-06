@@ -10,6 +10,7 @@ func AdminRouter(r *gin.Engine) {
 	{
 		admin.GET("", getAllCompaniesHandler)
 		admin.GET("/:cid", getCompanyHandler)
+		admin.GET("/limited", getLimitedCompaniesHandler)
 
 		admin.PUT("", updateCompanyHandler)
 		admin.POST("", addNewHandler)

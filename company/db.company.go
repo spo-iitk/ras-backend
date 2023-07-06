@@ -14,6 +14,11 @@ func getCompany(ctx *gin.Context, company *Company, id uint) error {
 	return tx.Error
 }
 
+func getLimitedCompanies(ctx *gin.Context, companies *[]Company, lastFetchedId uint, pageSize int) error {
+	tx := db.WithContext(ctx).Order("id asc").Where("id >= ?", lastFetchedId).Limit(pageSize).Find(companies)
+	return tx.Error
+}
+
 func updateCompany(ctx *gin.Context, company *Company) (bool, error) {
 	tx := db.WithContext(ctx).Where("id = ?", company.ID).Updates(company)
 	return tx.RowsAffected > 0, tx.Error

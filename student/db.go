@@ -1,6 +1,8 @@
 package student
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/clause"
 )
@@ -32,6 +34,11 @@ func FetchStudents(ctx *gin.Context, students *[]Student, ids []string) error {
 
 func getAllStudents(ctx *gin.Context, students *[]Student) error {
 	tx := db.WithContext(ctx).Find(students)
+	return tx.Error
+}
+
+func getLimitedStudents(ctx *gin.Context, students *[]Student, lastFetchedId uint, pageSize uint, batch uint) error {
+	tx := db.WithContext(ctx).Order("id asc").Where("id >= ? AND roll_no LIKE ?", lastFetchedId, strconv.Itoa(int(batch))+"%").Limit(int(pageSize)).Find(students)
 	return tx.Error
 }
 

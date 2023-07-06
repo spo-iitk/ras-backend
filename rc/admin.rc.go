@@ -13,6 +13,17 @@ func getAllRCHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if(ctx.GetInt("roleID") > 101){
+		var activeRC []RecruitmentCycle
+		for _, element := range rc {
+			if element.IsActive {
+				activeRC = append(activeRC, element)
+			}
+		}
+		rc = activeRC
+	}
+	
 	ctx.JSON(http.StatusOK, rc)
 }
 
