@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getAllCompaniesHandler(ctx *gin.Context) {
@@ -44,12 +45,12 @@ func getLimitedCompaniesHandler(ctx *gin.Context) {
 
 	pageSize := ctx.DefaultQuery("pageSize", "100")
 	lastFetchedId := ctx.Query("lastFetchedId")
-	pageSizeInt, err := strconv.ParseInt(pageSize, 10, 32)
+	pageSizeInt, err := util.ParseUint(pageSize)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	lastFetchedIdInt, err := strconv.ParseUint(lastFetchedId, 10, 32)
+	lastFetchedIdInt, err := util.ParseUint(lastFetchedId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

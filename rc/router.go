@@ -11,7 +11,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	r.PUT("/api/admin/rc", editRCHandler)
 
 	admin := r.Group("/api/admin/rc/:rid")
-	admin.Use(ensurePseudoAdminAccess())
+	admin.Use(checkAdminAccessToRC())
 	{
 		admin.GET("", getRCHandler)
 		admin.GET("/count", getRCCountHandler)

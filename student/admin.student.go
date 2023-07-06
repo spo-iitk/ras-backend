@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/util"
 )
 
 func getStudentByIDHandler(ctx *gin.Context) {
@@ -41,28 +42,28 @@ func getAllStudentsHandler(ctx *gin.Context) {
 
 func getLimitedStudentsHandler(ctx *gin.Context) {
 	var students []Student
-
+	print(ctx.Request.URL.Query())
 	pageSize := ctx.DefaultQuery("pageSize", "100")
 	lastFetchedId := ctx.Query("lastFetchedId")
 	batch := ctx.Query("batch")
 
-	pageSizeInt, err := strconv.ParseInt(pageSize, 10, 32)
+	pageSizeInt, err := util.ParseUint(pageSize)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	lastFetchedIdInt, err := strconv.ParseInt(lastFetchedId, 10, 32)
+	lastFetchedIdInt, err := util.ParseUint(lastFetchedId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	batchInt, err := strconv.ParseInt(batch, 10, 32)
+	batchInt, err := util.ParseUint(batch)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = getLimitedStudents(ctx, &students, int(lastFetchedIdInt), int(pageSizeInt), int(batchInt))
+	err = getLimitedStudents(ctx, &students, lastFetchedIdInt, pageSizeInt, batchInt)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

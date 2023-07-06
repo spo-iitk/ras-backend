@@ -37,8 +37,8 @@ func getAllStudents(ctx *gin.Context, students *[]Student) error {
 	return tx.Error
 }
 
-func getLimitedStudents(ctx *gin.Context, students *[]Student, lastFetchedId int, pageSize int, batch int) error {
-	tx := db.WithContext(ctx).Order("id asc").Where("id >= ? AND roll_no LIKE ?", lastFetchedId, strconv.Itoa(batch)+"%").Limit(pageSize).Find(students)
+func getLimitedStudents(ctx *gin.Context, students *[]Student, lastFetchedId uint, pageSize uint, batch uint) error {
+	tx := db.WithContext(ctx).Order("id asc").Where("id >= ? AND roll_no LIKE ?", lastFetchedId, strconv.Itoa(int(batch))+"%").Limit(int(pageSize)).Find(students)
 	return tx.Error
 }
 
