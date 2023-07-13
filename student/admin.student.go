@@ -5,8 +5,11 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
 )
+
+const limitAPCAccessToBatch = 21
 
 func getStudentByIDHandler(ctx *gin.Context) {
 	var student Student
@@ -28,6 +31,12 @@ func getStudentByIDHandler(ctx *gin.Context) {
 }
 
 func getAllStudentsHandler(ctx *gin.Context) {
+	roleID := middleware.GetRoleID(ctx)
+	if(roleID >= 102) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Access Denied"})
+		return
+	}
+
 	var students []Student
 
 	err := getAllStudents(ctx, &students)
@@ -41,8 +50,9 @@ func getAllStudentsHandler(ctx *gin.Context) {
 }
 
 func getLimitedStudentsHandler(ctx *gin.Context) {
+	roleID := middleware.GetRoleID(ctx)
 	var students []Student
-	print(ctx.Request.URL.Query())
+
 	pageSize := ctx.DefaultQuery("pageSize", "100")
 	lastFetchedId := ctx.Query("lastFetchedId")
 	batch := ctx.Query("batch")
@@ -62,8 +72,21 @@ func getLimitedStudentsHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if( roleID >= 102 && batchInt < limitAPCAccessToBatch) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Access Denied"})
+		return
+	}
+	err = getLimitedStudentsByBatch(ctx, &students, lastFetchedIdInt, pageSizeInt, batchInt)
 
-	err = getLimitedStudents(ctx, &students, lastFetchedIdInt, pageSizeInt, batchInt)
+	if( roleID >= 102 ) {
+		var UGStudents []Student
+		for i := range students {
+			if(len(students[i].RollNo) == 6) {
+				UGStudents = append(UGStudents, students[i])
+			}
+		}
+		students = UGStudents
+	}
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
