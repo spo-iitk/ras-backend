@@ -29,7 +29,7 @@ func getAllAdminDetailsHandler(ctx *gin.Context) {
 	var users []User
 
 	middleware.Authenticator()(ctx)
-	middleware.EnsurePsuedoAdmin()(ctx)
+	middleware.EnsureAdmin()(ctx)
 	if middleware.GetUserID(ctx) == "" {
 		return
 	}
@@ -49,7 +49,7 @@ func getAdminDetailsHandler(ctx *gin.Context) {
 	var user User
 
 	middleware.Authenticator()(ctx)
-	middleware.EnsurePsuedoAdmin()(ctx)
+	middleware.EnsureAdmin()(ctx)
 	if middleware.GetUserID(ctx) == "" {
 		return
 	}
@@ -78,7 +78,7 @@ func updateUserRole(ctx *gin.Context) {
 	}
 
 	middleware.Authenticator()(ctx)
-	middleware.EnsurePsuedoAdmin()(ctx)
+	middleware.EnsureAdmin()(ctx)
 	if middleware.GetUserID(ctx) == "" {
 		return
 	}
@@ -113,7 +113,7 @@ func updateUserActiveStatus(ctx *gin.Context) {
 	}
 
 	middleware.Authenticator()(ctx)
-	middleware.EnsurePsuedoAdmin()(ctx)
+	middleware.EnsureAdmin()(ctx)
 
 	userId := middleware.GetUserID(ctx)
 	roleId := middleware.GetRoleID(ctx)
