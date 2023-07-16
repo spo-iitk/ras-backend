@@ -43,7 +43,7 @@ func getLimitedStudents(ctx *gin.Context, students *[]Student, lastFetchedId uin
 }
 
 func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
-	tx := db.WithContext(ctx).Where("id = ?", student.ID).Updates(student)
+	tx := db.WithContext(ctx).Where("id = ?", student.ID).Select("*").Omit("id", "created_at", "updated_at", "deleted_at", "iitk_email", "roll_no", "is_verified", "is_editable", "program_department_id", "secondary_program_department_id").Updates(Student{Name: student.Name, Specialization: student.Specialization, Preference: student.Preference, Gender: student.Gender, Disablity: student.Disablity, DOB: student.DOB, ExpectedGraduationYear: student.ExpectedGraduationYear, PersonalEmail: "", Phone: student.Phone, AlternatePhone: student.AlternatePhone, WhatsappNumber: student.WhatsappNumber, CurrentCPI: student.CurrentCPI, UGCPI: student.UGCPI, TenthBoard: student.TenthBoard, TenthYear: student.TenthYear, TenthMarks: student.TenthMarks, TwelfthBoard: student.TwelfthBoard, TwelfthYear: student.TwelfthYear, TwelfthMarks: student.TwelfthMarks, EntranceExam: student.EntranceExam, EntranceExamRank: student.EntranceExamRank, Category: student.Category, CategoryRank: student.CategoryRank, CurrentAddress: student.CurrentAddress, PermanentAddress: student.PermanentAddress, FriendName: student.FriendName, FriendPhone: student.FriendPhone, IsVerified: student.IsVerified, IsEditable: student.IsEditable})
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -51,8 +51,7 @@ func verifyStudent(ctx *gin.Context, student *Student) (bool, error) {
 	tx := db.WithContext(ctx).Model(&student).
 		Clauses(clause.Returning{}).
 		Where("id = ?", student.ID).
-		Update("is_verified", student.IsVerified).
-		Update("is_editable", !student.IsVerified)
+		Updates(map[string]interface{}{"is_verified": student.IsVerified, "is_editable": !student.IsVerified})
 	return tx.RowsAffected > 0, tx.Error
 }
 
