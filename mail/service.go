@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/smtp"
 	"strings"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
@@ -33,6 +34,20 @@ func (mail *Mail) BuildMessage() []byte {
 
 	return []byte(message)
 }
+func batchEmails(to []string, batch int) [][]string {
+	var batches [][]string
+	for i := 0; i < len(to); i += batch {
+		end := i + batch
+
+		if end > len(to) {
+			end = len(to)
+		}
+
+		batches = append(batches, to[i:end])
+	}
+
+	return batches
+}
 
 func Service(mailQueue chan Mail) {
 	addr := fmt.Sprintf("%s:%s", host, port)
@@ -41,10 +56,15 @@ func Service(mailQueue chan Mail) {
 	for mail := range mailQueue {
 		message := mail.BuildMessage()
 		to := append(mail.To, webteam)
+		batches:= batchEmails(to, batch); 
+		for _, emailBatch:= range batches {
+			if err := smtp.SendMail(addr, auth, sender, emailBatch, message); err != nil {
+				logrus.Errorf("Error sending mail: %v", to)
+				logrus.Errorf("Error: %v", err)
+			}
+			time.Sleep(1 * time.Second)
 
-		if err := smtp.SendMail(addr, auth, sender, to, message); err != nil {
-			logrus.Errorf("Error sending mail: %v", to)
-			logrus.Errorf("Error: %v", err)
 		}
+		
 	}
 }
