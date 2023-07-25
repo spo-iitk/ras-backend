@@ -12,7 +12,7 @@ var (
 	host    string
 	port    string
 	webteam string
-	// batch   int
+	batch   int
 	sender string
 )
 
@@ -27,5 +27,5 @@ func init() {
 	port = viper.GetString("MAIL.PORT")
 	webteam = viper.GetString("MAIL.WEBTEAM")
 
-	// batch = viper.GetInt("MAIL.BATCH")
+	batch = viper.GetInt("MAIL.BATCH")
 }
