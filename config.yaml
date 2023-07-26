@@ -1,7 +1,7 @@
 MAIL:
   HOST: "smtp.cc.iitk.ac.in"
   PORT: "25"
-  # BATCH: 200
+  BATCH: 20
 JWT:
   EXPIRATION:
     LONG: 5000
