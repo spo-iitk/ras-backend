@@ -12,6 +12,7 @@ type Company struct {
 
 type CompanyHR struct {
 	gorm.Model
+	DeletedAt   gorm.DeletedAt
 	CompanyID   uint    `json:"company_id"`
 	Company     Company `gorm:"foreignkey:CompanyID" json:"-"`
 	Name        string  `json:"name"`

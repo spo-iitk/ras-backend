@@ -66,3 +66,22 @@ func addHRHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully added"})
 
 }
+
+func getInactiveHRsHandler(ctx *gin.Context) {
+	var HR []CompanyHR
+
+	cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 32)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = getInactiveHR(ctx, uint(cid), &HR)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, HR)
+}

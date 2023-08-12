@@ -22,7 +22,7 @@ services:
     networks:
       - default
     ports:
-      - "80"
+      - "80:80"
     volumes:
       - ./:/go/src/github.com/spo-iitk/ras-backend
     privileged: true

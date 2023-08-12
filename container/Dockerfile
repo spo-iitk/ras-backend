@@ -17,7 +17,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN cp $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml.template $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml
+#RUN #cp $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml.template $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml
 
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/default
