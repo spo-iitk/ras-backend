@@ -48,6 +48,7 @@ func getStudentHandler(ctx *gin.Context) {
 }
 
 func putStudentHandler(ctx *gin.Context) {
+	middleware.EnsureAdmin()(ctx)
 	var student StudentRecruitmentCycle
 
 	err := ctx.ShouldBindJSON(&student)
@@ -212,4 +213,24 @@ func deleteStudentHandler(ctx *gin.Context) {
 	logrus.Infof("%v deleted %v from RC", user, srid)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student"})
+}
+
+func syncStudentsHandler(ctx *gin.Context) {
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = syncStudentDataRC(ctx, rid)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := middleware.GetUserID(ctx)
+
+	logrus.Infof("%v synced student data for RC %d", user, rid)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "synced student data"})
 }

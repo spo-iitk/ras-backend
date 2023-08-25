@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/student"
 )
 
 func fetchAllStudents(ctx *gin.Context, rid uint, students *[]StudentRecruitmentCycle) error {
@@ -161,4 +162,32 @@ func GetStudentEligible(ctx *gin.Context, sid uint, eligibility string, cpiEligi
 func FetchStudents(ctx *gin.Context, ids []uint, students *[]StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("id IN ?", ids).Find(students)
 	return tx.Error
+}
+
+func syncStudentDataRC(ctx *gin.Context,rid uint) error {
+	var rcStudents []StudentRecruitmentCycle
+	err := fetchAllStudents(ctx,rid,&rcStudents)
+	if err != nil {
+		return err
+	}
+	var emailIds []string
+	for  _, student := range rcStudents {
+		emailIds = append(emailIds, student.Email)
+	}
+	for _, rcStudent := range(rcStudents) {
+		var masterStudent student.Student
+		err := student.GetStudentByEmail(ctx,&masterStudent,rcStudent.Email)
+		if err != nil {
+			return err
+		}
+		rcStudent.ProgramDepartmentID = masterStudent.ProgramDepartmentID
+		rcStudent.SecondaryProgramDepartmentID = masterStudent.SecondaryProgramDepartmentID
+		rcStudent.CPI = masterStudent.CurrentCPI
+
+		_, err = updateStudent(ctx,&rcStudent)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -22,7 +22,7 @@ func FetchStudentsByID(ctx *gin.Context, id []uint, students *[]Student) error {
 	return tx.Error
 }
 
-func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
+func GetStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 	tx := db.WithContext(ctx).Where("iitk_email =?", email).First(student)
 	return tx.Error
 }
