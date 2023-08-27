@@ -6,16 +6,10 @@ WORKDIR $GOPATH/src/github.com/spo-iitk/ras-backend
 RUN apt-get update
 RUN apt-get install -y vim nginx git
 
-# RUN git config --global user.name "SPO Web Team"
-# RUN git config --global user.email "pas@iitk.ac.in"
+RUN git config --global user.name "SPO Web Team"
+RUN git config --global user.email "pas@iitk.ac.in"
 
-# RUN git clone https://github.com/spo-iitk/ras-backend.git .
-RUN go install github.com/cosmtrek/air@latest
-
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
-
-COPY . .
+RUN git clone https://github.com/spo-iitk/ras-backend.git .
 
 RUN cp $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml.template $GOPATH/src/github.com/spo-iitk/ras-backend/secret.yml
 
@@ -24,7 +18,6 @@ RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s  $GOPATH/src/github.com/spo-iitk/ras-backend/container/nginx.conf /etc/nginx/sites-enabled/default
 
 # This container exposes port 80 to the outside world
-ENV GO111MODULE=on
 EXPOSE 80
 
 # Run the executable

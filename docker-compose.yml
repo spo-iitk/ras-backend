@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   database:
-    image: postgres:14.7
+    image: postgres
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -23,9 +23,6 @@ services:
       - default
     ports:
       - "80"
-    volumes:
-      - ./:/go/src/github.com/spo-iitk/ras-backend
-    privileged: true
 volumes:
   data:
 # network with subnet configuration
