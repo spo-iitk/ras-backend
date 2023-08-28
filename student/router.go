@@ -21,6 +21,7 @@ func AdminRouter(r *gin.Engine) {
 		admin.GET("/limited", getLimitedStudentsHandler)
 		admin.PUT("", updateStudentByIDHandler)
 		admin.GET("/:sid", getStudentByIDHandler)
+		admin.PUT("/:sid/editable",makeStudentEdiatableHandler)
 		admin.PUT("/:sid/verify", verifyStudentHandler)
 		admin.GET("/:sid/history", ras.PlaceHolderController)
 	}
