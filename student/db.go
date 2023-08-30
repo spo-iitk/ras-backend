@@ -87,10 +87,10 @@ func deleteStudent(ctx *gin.Context, id uint) error {
 	return tx.Error
 }
 
-func UpdateIsEditableWithIDs(ctx *gin.Context, ids []uint, editable bool) error {
-	tx := db.WithContext(ctx).Model(&Student{}).Where("id in ?", ids).Update("is_editable", editable)
-	return tx.Error
-}
+// func UpdateIsEditableWithIDs(ctx *gin.Context, ids []uint, editable bool) error {
+// 	tx := db.WithContext(ctx).Model(&Student{}).Where("id in ?", ids).Update("is_editable", editable)
+// 	return tx.Error
+// }
 
 func updateIsEditableWithID(ctx *gin.Context, id uint, editable bool) error {
 	tx := db.WithContext(ctx).Model(&Student{}).Where("id = ?", id).Update("is_editable", editable)

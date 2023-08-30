@@ -215,46 +215,46 @@ func deleteStudentHandler(ctx *gin.Context) {
 }
 
 // handler not in use
-func deregisterAllStudentsHandler(ctx *gin.Context) {
-	middleware.EnsureAdmin()(ctx)
-	if checkIsActiveRC(ctx) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "RC is active"})
-		return
-	}
+// func deregisterAllStudentsHandler(ctx *gin.Context) {
+// 	middleware.EnsureAdmin()(ctx)
+// 	if checkIsActiveRC(ctx) {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "RC is active"})
+// 		return
+// 	}
 	
-	rid, err := util.ParseUint(ctx.Param("rid"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	rid, err := util.ParseUint(ctx.Param("rid"))
+// 	if err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	err = deregisterAllStudentsWithRCID(ctx,rid)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	err = deregisterAllStudentsWithRCID(ctx,rid)
+// 	if err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	var rcStudents []StudentRecruitmentCycle
-	err = fetchAllStudents(ctx,rid,&rcStudents)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	var rcStudents []StudentRecruitmentCycle
+// 	err = fetchAllStudents(ctx,rid,&rcStudents)
+// 	if err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	var sids []uint
-	for _, rcStudent := range rcStudents {
-		sids = append(sids,rcStudent.StudentID)
-	}
+// 	var sids []uint
+// 	for _, rcStudent := range rcStudents {
+// 		sids = append(sids,rcStudent.StudentID)
+// 	}
 
-	err = student.UpdateIsEditableWithIDs(ctx, sids, true)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	err = student.UpdateIsEditableWithIDs(ctx, sids, true)
+// 	if err != nil {
+// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	user := middleware.GetUserID(ctx)
+// 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v deregistered all students from RC%v", user, rid)
+// 	logrus.Infof("%v deregistered all students from RC%v", user, rid)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "successfully deregistered"})
-}
+// 	ctx.JSON(http.StatusOK, gin.H{"status": "successfully deregistered"})
+// }
