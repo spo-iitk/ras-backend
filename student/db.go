@@ -29,7 +29,7 @@ func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 }
 
 func FetchStudents(ctx *gin.Context, students *[]Student, ids []string) error {
-	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ?", ids, ids, true).Find(students)
+	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ? AND is_editable = ?", ids, ids, true,false).Find(students)
 	return tx.Error
 }
 
@@ -71,7 +71,7 @@ func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (boo
 	} else {
 		tx = db.WithContext(ctx).Model(&Student{}).
 			Where("iitk_email = ? AND is_editable = ?", email, true).
-			Updates(&Student{RollNo: student.RollNo, Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear,PersonalEmail: student.PersonalEmail,Phone: student.Phone,AlternatePhone: student.AlternatePhone,WhatsappNumber: student.WhatsappNumber,CurrentCPI: student.CurrentCPI,UGCPI: student.UGCPI,FriendName: student.FriendName,FriendPhone: student.FriendPhone})
+			Updates(&Student{Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear,PersonalEmail: student.PersonalEmail,Phone: student.Phone,AlternatePhone: student.AlternatePhone,WhatsappNumber: student.WhatsappNumber,FriendName: student.FriendName,FriendPhone: student.FriendPhone})
 	}
 	if tx.Error != nil {
 		return false, tx.Error

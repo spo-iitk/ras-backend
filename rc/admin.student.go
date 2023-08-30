@@ -214,6 +214,7 @@ func deleteStudentHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted student"})
 }
 
+// handler not in use
 func deregisterAllStudentsHandler(ctx *gin.Context) {
 	middleware.EnsureAdmin()(ctx)
 	if checkIsActiveRC(ctx) {
