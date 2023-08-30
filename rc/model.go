@@ -77,9 +77,10 @@ type Notice struct {
 type StudentRecruitmentCycleType string
 
 const (
-	PIOPPO    StudentRecruitmentCycleType = "PIO-PPO"
-	RECRUITED StudentRecruitmentCycleType = "Recruited"
-	AVAILABLE StudentRecruitmentCycleType = "Available"
+	PIOPPO       StudentRecruitmentCycleType = "PIO-PPO"
+	RECRUITED    StudentRecruitmentCycleType = "Recruited"
+	AVAILABLE    StudentRecruitmentCycleType = "Available"
+	DEREGISTERED StudentRecruitmentCycleType = "Deregistered"
 )
 
 type StudentRecruitmentCycle struct {

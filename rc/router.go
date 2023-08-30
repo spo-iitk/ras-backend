@@ -39,6 +39,9 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.PUT("/student/freeze", bulkFreezeStudentsHandler(mail_channel))
 
+		// route not in use
+		// admin.PUT("/student/deregister", deregisterAllStudentsHandler)
+
 		admin.GET("/student/questions", getStudentQuestionsHandler)
 		admin.POST("/student/question", postStudentQuestionHandler)
 		admin.PUT("/student/question", putStudentQuestionHandler)

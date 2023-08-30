@@ -162,3 +162,8 @@ func FetchStudents(ctx *gin.Context, ids []uint, students *[]StudentRecruitmentC
 	tx := db.WithContext(ctx).Where("id IN ?", ids).Find(students)
 	return tx.Error
 }
+
+// func deregisterAllStudentsWithRCID(ctx *gin.Context,rcid uint) error {
+// 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND type = ?",rcid,AVAILABLE).Updates(StudentRecruitmentCycle{IsFrozen: true,Type: DEREGISTERED})
+// 	return tx.Error
+// }
