@@ -206,3 +206,8 @@ func syncStudentDataRC(ctx *gin.Context, rid uint) error {
 
 	return nil
 }
+
+// func deregisterAllStudentsWithRCID(ctx *gin.Context,rcid uint) error {
+// 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND type = ?",rcid,AVAILABLE).Updates(StudentRecruitmentCycle{IsFrozen: true,Type: DEREGISTERED})
+// 	return tx.Error
+// }
