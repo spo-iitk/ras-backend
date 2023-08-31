@@ -45,6 +45,6 @@ func FetchFirstResume(ctx *gin.Context, sid uint) (uint, string, error) {
 func updateResumeVerify(ctx *gin.Context, rsid uint, verified bool, user string) (bool, uint, error) {
 	var resume StudentRecruitmentCycleResume
 	tx := db.WithContext(ctx).Model(&resume).Clauses(clause.Returning{}).
-		Where("id = ?", rsid).Update("verified", verified).Update("action_taken_by", user)
+		Where("id = ?", rsid).Update("verified", verified).Updates(map[string]interface{}{"verified": verified,"action_taken_by": user})
 	return tx.RowsAffected == 1, resume.StudentRecruitmentCycleID, tx.Error
 }

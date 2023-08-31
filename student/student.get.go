@@ -11,7 +11,7 @@ func getStudentHandler(ctx *gin.Context) {
 	var student Student
 	email := middleware.GetUserID(ctx)
 
-	err := GetStudentByEmail(ctx, &student, email)
+	err := getStudentByEmail(ctx, &student, email)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})

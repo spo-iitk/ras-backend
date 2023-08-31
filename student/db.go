@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -22,13 +23,13 @@ func FetchStudentsByID(ctx *gin.Context, id []uint, students *[]Student) error {
 	return tx.Error
 }
 
-func GetStudentByEmail(ctx *gin.Context, student *Student, email string) error {
+func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 	tx := db.WithContext(ctx).Where("iitk_email =?", email).First(student)
 	return tx.Error
 }
 
 func FetchStudents(ctx *gin.Context, students *[]Student, ids []string) error {
-	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ?", ids, ids, true).Find(students)
+	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ? AND is_editable = ?", ids, ids, true,false).Find(students)
 	return tx.Error
 }
 
@@ -56,19 +57,42 @@ func verifyStudent(ctx *gin.Context, student *Student) (bool, error) {
 }
 
 func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (bool, error) {
-	tx := db.WithContext(ctx).Model(&Student{}).
-		Where("iitk_email = ? AND is_editable = ?", email, true).
-		Updates(student)
+	var studentDetails Student
+	err := getStudentByEmail(ctx, &studentDetails, student.IITKEmail)
+	if err != nil {
+		return false, err
+	}
+	verified := studentDetails.IsVerified
+	var tx *gorm.DB
+	if !verified {
+		tx = db.WithContext(ctx).Model(&Student{}).
+			Where("iitk_email = ? AND is_editable = ?", email, true).
+			Updates(student)
+	} else {
+		tx = db.WithContext(ctx).Model(&Student{}).
+			Where("iitk_email = ? AND is_editable = ?", email, true).
+			Updates(&Student{Specialization: student.Specialization,Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear,PersonalEmail: student.PersonalEmail,Phone: student.Phone,AlternatePhone: student.AlternatePhone,WhatsappNumber: student.WhatsappNumber,CurrentAddress: student.CurrentAddress,PermanentAddress: student.PermanentAddress,FriendName: student.FriendName,FriendPhone: student.FriendPhone})
+	}
 	if tx.Error != nil {
 		return false, tx.Error
 	}
 
-	tx = db.WithContext(ctx).Model(&Student{}).
-		Where("iitk_email = ? AND is_editable = ?", email, true).Update("is_verified", false)
+	// tx = db.WithContext(ctx).Model(&Student{}).
+	// 	Where("iitk_email = ? AND is_editable = ?", email, true).Update("is_verified", false)
 	return tx.RowsAffected > 0, tx.Error
 }
 
 func deleteStudent(ctx *gin.Context, id uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", id).Delete(&Student{})
+	return tx.Error
+}
+
+// func UpdateIsEditableWithIDs(ctx *gin.Context, ids []uint, editable bool) error {
+// 	tx := db.WithContext(ctx).Model(&Student{}).Where("id in ?", ids).Update("is_editable", editable)
+// 	return tx.Error
+// }
+
+func updateIsEditableWithID(ctx *gin.Context, id uint, editable bool) error {
+	tx := db.WithContext(ctx).Model(&Student{}).Where("id = ?", id).Update("is_editable", editable)
 	return tx.Error
 }
