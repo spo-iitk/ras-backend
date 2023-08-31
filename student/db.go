@@ -71,7 +71,7 @@ func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (boo
 	} else {
 		tx = db.WithContext(ctx).Model(&Student{}).
 			Where("iitk_email = ? AND is_editable = ?", email, true).
-			Updates(&Student{Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear,PersonalEmail: student.PersonalEmail,Phone: student.Phone,AlternatePhone: student.AlternatePhone,WhatsappNumber: student.WhatsappNumber,FriendName: student.FriendName,FriendPhone: student.FriendPhone})
+			Updates(&Student{Specialization: student.Specialization,Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear,PersonalEmail: student.PersonalEmail,Phone: student.Phone,AlternatePhone: student.AlternatePhone,WhatsappNumber: student.WhatsappNumber,CurrentAddress: student.CurrentAddress,PermanentAddress: student.PermanentAddress,FriendName: student.FriendName,FriendPhone: student.FriendPhone})
 	}
 	if tx.Error != nil {
 		return false, tx.Error
