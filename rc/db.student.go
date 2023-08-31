@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/student"
+	"gorm.io/gorm/clause"
 )
 
 func fetchAllStudents(ctx *gin.Context, rid uint, students *[]StudentRecruitmentCycle) error {
@@ -36,6 +38,14 @@ func FetchStudentBySRID(ctx *gin.Context, sid []uint, students *[]StudentRecruit
 func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, error) {
 	tx := db.WithContext(ctx).Where("id = ?", student.ID).Updates(student)
 	return tx.RowsAffected > 0, tx.Error
+}
+
+func updateStudentBulk(ctx *gin.Context, students *[]StudentRecruitmentCycle) error {
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"program_department_id","secondary_program_department_id","cpi"}),
+	}).Create(&students)
+	return tx.Error
 }
 
 func freezeStudentsToggle(ctx *gin.Context, ids []string, frozen bool) (bool, error) {
@@ -163,6 +173,39 @@ func FetchStudents(ctx *gin.Context, ids []uint, students *[]StudentRecruitmentC
 	return tx.Error
 }
 
+func syncStudentDataRC(ctx *gin.Context, rid uint) error {
+	var rcStudents []StudentRecruitmentCycle
+	err := fetchAllStudents(ctx, rid, &rcStudents)
+	if err != nil {
+		return err
+	}
+	var emailIds []string
+	for _, student := range rcStudents {
+		emailIds = append(emailIds, student.Email)
+	}
+	var masterStudents []student.Student
+	err = student.FetchStudents(ctx, &masterStudents, emailIds)
+	if err != nil {
+		return err
+	}
+	var masterStudentMap = make(map[string]student.Student)
+	for _, masterStudent := range masterStudents {
+		masterStudentMap[masterStudent.IITKEmail] = masterStudent
+	}
+
+	for idx := range rcStudents {
+		var masterStudent = masterStudentMap[rcStudents[idx].Email]
+		rcStudents[idx].ProgramDepartmentID = masterStudent.ProgramDepartmentID
+		rcStudents[idx].SecondaryProgramDepartmentID = masterStudent.SecondaryProgramDepartmentID
+		rcStudents[idx].CPI = masterStudent.CurrentCPI
+	}
+	err = updateStudentBulk(ctx, &rcStudents)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 // func deregisterAllStudentsWithRCID(ctx *gin.Context,rcid uint) error {
 // 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND type = ?",rcid,AVAILABLE).Updates(StudentRecruitmentCycle{IsFrozen: true,Type: DEREGISTERED})
 // 	return tx.Error
