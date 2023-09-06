@@ -186,7 +186,7 @@ func deleteAllStudentsFromEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	sids, err := getStudentIDByEventID(ctx, eventID)
+	sids, _ := getStudentIDByEventID(ctx, eventID)
 
 	if err = rc.UnRecruitAll(ctx, sids); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
