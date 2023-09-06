@@ -147,3 +147,56 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, gin.H{"success": "Students added successfully"})
 	}
 }
+
+func deleteStudentFromEventHandler(ctx *gin.Context) {
+	eventID, err := util.ParseUint(ctx.Param("eid"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid event ID"})
+		return
+	}
+
+	studentID, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid student ID"})
+		return
+	}
+
+	rcID, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid r ID"})
+		return
+	}
+	if err = rc.UnRecruitStudent(ctx, studentID, rcID); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err = deleteStudentFromEvent(ctx, eventID, studentID); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Student deleted from event successfully"})
+}
+
+func deleteAllStudentsFromEventHandler(ctx *gin.Context) {
+	eventID, err := util.ParseUint(ctx.Param("eid"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid event ID"})
+		return
+	}
+
+	sids, err := getStudentIDByEventID(ctx, eventID)
+
+	if err = rc.UnRecruitAll(ctx, sids); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err = deleteAllStudentsFromEvent(ctx, eventID); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "All students deleted from event successfully"})
+}

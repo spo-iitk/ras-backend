@@ -15,6 +15,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.GET("/event", getAllEventsByRCHandler)
 		admin.GET("/event/:eid", getEventHandler)
+		admin.DELETE("event/:eid/student", deleteAllStudentsFromEventHandler)
+		admin.DELETE("event/:eid/student/:sid", deleteStudentFromEventHandler)
 
 		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
 
