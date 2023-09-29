@@ -17,7 +17,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/count", getRCCountHandler)
 
 		admin.GET("/notice", getAllNoticesHandler)
-		admin.POST("/notice", postNoticeHandler)
+		admin.POST("/notice", postNoticeHandler(mail_channel))
 		admin.PUT("/notice", putNoticeHandler)
 		admin.POST("/notice/:nid/reminder", postReminderHandler(mail_channel))
 		admin.DELETE("/notice/:nid", deleteNoticeHandler)
