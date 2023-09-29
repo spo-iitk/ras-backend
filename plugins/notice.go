@@ -8,5 +8,5 @@ func NewNoticeNotification(mail_channel chan mail.Mail, id uint, recruitmentCycl
 	}
 	var emails []string
 	message := "A new notice has been created by " + createdBy + " with title " + title + " in Placement 2023-24 Phase 1.\n\nDescription: " + description + "\n\nClick here to view the notice: https://placement.iitk.ac.in/student/rc/6/notices"
-	mail_channel <- mail.GenerateMails(emails, "Notice: "+title, message)
+	mail_channel <- mail.GenerateMails(emails, "God Notice: "+title, message)
 }
