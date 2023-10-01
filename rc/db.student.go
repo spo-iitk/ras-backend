@@ -194,7 +194,10 @@ func syncStudentDataRC(ctx *gin.Context, rid uint) error {
 	}
 
 	for idx := range rcStudents {
-		var masterStudent = masterStudentMap[rcStudents[idx].Email]
+		var masterStudent, exists = masterStudentMap[rcStudents[idx].Email]
+		if !exists {
+			continue
+		}
 		rcStudents[idx].ProgramDepartmentID = masterStudent.ProgramDepartmentID
 		rcStudents[idx].SecondaryProgramDepartmentID = masterStudent.SecondaryProgramDepartmentID
 		rcStudents[idx].CPI = masterStudent.CurrentCPI
