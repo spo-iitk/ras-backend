@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
-	"github.com/spo-iitk/ras-backend/plugins"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -46,7 +45,7 @@ func postNoticeHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 		}
 
 		// As a custom plugin by RAS God Harshit Raj, feel free to remove this after 2023. :P
-		plugins.NewNoticeNotification(mail_channel, notice.ID, notice.RecruitmentCycleID, notice.Title, notice.Description, notice.CreatedBy)
+		// plugins.NewNoticeNotification(mail_channel, notice.ID, notice.RecruitmentCycleID, notice.Title, notice.Description, notice.CreatedBy)
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "notice created"})
 	}
