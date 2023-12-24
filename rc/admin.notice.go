@@ -23,27 +23,32 @@ func getAllNoticesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, notices)
 }
 
-func postNoticeHandler(ctx *gin.Context) {
-	rid, err := util.ParseUint(ctx.Param("rid"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func postNoticeHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		rid, err := util.ParseUint(ctx.Param("rid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	var notice Notice
-	err = ctx.ShouldBindJSON(&notice)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		var notice Notice
+		err = ctx.ShouldBindJSON(&notice)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	err = CreateNotice(ctx, rid, &notice)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		err = CreateNotice(ctx, rid, &notice)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "notice created"})
+		// As a custom plugin by RAS God Harshit Raj, feel free to remove this after 2023. :P
+		// plugins.NewNoticeNotification(mail_channel, notice.ID, notice.RecruitmentCycleID, notice.Title, notice.Description, notice.CreatedBy)
+
+		ctx.JSON(http.StatusOK, gin.H{"status": "notice created"})
+	}
 }
 
 func CreateNotice(ctx *gin.Context, id uint, notice *Notice) error {

@@ -216,6 +216,7 @@ func deleteStudentHandler(ctx *gin.Context) {
 }
 
 func syncStudentsHandler(ctx *gin.Context) {
+	middleware.EnsureAdmin()(ctx)
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
