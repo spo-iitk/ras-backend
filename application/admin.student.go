@@ -155,6 +155,20 @@ func deleteStudentFromEventHandler(ctx *gin.Context) {
 		return
 	}
 
+	var evnt ProformaEvent
+	err = fetchEvent(ctx, eventID, &evnt)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var req postStudentsByEventRequest
+	err = ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	studentID, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid student ID"})
@@ -168,13 +182,13 @@ func deleteStudentFromEventHandler(ctx *gin.Context) {
 	}
 
 	if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
-		if err = rc.UnRecruitStudent(ctx, studentID, rcID); err != nil {
+		if err := rc.UnRecruitStudent(ctx, studentID, rcID); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}
 
-	if err = deleteStudentFromEvent(ctx, eventID, studentID); err != nil {
+	if err := deleteStudentFromEvent(ctx, eventID, studentID); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -189,16 +203,30 @@ func deleteAllStudentsFromEventHandler(ctx *gin.Context) {
 		return
 	}
 
+	var evnt ProformaEvent
+	err = fetchEvent(ctx, eventID, &evnt)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var req postStudentsByEventRequest
+	err = ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	sids, _ := getStudentIDByEventID(ctx, eventID)
 
 	if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
-		if err = rc.UnRecruitAll(ctx, sids); err != nil {
+		if err := rc.UnRecruitAll(ctx, sids); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}
 
-	if err = deleteAllStudentsFromEvent(ctx, eventID); err != nil {
+	if err := deleteAllStudentsFromEvent(ctx, eventID); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
