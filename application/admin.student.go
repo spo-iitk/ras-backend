@@ -166,9 +166,12 @@ func deleteStudentFromEventHandler(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid r ID"})
 		return
 	}
-	if err = rc.UnRecruitStudent(ctx, studentID, rcID); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+
+	if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
+		if err = rc.UnRecruitStudent(ctx, studentID, rcID); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	if err = deleteStudentFromEvent(ctx, eventID, studentID); err != nil {
@@ -188,9 +191,11 @@ func deleteAllStudentsFromEventHandler(ctx *gin.Context) {
 
 	sids, _ := getStudentIDByEventID(ctx, eventID)
 
-	if err = rc.UnRecruitAll(ctx, sids); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	if evnt.Name == string(PIOPPOACCEPTED) || evnt.Name == string(Recruited) {
+		if err = rc.UnRecruitAll(ctx, sids); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	if err = deleteAllStudentsFromEvent(ctx, eventID); err != nil {
