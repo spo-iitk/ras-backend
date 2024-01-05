@@ -43,3 +43,10 @@ func openConnection() {
 func init() {
 	openConnection()
 }
+
+type EventType string
+
+const (
+	Recruited      EventType = "Recruited"
+	PIOPPOACCEPTED EventType = "PIO-PPO"
+)

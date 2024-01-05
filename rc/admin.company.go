@@ -31,6 +31,45 @@ type addNewCompanyRequest struct {
 	HR3         string `json:"hr3"`
 	Comments    string `json:"comments"`
 }
+type StatResponse struct {
+	ID                 uint   `json:"id"`
+	RecruitmentCycleID uint   `json:"recruitment_cycle_id"`
+	Type               string `json:"type"`
+	Phase              string `json:"phase"`
+}
+type CompanyAllRecruitmentCycle struct {
+	ID                 uint   `json:"id"`
+	RecruitmentCycleID uint   `json:"recruitment_cycle_id"`
+	Type               string `json:"type"`
+	Phase              string `json:"phase"`
+}
+
+func getCompanyAllRCID(ctx *gin.Context) {
+	cid, err := util.ParseUint(ctx.Param("cid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var stats []CompanyAllRecruitmentCycle
+	err = fetchCompanyAllRecruitmentCycles(ctx, cid, &stats)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var countResponse []StatResponse
+
+	for _, stat := range stats {
+		countResponse = append(countResponse, StatResponse{
+			ID:                 stat.ID,
+			RecruitmentCycleID: stat.RecruitmentCycleID,
+			Type:               stat.Type,
+			Phase:              stat.Phase,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, countResponse)
+
+}
 
 func postNewCompanyHandler(ctx *gin.Context) {
 	var addNewCompany addNewCompanyRequest
