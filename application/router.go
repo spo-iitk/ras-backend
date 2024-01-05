@@ -1,10 +1,8 @@
 package application
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/mail"
-	"net/http"
 )
 
 func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
@@ -54,11 +52,6 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		}
 
 	}
-	// Add some logging to help debug
-	r.NoRoute(func(c *gin.Context) {
-		fmt.Println("No route found for:", c.Request.URL.Path)
-		c.JSON(http.StatusNotFound, gin.H{"error": "API not found"})
-	})
 
 }
 
