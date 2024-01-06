@@ -56,10 +56,10 @@ func getCompanyAllRCID(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	var countResponse []StatResponse
+	var countResponse []CompanyAllRecruitmentCycle
 
 	for _, stat := range stats {
-		countResponse = append(countResponse, StatResponse{
+		countResponse = append(countResponse, CompanyAllRecruitmentCycle{
 			ID:                 stat.ID,
 			RecruitmentCycleID: stat.RecruitmentCycleID,
 			Type:               stat.Type,
