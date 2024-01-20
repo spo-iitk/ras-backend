@@ -42,8 +42,8 @@ func updateStudent(ctx *gin.Context, student *StudentRecruitmentCycle) (bool, er
 
 func updateStudentBulk(ctx *gin.Context, students *[]StudentRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Clauses(clause.OnConflict{
-		Columns: []clause.Column{{Name: "id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"program_department_id","secondary_program_department_id","cpi"}),
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"program_department_id", "secondary_program_department_id", "cpi"}),
 	}).Create(&students)
 	return tx.Error
 }
@@ -209,7 +209,34 @@ func syncStudentDataRC(ctx *gin.Context, rid uint) error {
 
 	return nil
 }
+
 // func deregisterAllStudentsWithRCID(ctx *gin.Context,rcid uint) error {
 // 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).Where("recruitment_cycle_id = ? AND type = ?",rcid,AVAILABLE).Updates(StudentRecruitmentCycle{IsFrozen: true,Type: DEREGISTERED})
 // 	return tx.Error
 // }
+
+func UnRecruitStudent(ctx *gin.Context, sid uint, rid uint) error {
+	var stu StudentRecruitmentCycle
+	tx := db.WithContext(ctx).Where("id = ?", sid).First(&stu)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	tx = db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).
+		Where("recruitment_cycle_id = ? AND  id = ?", rid, sid).
+		Updates(map[string]interface{}{
+			"type":      AVAILABLE,
+			"is_frozen": false,
+			"comment":   " ",
+		})
+	return tx.Error
+}
+
+func UnRecruitAll(ctx *gin.Context, sids []uint) error {
+	tx := db.WithContext(ctx).Where("id IN (?)", sids).Model(&StudentRecruitmentCycle{}).
+		Updates(map[string]interface{}{
+			"type":      AVAILABLE,
+			"is_frozen": false,
+			"comment":   " ",
+		})
+	return tx.Error
+}

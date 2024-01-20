@@ -35,3 +35,20 @@ func getCurrentApplicationCount(ctx *gin.Context, sid uint) (int, error) {
 		Group("company_recruitment_cycle_id").Count(&count)
 	return int(count), tx.Error
 }
+
+func deleteStudentFromEvent(ctx *gin.Context, eventID, studentID uint) error {
+	tx := db.WithContext(ctx).Where("proforma_event_id = ? AND student_recruitment_cycle_id = ?", eventID, studentID).Delete(&EventStudent{})
+	return tx.Error
+}
+
+func deleteAllStudentsFromEvent(ctx *gin.Context, eventID uint) error {
+	tx := db.WithContext(ctx).Where("proforma_event_id = ?", eventID).Delete(&EventStudent{})
+	return tx.Error
+}
+
+func getStudentIDByEventID(ctx *gin.Context, eid uint) ([]uint, error) {
+	var studentsIDs []uint
+	tx := db.WithContext(ctx).Where("proforma_event_id = ?", eid).Model(&EventStudent{}).
+		Pluck("student_recruitment_cycle_id", &studentsIDs)
+	return studentsIDs, tx.Error
+}
