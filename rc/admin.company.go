@@ -3,7 +3,7 @@ package rc
 import (
 	"net/http"
 	"strconv"
-
+	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -136,4 +136,33 @@ func deleteCompanyHandler(ctx *gin.Context) {
 	logrus.Infof("%v deleted %v from RC", user, cid)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "Company Deleted from this RC"})
+}
+
+func getCompanyHistoryHandler(ctx *gin.Context) {
+    var companyHistory []CompanyHistory
+    cid, err := strconv.ParseUint(ctx.Param("cid"), 10, 32)
+    if err != nil {
+        ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    log.Println("Received request for company history with cid:", cid)
+	log.Println("Request URL:", ctx.Request.URL.String())
+
+    err = getCompanyHistory(ctx, uint(cid), &companyHistory)
+    if err != nil {
+        ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    var historyResponse []CompanyHistoryResponse
+    for _, history := range companyHistory {
+        historyResponse = append(historyResponse, CompanyHistoryResponse{
+            ID:                 history.ID,
+            RecruitmentCycleID:   history.RecruitmentCycleID,
+            Comments:           history.Comments,
+        })
+    }
+
+    ctx.JSON(http.StatusOK, historyResponse)
 }
