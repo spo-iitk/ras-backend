@@ -3,7 +3,6 @@ package rc
 import (
 	"net/http"
 	"strconv"
-	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -145,9 +144,6 @@ func getCompanyHistoryHandler(ctx *gin.Context) {
         ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
-
-    log.Println("Received request for company history with cid:", cid)
-	log.Println("Request URL:", ctx.Request.URL.String())
 
     err = getCompanyHistory(ctx, uint(cid), &companyHistory)
     if err != nil {
