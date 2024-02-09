@@ -16,7 +16,7 @@ func rasServer(mail_channel chan mail.Mail) *http.Server {
 	engine.Use(middleware.CORS())
 	// engine.Use(middleware.Authenticator())
 	ras.RASRouter(mail_channel, engine)
-	engine.Use(gin.Recovery())
+	engine.Use(gin.CustomRecovery(recoveryHandler))
 	engine.Use(gin.Logger())
 
 	server := &http.Server{
