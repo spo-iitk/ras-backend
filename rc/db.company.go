@@ -1,6 +1,7 @@
 package rc
 
 import "github.com/gin-gonic/gin"
+import "fmt"
 
 func fetchAllCompanies(ctx *gin.Context, rid string, companies *[]CompanyRecruitmentCycle) error {
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ?", rid).Find(companies)
@@ -53,4 +54,20 @@ func getRegisteredCompanyCount(ctx *gin.Context, rid uint) (int, error) {
 func deleteRCCompany(ctx *gin.Context, cid uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", cid).Delete(&CompanyRecruitmentCycle{})
 	return tx.Error
+}
+
+func FetchCompanyHistory(ctx *gin.Context, companyID uint, companyHistory *[]CompanyHistory) error {
+    tx := db.WithContext(ctx).
+        Table("company_recruitment_cycles").
+        Select("company_recruitment_cycles.id, company_recruitment_cycles.recruitment_cycle_id, recruitment_cycles.type, recruitment_cycles.phase, company_recruitment_cycles.comments").
+        Joins("JOIN recruitment_cycles ON company_recruitment_cycles.recruitment_cycle_id = recruitment_cycles.id").
+        Where("company_recruitment_cycles.company_id = ?", companyID).
+        Find(companyHistory)
+
+    if tx.Error != nil {
+        fmt.Println("Error fetching company history:", tx.Error)
+        return tx.Error
+    }
+
+    return nil
 }
