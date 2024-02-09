@@ -17,7 +17,7 @@ func studentServer(mail_channel chan mail.Mail) *http.Server {
 	engine := gin.New()
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
-	engine.Use(gin.Recovery())
+	engine.Use(gin.CustomRecovery(recoveryHandler))
 	engine.Use(gin.Logger())
 
 	student.StudentRouter(engine)
