@@ -56,7 +56,7 @@ func deleteRCCompany(ctx *gin.Context, cid uint) error {
 	return tx.Error
 }
 
-func getCompanyHistory(ctx *gin.Context, companyID uint, companyHistory *[]CompanyHistory) error {
+func FetchCompanyHistory(ctx *gin.Context, companyID uint, companyHistory *[]CompanyHistory) error {
     tx := db.WithContext(ctx).
         Table("company_recruitment_cycles").
         Select("company_recruitment_cycles.id, company_recruitment_cycles.recruitment_cycle_id, recruitment_cycles.type, recruitment_cycles.phase, company_recruitment_cycles.comments").

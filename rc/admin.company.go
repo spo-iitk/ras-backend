@@ -145,7 +145,7 @@ func getCompanyHistoryHandler(ctx *gin.Context) {
         return
     }
 
-    err = getCompanyHistory(ctx, uint(cid), &companyHistory)
+    err = FetchCompanyHistory(ctx, uint(cid), &companyHistory)
     if err != nil {
         ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
