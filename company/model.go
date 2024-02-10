@@ -1,8 +1,6 @@
 package company
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type Company struct {
 	gorm.Model
