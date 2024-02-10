@@ -28,6 +28,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/company/:cid", getCompanyHandler)
 		admin.DELETE("/company/:cid", deleteCompanyHandler)
 
+		admin.GET("/company/:cid/ids", getCompanyAllRCID)
+
 		admin.GET("/student", getAllStudentsHandler)
 
 		admin.GET("/student/:sid", getStudentHandler)
@@ -72,8 +74,8 @@ func CompanyRouter(r *gin.Engine) {
 	r.GET("/api/company/whoami", companyWhoamiHandler)
 	company := r.Group("/api/company/rc")
 	{
-		company.GET("", getCompanyRCHandler)                    // get registered rc
-		company.GET("/all", getAllRCHandlerForCompany)          // get all rc
+		company.GET("", getCompanyRCHandler)                   // get registered rc
+		company.GET("/all", getAllRCHandlerForCompany)         // get all rc
 		company.POST("/:rid/enrollment", enrollCompanyHandler) // enroll a company to a rc
 		company.GET("/:rid/hr", getCompanyRCHRHandler)
 	}
