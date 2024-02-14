@@ -1,0 +1,22 @@
+name: Main to Dev Merge
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  merge-to-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Merge changes into dev branch
+        run: |
+          git checkout dev
+          git merge main --no-ff --no-edit
+          git push origin dev
