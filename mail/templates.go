@@ -13,7 +13,7 @@ const (
 				<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="margin-top:10px">
 				  <tbody>
 					<tr>
-					  <td><img alt="Recruitment Automation System &lt;br /&gt; Indian Institute of Technology, Kanpur" height="75" src="https://i.ibb.co/YDvnbf5/Screenshot-2024-02-13-000009.png" style="display:block;outline:none;border:none;text-decoration:none" width="475" /></td>
+					  <td><img alt="Recruitment Automation System &lt;br /&gt; Indian Institute of Technology, Kanpur" height="75" src="https://i.ibb.co/h7HMySr/Screenshot-from-2024-04-06-07-02-51.png" style="display:block;outline:none;border:none;text-decoration:none" width="475" /></td>
 					</tr>
 				  </tbody>
 				</table>
