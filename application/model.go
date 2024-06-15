@@ -55,6 +55,9 @@ type Proforma struct {
 	RetentionBonus            string       `json:"retention_bonus"`
 	Deductions                string       `json:"deductions"`
 	Perks                     string       `json:"perks"`
+	Accommodation             string       `json:"accommodation"`
+	PPOConfirmingDate         string       `json:"ppo_confirming_date"`
+	Internshiperiod           string       `json:"internship_period"`
 }
 
 type ApplicationQuestionType string
