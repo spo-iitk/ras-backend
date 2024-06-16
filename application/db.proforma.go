@@ -60,6 +60,23 @@ func fetchProformaForCompany(ctx *gin.Context, pid uint, cid uint, jp *Proforma)
 			"medical_requirements",
 			"additional_eligibility",
 			"message_for_cordinator",
+			"accommodation",
+			"ppo_confirming_date",
+			"min_hires",
+			"total_hires",
+			"skill_set",
+			"cpi_criteria",
+			"ctcinr",
+			"ctcfr",
+			"perks",
+			"social_media",
+			"type_of_org",
+			"turnover",
+			"website",
+			"social_media",
+			"postal_address",
+			"internship_period",
+			"total_employees",
 		).
 		Find(jp)
 	return tx.Error
