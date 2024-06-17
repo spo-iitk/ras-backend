@@ -75,8 +75,10 @@ func fetchProformaForCompany(ctx *gin.Context, pid uint, cid uint, jp *Proforma)
 			"website",
 			"social_media",
 			"postal_address",
-			"internship_period",
 			"total_employees",
+			"internship_period",
+			"head_office",
+			"establishment_date",
 		).
 		Find(jp)
 	return tx.Error
@@ -100,8 +102,6 @@ func fetchProformasByCompanyForCompany(ctx *gin.Context, cid uint, jps *[]Profor
 			"role",
 			"profile",
 			"tentative_job_location",
-			"establishment_date",
-			"head_office",
 		).
 		Find(jps)
 	return tx.Error
