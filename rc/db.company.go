@@ -43,7 +43,16 @@ func FetchCompanyRCID(ctx *gin.Context, rid uint, companyid uint) (uint, error) 
 	tx := db.WithContext(ctx).Where("recruitment_cycle_id = ? AND company_id = ?", rid, companyid).First(&company)
 	return company.ID, tx.Error
 }
+func fetchCompanyAllRecruitmentCycles(ctx *gin.Context, companyID uint, stats *[]CompanyAllRecruitmentCycle) error {
+	tx := db.WithContext(ctx).
+		Table("company_recruitment_cycles").
+		Select("company_recruitment_cycles.id, company_recruitment_cycles.recruitment_cycle_id, recruitment_cycles.type, recruitment_cycles.phase").
+		Joins("JOIN recruitment_cycles ON company_recruitment_cycles.recruitment_cycle_id = recruitment_cycles.id").
+		Where("company_recruitment_cycles.company_id = ?", companyID).
+		Find(stats)
 
+	return tx.Error
+}
 func getRegisteredCompanyCount(ctx *gin.Context, rid uint) (int, error) {
 	var count int64
 	tx := db.WithContext(ctx).Model(&CompanyRecruitmentCycle{}).Where("recruitment_cycle_id = ?", rid).Count(&count)
