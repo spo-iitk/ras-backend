@@ -38,10 +38,12 @@ func (mail *Mail) BuildMessage() []byte {
 
 	message.WriteString(msg)
 
+	bodyWithLineBreaks := strings.ReplaceAll(mail.Body, "\n", "<br>")
+
 	tmpl := template.Must(template.New("Template").Parse(DefaultTemplate))
 	err := tmpl.Execute(&message, TemplateData{
 		Subject: mail.Subject,
-		Body:    mail.Body,
+		Body:    bodyWithLineBreaks,
 	})
 	if err != nil {
 		logrus.Errorf("Error executing email template: %v", err)

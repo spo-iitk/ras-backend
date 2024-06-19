@@ -56,6 +56,17 @@ func deleteRCCompany(ctx *gin.Context, cid uint) error {
 	return tx.Error
 }
 
+func fetchCompanyAllRecruitmentCycles(ctx *gin.Context, companyID uint, stats *[]CompanyAllRecruitmentCycle) error {
+	tx := db.WithContext(ctx).
+		Table("company_recruitment_cycles").
+		Select("company_recruitment_cycles.id, company_recruitment_cycles.recruitment_cycle_id, recruitment_cycles.type, recruitment_cycles.phase").
+		Joins("JOIN recruitment_cycles ON company_recruitment_cycles.recruitment_cycle_id = recruitment_cycles.id").
+		Where("company_recruitment_cycles.company_id = ?", companyID).
+		Find(stats)
+
+	return tx.Error
+}
+
 func FetchCompanyHistory(ctx *gin.Context, companyID uint, companyHistory *[]CompanyHistory) error {
     tx := db.WithContext(ctx).
         Table("company_recruitment_cycles").

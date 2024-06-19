@@ -28,6 +28,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/company/:cid", getCompanyHandler)
 		admin.DELETE("/company/:cid", deleteCompanyHandler)
 		admin.GET("/company/:cid/history", getCompanyHistoryHandler)
+		admin.GET("/company/:cid/ids", getCompanyAllRCID)
 
 		admin.GET("/student", getAllStudentsHandler)
 

@@ -6,20 +6,20 @@ const (
 	<html dir="ltr" lang="en">
 	  <head></head>
 	  <body style="background-color:#ffffff;margin:0 auto;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif">
-		<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="max-width:37.5em;margin:0 auto;padding:0px 20px">
+		<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="width:100%;margin:0 auto;padding:0px 20px">
 		  <tbody>
 			<tr style="width:100%">
 			  <td>
-				<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="margin-top:10px">
+				<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="margin-top:10px;width:100%">
 				  <tbody>
 					<tr>
 					  <td><img alt="Recruitment Automation System &lt;br /&gt; Indian Institute of Technology, Kanpur" height="75" src="https://i.ibb.co/h7HMySr/Screenshot-from-2024-04-06-07-02-51.png" style="display:block;outline:none;border:none;text-decoration:none" width="475" /></td>
 					</tr>
 				  </tbody>
 				</table>
-				<h1 style="color:#1d1c1d;font-size:36px;font-weight:700;margin:30px 0;padding:0;line-height:42px">{{.Subject}}</h1>
-				<p style="font-size:24px;line-height:28px;margin:16px 0;margin-bottom:30px">{{.Body}}<br></br></p>
-				<p style="font-size:16px;line-height:24px;margin:16px 0;color:#000">This is an auto-generated email. Please do not reply.</p>
+				<h1 style="color:#1d1c1d;font-size:24px;font-weight:700;margin:30px 0;padding:0;line-height:28px">{{.Subject}}</h1>
+				<p style="font-size:16px;line-height:20px;margin:16px 0;margin-bottom:30px;white-space:pre-wrap">{{.Body}}</p>
+				<p style="font-size:12px;line-height:16px;margin:16px 0;color:#000">This is an auto-generated email. Please do not reply.</p>
 				<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
 				  <tbody>
 					<tr>
@@ -36,9 +36,9 @@ const (
 										<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
 										  <tbody style="width:100%">
 											<tr style="width:100%">
-											  <td data-id="__react-email-column"><a href="https://twitter.com/IITKanpur" style="color:#067df7;text-decoration:none" target="_blank"><img alt="Twitter" height="32" src="https://th.bing.com/th/id/OIP.YGJYM4pqXxVMHzPYfdLumgHaHa?rs=1&amp;pid=ImgDetMain" style="display:inline;outline:none;border:none;text-decoration:none;margin-left:32px" width="32" /></a></td>
-											  <td data-id="__react-email-column"><a href="https://www.facebook.com/spo.iitkanpur/" style="color:#067df7;text-decoration:none" target="_blank"><img alt="Facebook" height="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png" style="display:inline;outline:none;border:none;text-decoration:none;margin-left:32px" width="32" /></a></td>
-											  <td data-id="__react-email-column"><a href="https://www.linkedin.com/company/students-placement-office-iit-kanpur/" style="color:#067df7;text-decoration:none" target="_blank"><img alt="LinkedIn" height="32" src="https://static-00.iconduck.com/assets.00/linkedin-icon-1024x1024-net2o24e.png" style="display:inline;outline:none;border:none;text-decoration:none;margin-left:32px" width="32" /></a></td>
+											  <td data-id="__react-email-column"><a href="https://twitter.com/IITKanpur" style="color:#067df7;text-decoration:none" target="_blank"><img alt="Twitter" height="32" src="https://th.bing.com/th/id/OIP.YGJYM4pqXxVMHzPYfdLumgHaHa?rs=1&amp;pid=ImgDetMain" style="display:inline;outline:none;border:none;text-decoration:none;margin-left:16px" width="32" /></a></td>
+											  <td data-id="__react-email-column"><a href="https://www.facebook.com/spo.iitkanpur/" style="color:#067df7;text-decoration:none" target="_blank"><img alt="Facebook" height="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png" style="display:inline;outline:none;border:none;text-decoration:none;margin-left:16px" width="32" /></a></td>
+											  <td data-id="__react-email-column"><a href="https://www.linkedin.com/company/students-placement-office-iit-kanpur/" style="color:#067df7;text-decoration:none" target="_blank"><img alt="LinkedIn" height="32" src="https://static-00.iconduck.com/assets.00/linkedin-icon-1024x1024-net2o24e.png" style="display:inline;outline:none;border:none;text-decoration:none;margin-left:16px" width="32" /></a></td>
 											</tr>
 										  </tbody>
 										</table>
@@ -57,7 +57,7 @@ const (
 				<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
 				  <tbody>
 					<tr>
-					  <td><a href="https://spo.iitk.ac.in/" rel="noopener noreferrer" style="color:#b7b7b7;text-decoration:underline" target="_blank">Website</a>   |   <a href="https://placement.iitk.ac.in/" rel="noopener noreferrer" style="color:#b7b7b7;text-decoration:underline" target="_blank">RAS Portal</a>   |   <a href="https://phdplacement.iitk.ac.in/" rel="noopener noreferrer" style="color:#b7b7b7;text-decoration:underline" target="_blank">PhD Portal</a>
+					  <td><a href="https://spo.iitk.ac.in/" rel="noopener noreferrer" style="color:#b7b7b7;text-decoration:underline;font-size:14px;" target="_blank">Website</a>   |   <a href="https://placement.iitk.ac.in/" rel="noopener noreferrer" style="color:#b7b7b7;text-decoration:underline;font-size:14px;" target="_blank">RAS Portal</a>   |   <a href="https://phdplacement.iitk.ac.in/" rel="noopener noreferrer" style="color:#b7b7b7;text-decoration:underline;font-size:14px;" target="_blank">PhD Portal</a>
 						<p style="font-size:12px;line-height:15px;margin:16px 0;color:#b7b7b7;text-align:left;margin-bottom:50px">©2024 Recruitment Automation System. <br />Students&#x27; Placement Office, IIT Kanpur <br /><br />All rights reserved.</p>
 					  </td>
 					</tr>
