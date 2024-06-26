@@ -43,7 +43,7 @@ func insertCalenderEvent(event *ProformaEvent, proforma *Proforma, loc *time.Loc
 		}
 
 		event.CalID = cevent.Id
-		err = updateEvent(nil, event)
+		err = updateEventCalID(event)
 		if err != nil {
 			logrus.Errorf("Unable to update event. %v", err)
 		}
@@ -86,7 +86,7 @@ func insertCalenderApplicationDeadline(proforma *Proforma, event *ProformaEvent)
 		}
 
 		event.CalID = cevent.Id
-		err = updateEvent(nil, event)
+		err = updateEventCalID(event)
 		if err != nil {
 			logrus.Errorf("Unable to update event. %v", err)
 		}

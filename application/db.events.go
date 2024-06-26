@@ -35,6 +35,11 @@ func updateEvent(ctx *gin.Context, event *ProformaEvent) error {
 	return tx.Error
 }
 
+func updateEventCalID(event *ProformaEvent) error {
+	tx := db.Clauses(clause.Returning{}).Where("id = ?", event.ID).Updates(event)
+	return tx.Error
+}
+
 func deleteEvent(ctx *gin.Context, id uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", id).Delete(&ProformaEvent{})
 	return tx.Error

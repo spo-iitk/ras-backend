@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
 )
 
@@ -75,4 +76,30 @@ func verifyStudentHandler(ctx *gin.Context) {
 		logrus.Infof("A student with id %d is unverified", verifyStudentRequest.ID)
 		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully unverified"})
 	}
+}
+
+func makeStudentEdiatableHandler(ctx *gin.Context) {
+	var editableStudentRequest Student
+
+	if err := ctx.ShouldBindJSON(&editableStudentRequest); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	sid, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = updateIsEditableWithID(ctx, sid, true)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	user := middleware.GetUserID(ctx)
+	
+	logrus.Infof("A student with id %d is made editable by %v", editableStudentRequest.ID, user)
+	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully made student editable"})
 }

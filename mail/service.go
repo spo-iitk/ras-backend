@@ -28,7 +28,7 @@ func (mail *Mail) BuildMessage() []byte {
 	}
 
 	message += strings.Replace(mail.Body, "\n", "<br>", -1)
-	message += "<br><br>--<br>Recruitment Automation Sysytem<br>"
+	message += "<br><br>--<br>Recruitment Automation System<br>"
 	message += "Indian Institute of Technology Kanpur<br><br>"
 	message += "<small>This is an auto-generated email. Please do not reply.</small>"
 

@@ -29,6 +29,35 @@ type Proforma struct {
 	MedicalRequirements       string       `json:"medical_requirements"`
 	AdditionalEligibility     string       `json:"additional_eligibility"`
 	MessageForCordinator      string       `json:"message_for_cordinator"`
+	PostalAddress             string       `json:"postal_address"`
+	EstablishmentDate         string       `json:"establishment_date"`
+	TotalEmployees            string       `json:"total_employees"`
+	SocialMedia               string       `json:"social_media"`
+	Website                   string       `json:"website"`
+	Turnover                  string       `json:"turnover"`
+	TypeOfOrg                 string       `json:"type_of_org"`
+	HeadOffice                string       `json:"head_office"`
+	MinHires                  string       `json:"min_hires"`
+	TotalHires                string       `json:"total_hires"`
+	SkillSet                  string       `json:"skill_set"`
+	PWD                       string       `json:"pwd"`
+	CPICriteria               string       `json:"cpi_criteria"`
+	BacklogEligibility        string       `json:"backlog_eligibility"`
+	CTCINR                    string       `json:"ctc_inr"`
+	CTCFR                     string       `json:"ctc_fr"`
+	Gross                     string       `json:"gross"`
+	TakeHome                  string       `json:"take_home"`
+	Base                      string       `json:"base"`
+	JoiningBonus              string       `json:"joining_bonus"`
+	RelocationBonus           string       `json:"relocation_bonus"`
+	FirstCTC                  string       `json:"first_ctc"`
+	MedicalAllowance          string       `json:"medical_allowance"`
+	RetentionBonus            string       `json:"retention_bonus"`
+	Deductions                string       `json:"deductions"`
+	Perks                     string       `json:"perks"`
+	Accommodation             string       `json:"accommodation"`
+	PPOConfirmingDate         string       `json:"ppo_confirming_date"`
+	InternshipPeriod          string       `json:"internship_period"`
 }
 
 type ApplicationQuestionType string
@@ -96,4 +125,19 @@ type ApplicationResume struct {
 	Profoma                   Proforma `json:"-" gorm:"foreignkey:ProformaID"`
 	ResumeID                  uint     `json:"resume_id"`
 	Resume                    string   `json:"resume"`
+}
+
+type PVF struct {
+	gorm.Model
+	StudentRecruitmentCycleID uint         `json:"student_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	CompanyUniversityName     string       `json:"company_university_name"`
+	Role                      string       `json:"role"`
+	Duration                  string       `json:"duration"`
+	Description               string       `json:"description"`
+	MentorName                string       `json:"mentor_name"`
+	MentorDesignation         string       `json:"mentor_designation"`
+	MentorEmail               string       `json:"mentor_email"`
+	IsApproved                sql.NullBool `json:"is_approved" gorm:"index;default:NULL"`
+	IsVerified                sql.NullBool `json:"is_verified" gorm:"index;default:NULL"`
+	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
 }

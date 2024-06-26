@@ -77,9 +77,10 @@ type Notice struct {
 type StudentRecruitmentCycleType string
 
 const (
-	PIOPPO    StudentRecruitmentCycleType = "PIO-PPO"
-	RECRUITED StudentRecruitmentCycleType = "Recruited"
-	AVAILABLE StudentRecruitmentCycleType = "Available"
+	PIOPPO       StudentRecruitmentCycleType = "PIO-PPO"
+	RECRUITED    StudentRecruitmentCycleType = "Recruited"
+	AVAILABLE    StudentRecruitmentCycleType = "Available"
+	DEREGISTERED StudentRecruitmentCycleType = "Deregistered"
 )
 
 type StudentRecruitmentCycle struct {
@@ -108,4 +109,18 @@ type StudentRecruitmentCycleResume struct {
 	Resume                    string                  `json:"resume"`
 	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
 	ActionTakenBy             string                  `json:"action_taken_by"`
+}
+
+type CompanyHistory struct {
+	ID                 uint   `json:"id" gorm:"column:id"`
+	RecruitmentCycleID uint   `json:"recruitment_cycle_id" gorm:"column:recruitment_cycle_id"`
+	Type               string `json:"type" gorm:"column:type"`
+	Phase              string `json:"phase" gorm:"column:phase"`
+	Comments           string `json:"comments" gorm:"column:comments"`
+}
+
+type CompanyHistoryResponse struct {
+    ID                 uint   `json:"id" gorm:"column:id"`
+    RecruitmentCycleID uint   `json:"recruitmentCycleID" gorm:"column:recruitment_cycle_id"`
+    Comments           string `json:"comments" gorm:"column:comments"`
 }

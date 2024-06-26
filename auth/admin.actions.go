@@ -42,7 +42,7 @@ func hrSignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		mail_channel <- mail.GenerateMail(request.UserID, "New Credentials generated", "Your new credentials are: \n\nUser ID: "+request.UserID+"\nPassword: "+pass)
+		mail_channel <- mail.GenerateMail(request.UserID, "New Credentials generated", "Your new credentials are: \n\nUser ID: "+request.UserID+"\nPassword: "+pass+"\n\nYou can reset the password from <a href= \"https://placement.iitk.ac.in/reset-password\">here</a>")
 		ctx.JSON(http.StatusOK, gin.H{"id": id})
 	}
 }

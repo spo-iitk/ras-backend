@@ -15,6 +15,8 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.GET("/event", getAllEventsByRCHandler)
 		admin.GET("/event/:eid", getEventHandler)
+		admin.DELETE("event/:eid/student", deleteAllStudentsFromEventHandler)
+		admin.DELETE("event/:eid/student/:sid", deleteStudentFromEventHandler)
 
 		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
 		admin.GET("/company/:cid/stats", getCompanyRecruitStatsHandler)
@@ -62,6 +64,9 @@ func StudentRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		student.GET("/proforma", getProformasForStudentHandler)
 		student.GET("/proforma/:pid", getProformaForStudentHandler)
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
+
+		student.POST("/pvf", postPvfForStudentHandler)
+		student.GET("/pvf", getPvfForStudentHandler)
 
 		student.GET("/opening", getProformasForEligibleStudentHandler)
 		student.GET("/opening/:pid", getApplicationHandler)

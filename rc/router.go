@@ -17,7 +17,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/count", getRCCountHandler)
 
 		admin.GET("/notice", getAllNoticesHandler)
-		admin.POST("/notice", postNoticeHandler)
+		admin.POST("/notice", postNoticeHandler(mail_channel))
 		admin.PUT("/notice", putNoticeHandler)
 		admin.POST("/notice/:nid/reminder", postReminderHandler(mail_channel))
 		admin.DELETE("/notice/:nid", deleteNoticeHandler)
@@ -27,6 +27,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/company", putCompanyHandler)
 		admin.GET("/company/:cid", getCompanyHandler)
 		admin.DELETE("/company/:cid", deleteCompanyHandler)
+		admin.GET("/company/:cid/history", getCompanyHistoryHandler)
 
 		admin.GET("/company/:cid/ids", getCompanyAllRCID)
 
@@ -40,6 +41,10 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/student", putStudentHandler)
 
 		admin.PUT("/student/freeze", bulkFreezeStudentsHandler(mail_channel))
+
+		admin.PUT("/student/sync", syncStudentsHandler)
+		// route not in use
+		// admin.PUT("/student/deregister", deregisterAllStudentsHandler)
 
 		admin.GET("/student/questions", getStudentQuestionsHandler)
 		admin.POST("/student/question", postStudentQuestionHandler)
