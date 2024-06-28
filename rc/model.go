@@ -109,3 +109,25 @@ type StudentRecruitmentCycleResume struct {
 	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
 	ActionTakenBy             string                  `json:"action_taken_by"`
 }
+
+type DocumentType string
+
+const (
+	TENTH_MARKSHEET   DocumentType = "10th Marksheet"
+	TWELFTH_MARKSHEET DocumentType = "12th Marksheet"
+	PINGALA           DocumentType = "Pingala"
+	JEE_MAIN          DocumentType = "JEE Main"
+	JEE_ADVANCE       DocumentType = "JEE Advance"
+)
+
+type StudentDocument struct {
+	gorm.Model
+	StudentRecruitmentCycleID uint                    `gorm:"index" json:"student_recruitment_cycle_id"`
+	StudentRecruitmentCycle   StudentRecruitmentCycle `gorm:"foreignkey:StudentRecruitmentCycleID" json:"-"`
+	RecruitmentCycleID        uint                    `gorm:"index" json:"recruitment_cycle_id"`
+	RecruitmentCycle          RecruitmentCycle        `gorm:"foreignkey:RecruitmentCycleID" json:"-"`
+	DocumentType              DocumentType            `json:"document_type"`
+	Document                  string                  `json:"document"`
+	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
+	ActionTakenBy             string                  `json:"action_taken_by"`
+}

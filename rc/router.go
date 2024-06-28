@@ -49,6 +49,12 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 		admin.GET("/resume", getAllResumesHandler)
 		admin.PUT("/resume/:rsid/verify", putResumeVerifyHandler(mail_channel))
+
+		admin.GET("/student/:sid/documents", getDocumentHandler)
+		admin.GET("/documents", getAllDocumentHandler)
+		admin.GET("/documents/type/:type", getAllDocumentHandlerByType)
+		admin.PUT("/document/:docid/verify", putDocumentVerifyHandler(mail_channel))
+
 	}
 }
 
@@ -65,6 +71,8 @@ func StudentRouter(r *gin.Engine) {
 
 		student.POST("/resume", postStudentResumeHandler)
 		student.GET("/resume", getStudentResumeHandler)
+		student.POST("/document", postStudentDocumentHandler)
+		student.GET("/documents", getStudentDocumentHandler)
 	}
 }
 
@@ -72,8 +80,8 @@ func CompanyRouter(r *gin.Engine) {
 	r.GET("/api/company/whoami", companyWhoamiHandler)
 	company := r.Group("/api/company/rc")
 	{
-		company.GET("", getCompanyRCHandler)                    // get registered rc
-		company.GET("/all", getAllRCHandlerForCompany)          // get all rc
+		company.GET("", getCompanyRCHandler)                   // get registered rc
+		company.GET("/all", getAllRCHandlerForCompany)         // get all rc
 		company.POST("/:rid/enrollment", enrollCompanyHandler) // enroll a company to a rc
 		company.GET("/:rid/hr", getCompanyRCHRHandler)
 	}
