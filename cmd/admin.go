@@ -76,14 +76,14 @@ func adminCompanyServer() *http.Server {
 	return server
 }
 
-func adminStudentServer() *http.Server {
+func adminStudentServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := viper.GetString("PORT.ADMIN.STUDENT")
 	engine := gin.New()
 	engine.Use(middleware.CORS())
 	engine.Use(middleware.Authenticator())
 	engine.Use(middleware.EnsurePsuedoAdmin())
 
-	student.AdminRouter(engine)
+	student.AdminRouter(mail_channel,engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,
