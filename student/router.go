@@ -2,6 +2,7 @@ package student
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/ras"
 )
 
@@ -10,10 +11,13 @@ func StudentRouter(r *gin.Engine) {
 	{
 		student.PUT("", updateStudentHandler)
 		student.GET("", getStudentHandler)
+
+		student.POST("/document", postStudentDocumentHandler)
+		student.GET("/documents", getStudentDocumentHandler)
 	}
 }
 
-func AdminRouter(r *gin.Engine) {
+func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 	admin := r.Group("/api/admin/student")
 	{
 		admin.DELETE("/:sid", deleteStudentHandler)
@@ -23,5 +27,11 @@ func AdminRouter(r *gin.Engine) {
 		admin.GET("/:sid", getStudentByIDHandler)
 		admin.PUT("/:sid/verify", verifyStudentHandler)
 		admin.GET("/:sid/history", ras.PlaceHolderController)
+
+		// Admin routes for document management
+		admin.GET("/:sid/documents", getDocumentHandler)
+		admin.PUT("/document/:docid/verify", putDocumentVerifyHandler(mail_channel))
+		admin.GET("/documents", getAllDocumentHandler)
+		admin.GET("/documents/type/:type", getAllDocumentHandlerByType)
 	}
 }

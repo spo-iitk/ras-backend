@@ -40,3 +40,12 @@ type Student struct {
 	IsEditable                   bool    `json:"is_editable" gorm:"default:true"`
 	IsVerified                   bool    `json:"is_verified" gorm:"default:false"`
 }
+
+type StudentDocument struct {
+	gorm.Model
+	StudentID     uint
+	Type          string
+	Path          string
+	Verified      bool
+	ActionTakenBy string
+}
