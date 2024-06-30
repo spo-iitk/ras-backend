@@ -12,9 +12,10 @@ func FirstOrCreateStudent(ctx *gin.Context, student *Student) error {
 	return tx.Error
 }
 
-func getStudentByID(ctx *gin.Context, student *Student, id uint) error {
-	tx := db.WithContext(ctx).Where("id = ?", id).First(student)
-	return tx.Error
+func getStudentByID(ctx *gin.Context, studentID uint) (*Student, error) {
+	var student Student
+	tx := db.WithContext(ctx).First(&student, studentID)
+	return &student, tx.Error
 }
 
 func FetchStudentsByID(ctx *gin.Context, id []uint, students *[]Student) error {
