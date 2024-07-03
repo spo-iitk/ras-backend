@@ -140,4 +140,5 @@ type PVF struct {
 	IsApproved                sql.NullBool `json:"is_approved" gorm:"index;default:NULL"`
 	IsVerified                sql.NullBool `json:"is_verified" gorm:"index;default:NULL"`
 	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
+	FileName                  string       `json:"filename"`
 }

@@ -29,12 +29,12 @@ func postPvfForStudentHandler(ctx *gin.Context) {
 	}
 	user := middleware.GetUserID(ctx)
 
-	logrus.Infof("%v created \a proforma with id %d", user, pvf.ID)
+	logrus.Infof("%v created \a pvf with id %d", user, pvf.ID)
 	ctx.JSON(http.StatusOK, gin.H{"pid": pvf.ID})
 
 }
 
-func getPvfForStudentHandler(ctx *gin.Context) {
+func getAllPvfForStudentHandler(ctx *gin.Context) {
 	sid := getStudentRCID(ctx)
 	if sid == 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
@@ -46,7 +46,7 @@ func getPvfForStudentHandler(ctx *gin.Context) {
 		return
 	}
 	var jps []PVF
-	err = fetchPvfForStudent(ctx, sid, rid, &jps)
+	err = fetchAllPvfForStudent(ctx, sid, rid, &jps)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -54,4 +54,24 @@ func getPvfForStudentHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, jps)
 
+}
+func getPvfForStudentHandler(ctx *gin.Context) {
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	id, err := util.ParseUint(ctx.Param("pid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var jps PVF
+	err = fetchPvfForVerification(ctx, id, rid, &jps)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, jps)
 }

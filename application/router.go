@@ -62,7 +62,8 @@ func StudentRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
 
 		student.POST("/pvf", postPvfForStudentHandler)
-		student.GET("/pvf", getPvfForStudentHandler)
+		student.GET("/pvf", getAllPvfForStudentHandler)
+		student.GET("/pvf/:pid", getPvfForStudentHandler)
 
 		student.GET("/opening", getProformasForEligibleStudentHandler)
 		student.GET("/opening/:pid", getApplicationHandler)
@@ -97,5 +98,15 @@ func CompanyRouter(r *gin.Engine) {
 		company.DELETE("/event/:eid", deleteEventByCompanyHandler)
 
 		company.GET("/event/:eid/student", getStudentsByEventForCompanyHandler)
+	}
+}
+
+func PvfVerificationRouter(r *gin.Engine) {
+	pvf := r.Group("/api/verification/application/rc/:rid")
+	pvf.Use()
+	{
+		pvf.GET("/pvf/:pid", getPvfForVerificationHandler)
+		pvf.PUT("pvf/:pid/verify", verifyPvfHandler)
+		pvf.PUT("/pvf", putPVFHandler)
 	}
 }
