@@ -20,8 +20,9 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 type CustomPVFClaims struct {
-	email string `json:"email"`
-	pid   uint   `json:"pid"`
+	Email string `json:"email"`
+	Pid   uint   `json:"pid"`
+	Rid   uint   `json:"rid"`
 	jwt.StandardClaims
 }
 
@@ -70,17 +71,13 @@ func validateToken(encodedToken string) (string, uint, error) {
 	return claims.UserID, claims.RoleID, nil
 }
 
-func GeneratePVFToken(email string, pid uint, long bool) (string, error) {
-	var jwtExpiration int
-	if long {
-		jwtExpiration = jwtExpirationLong
-	} else {
-		jwtExpiration = jwtExpirationShort
-	}
+func GeneratePVFToken(email string, pid uint, rid uint) (string, error) {
+	var jwtExpiration = 10080 // 7days
 
 	claims := CustomPVFClaims{
 		email,
 		pid,
+		rid,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(jwtExpiration) * time.Minute).Unix(),
 			IssuedAt:  jwt.TimeFunc().Unix(),
@@ -92,7 +89,7 @@ func GeneratePVFToken(email string, pid uint, long bool) (string, error) {
 	return tokenString, err
 }
 
-func validatePVFToken(encodedToken string) (string, uint, error) {
+func validatePVFToken(encodedToken string) (string, uint, uint, error) {
 
 	claims := &CustomPVFClaims{}
 	_, err := jwt.ParseWithClaims(encodedToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -103,8 +100,7 @@ func validatePVFToken(encodedToken string) (string, uint, error) {
 	})
 
 	if err != nil {
-		return "", 20, err
+		return "", 20, 20, err
 	}
-
-	return claims.email, claims.pid, nil
+	return claims.Email, claims.Pid, claims.Rid, nil
 }

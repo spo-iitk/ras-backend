@@ -15,6 +15,7 @@ func verificationServer() *http.Server {
 	fmt.Print(PORT)
 	engine := gin.New()
 	engine.Use(middleware.CORS())
+	engine.Use(middleware.PVFAuthenticator())
 	engine.Use(gin.CustomRecovery(recoveryHandler))
 	engine.Use(gin.Logger())
 

@@ -133,7 +133,7 @@ type PVF struct {
 	CompanyUniversityName     string       `json:"company_university_name"`
 	Role                      string       `json:"role"`
 	Duration                  string       `json:"duration"`
-	Description               string       `json:"description"`
+	Remarks                   string       `json:"remarks"`
 	MentorName                string       `json:"mentor_name"`
 	MentorDesignation         string       `json:"mentor_designation"`
 	MentorEmail               string       `json:"mentor_email"`

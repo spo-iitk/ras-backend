@@ -18,6 +18,11 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.DELETE("event/:eid/student", deleteAllStudentsFromEventHandler)
 		admin.DELETE("event/:eid/student/:sid", deleteStudentFromEventHandler)
 
+		admin.GET("/pvf", getAllPvfForAdminHandler)
+		admin.GET("/pvf/:pid", getPvfForAdminHandler)
+		admin.GET("pvf/:pid/verification/send", sendVerificationLinkForPvfHandler(mail_channel))
+		admin.DELETE("pvf/:pid", deletePVFHandler)
+
 		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
 
 		admin.GET("/proforma", getAllProformasHandler)
@@ -64,6 +69,7 @@ func StudentRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		student.POST("/pvf", postPvfForStudentHandler)
 		student.GET("/pvf", getAllPvfForStudentHandler)
 		student.GET("/pvf/:pid", getPvfForStudentHandler)
+		student.DELETE("pvf/:pid", deletePVFHandler)
 
 		student.GET("/opening", getProformasForEligibleStudentHandler)
 		student.GET("/opening/:pid", getApplicationHandler)
@@ -102,11 +108,11 @@ func CompanyRouter(r *gin.Engine) {
 }
 
 func PvfVerificationRouter(r *gin.Engine) {
-	pvf := r.Group("/api/verification/application/rc/:rid")
+	pvf := r.Group("/api/verification")
 	pvf.Use()
 	{
-		pvf.GET("/pvf/:pid", getPvfForVerificationHandler)
-		pvf.PUT("pvf/:pid/verify", verifyPvfHandler)
+		pvf.GET("/pvf", getPvfForVerificationHandler)
+		// pvf.PUT("pvf/:pid/verify", verifyPvfHandler)
 		pvf.PUT("/pvf", putPVFHandler)
 	}
 }

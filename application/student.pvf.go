@@ -56,18 +56,23 @@ func getAllPvfForStudentHandler(ctx *gin.Context) {
 
 }
 func getPvfForStudentHandler(ctx *gin.Context) {
+	sid := getStudentRCID(ctx)
+	if sid == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
+		return
+	}
 	rid, err := util.ParseUint(ctx.Param("rid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	id, err := util.ParseUint(ctx.Param("pid"))
+	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	var jps PVF
-	err = fetchPvfForVerification(ctx, id, rid, &jps)
+	err = fetchPvfForStudent(ctx, sid, rid, pid, &jps)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

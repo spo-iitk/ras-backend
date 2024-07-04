@@ -34,12 +34,13 @@ func fetchAllPvfForStudent(ctx *gin.Context, sid uint, rid uint, jps *[]PVF) err
 			"mentor_email",
 			"is_verified",
 			"file_name",
+			"remarks",
 		).
 		Order("id ASC").
 		Find(jps)
 	return tx.Error
 }
-func fetchPvfForStudent(ctx *gin.Context, sid uint, rid uint, pid uint, jps *[]PVF) error {
+func fetchPvfForStudent(ctx *gin.Context, sid uint, rid uint, pid uint, jps *PVF) error {
 	tx := db.WithContext(ctx).
 		Where("student_recruitment_cycle_id = ? AND recruitment_cycle_id = ? AND id = ?", sid, rid, pid).
 		Select(
@@ -53,7 +54,14 @@ func fetchPvfForStudent(ctx *gin.Context, sid uint, rid uint, pid uint, jps *[]P
 			"mentor_email",
 			"is_verified",
 			"file_name",
+			"remarks",
 		).
+		Find(jps)
+	return tx.Error
+}
+func fetchPvfForAdmin(ctx *gin.Context, rid uint, pid uint, jps *PVF) error {
+	tx := db.WithContext(ctx).
+		Where("recruitment_cycle_id = ? AND id = ?", rid, pid).
 		Find(jps)
 	return tx.Error
 }
@@ -84,4 +92,17 @@ func verifyPvf(ctx *gin.Context, pvf *PVF) (bool, error) {
 		Where("id = ?", pvf.ID).
 		Updates(map[string]interface{}{"is_verified": pvf.IsVerified})
 	return tx.RowsAffected > 0, tx.Error
+}
+
+func fetchAllPvfForAdmin(ctx *gin.Context, rid uint, jps *[]PVF) error {
+	tx := db.WithContext(ctx).
+		Where("recruitment_cycle_id = ?", rid).
+		Order("id DESC").
+		Find(jps)
+	return tx.Error
+}
+
+func deletePVF(ctx *gin.Context, pid uint) error {
+	tx := db.WithContext(ctx).Where("id = ?", pid).Delete(&PVF{})
+	return tx.Error
 }
