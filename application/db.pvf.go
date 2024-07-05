@@ -86,14 +86,6 @@ func fetchPvfForVerification(ctx *gin.Context, id uint, rid uint, jps *PVF) erro
 	return tx.Error
 }
 
-// func verifyPvf(ctx *gin.Context, pvf *PVF) (bool, error) {
-// 	tx := db.WithContext(ctx).Model(&pvf).
-// 		Clauses(clause.Returning{}).
-// 		Where("id = ?", pvf.ID).
-// 		Updates(map[string]interface{}{"is_verified": pvf.IsVerified})
-// 	return tx.RowsAffected > 0, tx.Error
-// }
-
 func fetchAllPvfForAdmin(ctx *gin.Context, rid uint, jps *[]PVF) error {
 	tx := db.WithContext(ctx).
 		Where("recruitment_cycle_id = ?", rid).
