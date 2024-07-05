@@ -7,6 +7,64 @@ func createEventStudents(ctx *gin.Context, eventStudents *[]EventStudent) error 
 	return tx.Error
 }
 
+func getCompanyRecruitmentStats(ctx *gin.Context, cid uint, stats *[]statsResponse) error {
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{Recruited, PIOPPOACCEPTED}).
+		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.company_recruitment_cycle_id = ?", cid).
+		Select("event_students.student_recruitment_cycle_id, proformas.company_name, proformas.profile ,proforma_events.name as type").
+		Order("event_students.student_recruitment_cycle_id").
+		Find(stats)
+	return tx.Error
+}
+func fetchCompanyRecruitCount(ctx *gin.Context, cids []uint) (map[uint]int, error) {
+	resultCounts := make(map[uint]int)
+
+	var stats []companyRecruitResponce
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{Recruited, PIOPPOACCEPTED}).
+		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
+		Where("proformas.company_recruitment_cycle_id IN ?", cids).
+		Select("proformas.company_recruitment_cycle_id, COUNT(*) as count").
+		Group("proformas.company_recruitment_cycle_id").
+		Order("proformas.company_recruitment_cycle_id").
+		Find(&stats)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	// Populate resultCounts map
+	for _, stat := range stats {
+		resultCounts[stat.CompanyRecruitmentCycleID] = stat.Count
+	}
+
+	return resultCounts, nil
+}
+
+func fetchCompanyPPOCount(ctx *gin.Context, cids []uint) (map[uint]int, error) {
+	resultCounts := make(map[uint]int)
+
+	var stats []companyRecruitResponce
+	tx := db.WithContext(ctx).Model(&EventStudent{}).
+		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{PIOPPOACCEPTED}).
+		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id").
+		Where("proformas.company_recruitment_cycle_id IN ?", cids).
+		Select("proformas.company_recruitment_cycle_id, COUNT(*) as count").
+		Group("proformas.company_recruitment_cycle_id").
+		Order("proformas.company_recruitment_cycle_id").
+		Find(&stats)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	for _, stat := range stats {
+		resultCounts[stat.CompanyRecruitmentCycleID] = stat.Count
+	}
+
+	return resultCounts, nil
+}
+
 func getRecruitmentStats(ctx *gin.Context, rid uint, stats *[]statsResponse) error {
 	tx := db.WithContext(ctx).Model(&EventStudent{}).
 		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{Recruited, PIOPPOACCEPTED}).
