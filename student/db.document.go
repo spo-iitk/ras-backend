@@ -2,6 +2,7 @@ package student
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
 )
 
 
@@ -28,4 +29,10 @@ func getAllDocuments(ctx *gin.Context, documents *[]StudentDocument) error {
 func getDocumentsByType(ctx *gin.Context, documents *[]StudentDocument, docType string) error {
 	tx := db.WithContext(ctx).Where("type = ?", docType).Find(documents)
 	return tx.Error
+}
+
+func updateDocumentVerify(ctx *gin.Context, docid uint, verified bool, user string) (bool, error){
+	var document StudentDocument
+	tx := db.WithContext(ctx).Model(&document).Clauses(clause.Returning{}).Where("id = ?", docid).Update("verified", verified).Update("action_taken_by", user)
+	return tx.RowsAffected == 1, tx.Error
 }

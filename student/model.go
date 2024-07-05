@@ -1,6 +1,8 @@
 package student
 
 import (
+	"database/sql"
+
 	"gorm.io/gorm"
 )
 
@@ -43,9 +45,9 @@ type Student struct {
 
 type StudentDocument struct {
 	gorm.Model
-	StudentID     uint
-	Type          string
-	Path          string
-	Verified      bool
-	ActionTakenBy string
+	StudentID     uint	`json:"sid"`
+	Type          string `json:"type"`
+	Path          string `json:"path"`
+	Verified      sql.NullBool `json:"verified" gorm:"default:NULL"`
+	ActionTakenBy string `json:"action_taken_by"`
 }

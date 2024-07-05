@@ -57,13 +57,15 @@ func putDocumentVerifyHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
             return
         }
 
-        document.Verified = req.Verified
-        document.ActionTakenBy = user
-
-        err = saveDocument(ctx, &document)
+        ok, err := updateDocumentVerify(ctx, did, req.Verified, user)
         if err != nil {
             ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-            return
+			return
+        }
+
+        if !ok {
+            ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Could not verify document"})
+			return
         }
 
         var student Student
