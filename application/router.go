@@ -67,6 +67,7 @@ func StudentRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		student.GET("/proforma/:pid/event", getEventsByProformaForStudentHandler)
 
 		student.POST("/pvf", postPvfForStudentHandler)
+		student.PUT("/pvf/:pid", putPVFForStudentHandler)
 		student.GET("/pvf", getAllPvfForStudentHandler)
 		student.GET("/pvf/:pid", getPvfForStudentHandler)
 		student.DELETE("pvf/:pid", deletePVFHandler)

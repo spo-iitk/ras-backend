@@ -80,3 +80,42 @@ func getPvfForStudentHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, jps)
 }
+
+func putPVFForStudentHandler(ctx *gin.Context) {
+	sid := getStudentRCID(ctx)
+	if sid == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "SRCID not found"})
+		return
+	}
+	var jp PVF
+
+	err := ctx.ShouldBindJSON(&jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if jp.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+
+	var oldJp PVF
+	err = fetchPVF(ctx, jp.ID, &oldJp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ok, err := updatePVFForStudent(ctx, sid, &jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "pvf not found or unauthorized"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"status": "Updated PVF with id " + util.ParseString(jp.ID)})
+}

@@ -2,7 +2,6 @@ package application
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm/clause"
 )
 
 func createPVF(ctx *gin.Context, pvf *PVF) error {
@@ -28,12 +27,12 @@ func fetchAllPvfForStudent(ctx *gin.Context, sid uint, rid uint, jps *[]PVF) err
 			"company_university_name",
 			"role",
 			"duration",
-			"description",
 			"mentor_name",
 			"mentor_designation",
 			"mentor_email",
 			"is_verified",
-			"file_name",
+			"filename_mentor",
+			"filename_student",
 			"remarks",
 		).
 		Order("id ASC").
@@ -48,12 +47,12 @@ func fetchPvfForStudent(ctx *gin.Context, sid uint, rid uint, pid uint, jps *PVF
 			"company_university_name",
 			"role",
 			"duration",
-			"description",
 			"mentor_name",
 			"mentor_designation",
 			"mentor_email",
 			"is_verified",
-			"file_name",
+			"filename_mentor",
+			"filename_student",
 			"remarks",
 		).
 		Find(jps)
@@ -74,25 +73,26 @@ func fetchPvfForVerification(ctx *gin.Context, id uint, rid uint, jps *PVF) erro
 			"company_university_name",
 			"role",
 			"duration",
-			"description",
 			"mentor_name",
 			"mentor_designation",
 			"mentor_email",
 			"is_verified",
 			"is_approved",
-			"file_name",
+			"filename_student",
+			"filename_mentor",
+			"remarks",
 		).
 		Find(jps)
 	return tx.Error
 }
 
-func verifyPvf(ctx *gin.Context, pvf *PVF) (bool, error) {
-	tx := db.WithContext(ctx).Model(&pvf).
-		Clauses(clause.Returning{}).
-		Where("id = ?", pvf.ID).
-		Updates(map[string]interface{}{"is_verified": pvf.IsVerified})
-	return tx.RowsAffected > 0, tx.Error
-}
+// func verifyPvf(ctx *gin.Context, pvf *PVF) (bool, error) {
+// 	tx := db.WithContext(ctx).Model(&pvf).
+// 		Clauses(clause.Returning{}).
+// 		Where("id = ?", pvf.ID).
+// 		Updates(map[string]interface{}{"is_verified": pvf.IsVerified})
+// 	return tx.RowsAffected > 0, tx.Error
+// }
 
 func fetchAllPvfForAdmin(ctx *gin.Context, rid uint, jps *[]PVF) error {
 	tx := db.WithContext(ctx).
@@ -105,4 +105,9 @@ func fetchAllPvfForAdmin(ctx *gin.Context, rid uint, jps *[]PVF) error {
 func deletePVF(ctx *gin.Context, pid uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", pid).Delete(&PVF{})
 	return tx.Error
+}
+
+func updatePVFForStudent(ctx *gin.Context, sid uint, jp *PVF) (bool, error) {
+	tx := db.WithContext(ctx).Where("id = ? AND student_recruitment_cycle_id = ?", jp.ID, sid).Updates(jp)
+	return tx.RowsAffected == 1, tx.Error
 }
