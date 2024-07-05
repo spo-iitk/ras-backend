@@ -68,7 +68,8 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 			return
 		}
 
-		token, err := middleware.GeneratePVFToken("akshat23@iitk.ac.in", pid, rid)
+		token, err := middleware.GeneratePVFToken("akshat23@iitk.ac.in", pid, rid) // for testing
+		// token, err := middleware.GeneratePVFToken(pvf.MentorEmail, pid, rid)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -76,7 +77,7 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 
 		logrus.Infof("A Token %s with  id %d", token, pid) // to be removed
 
-		// hardcode email
+		// hardcoded email
 		mail_channel <- mail.GenerateMail("iitkakshat@gmail.com",
 			"Verification requested on RAS",
 			"Dear "+pvf.MentorName+"PVF ID :"+util.ParseString(pid)+"Token :  "+token+",\n\nWe got your request for registration on Recruitment Automation System, IIT Kanpur. We will get back to you soon. For any queries, please get in touch with us at spo@iitk.ac.in.")
@@ -108,4 +109,39 @@ func deletePVFHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted PVF"})
+}
+
+func putPVFHandlerForAdmin(ctx *gin.Context) {
+	var jp PVF
+
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = ctx.ShouldBindJSON(&jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if jp.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+
+	var oldJp PVF
+	err = fetchPvfForAdmin(ctx, rid, jp.ID, &oldJp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = updatePVF(ctx, &jp)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"status": "Updated PVF with id " + util.ParseString(jp.ID)})
 }

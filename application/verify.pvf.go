@@ -67,27 +67,4 @@ func putPVFHandler(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"status": "Updated PVF with id " + util.ParseString(jp.ID)})
-	// user := middleware.GetUserID(ctx)
-
-	// logrus.Infof("%v edited a proforma with id %d", user, jp.ID)
-
-	// if publishNotice {
-	// 	logrus.Infof("%v published a proforma with id %d", user, jp.ID)
-
-	// 	err = rc.CreateNotice(ctx, oldJp.RecruitmentCycleID, &rc.Notice{
-	// 		Title: fmt.Sprintf("[%s] | New Job Opening for %s", jp.CompanyName, jp.Profile),
-	// 		Description: fmt.Sprintf(
-	// 			"A new opening has been created for the profile of %s in the company %s",
-	// 			jp.Profile, jp.CompanyName),
-	// 		Tags: fmt.Sprintf("opening,%s,%s", jp.Role, jp.CompanyName),
-	// 	})
-	// 	if err != nil {
-	// 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
-
-	// 	ctx.JSON(http.StatusOK, gin.H{"status": "Proforma with id " + util.ParseString(jp.ID) + " has been published"})
-	// } else {
-	// 	ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(jp.ID)})
-	// }
 }

@@ -19,6 +19,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.DELETE("event/:eid/student/:sid", deleteStudentFromEventHandler)
 
 		admin.GET("/pvf", getAllPvfForAdminHandler)
+		admin.PUT("/pvf", putPVFHandlerForAdmin)
 		admin.GET("/pvf/:pid", getPvfForAdminHandler)
 		admin.GET("pvf/:pid/verification/send", sendVerificationLinkForPvfHandler(mail_channel))
 		admin.DELETE("pvf/:pid", deletePVFHandler)
