@@ -126,3 +126,23 @@ type ApplicationResume struct {
 	ResumeID                  uint     `json:"resume_id"`
 	Resume                    string   `json:"resume"`
 }
+
+type PVF struct {
+	gorm.Model
+	RollNo                    string       `json:"roll_no"`
+	Name                      string       `json:"name"`
+	IITKEmail                 string       `json:"iitk_email"`
+	StudentRecruitmentCycleID uint         `json:"student_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	CompanyUniversityName     string       `json:"company_university_name"`
+	Role                      string       `json:"role"`
+	Duration                  string       `json:"duration"`
+	Remarks                   string       `json:"remarks"`
+	MentorName                string       `json:"mentor_name"`
+	MentorDesignation         string       `json:"mentor_designation"`
+	MentorEmail               string       `json:"mentor_email"`
+	IsApproved                sql.NullBool `json:"is_approved" gorm:"index;default:NULL"`
+	IsVerified                sql.NullBool `json:"is_verified" gorm:"index;default:NULL"`
+	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
+	FilenameStudent           string       `json:"filename_student"`
+	FilenameMentor            string       `json:"filename_mentor"`
+}
