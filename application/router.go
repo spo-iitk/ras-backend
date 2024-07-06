@@ -23,6 +23,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/pvf/:pid", getPvfForAdminHandler)
 		admin.GET("pvf/:pid/verification/send", sendVerificationLinkForPvfHandler(mail_channel))
 		admin.DELETE("pvf/:pid", deletePVFHandler)
+		admin.GET("pvf/student/:sid", getAllStudentPvfHandler)
 
 		admin.GET("/company/:cid/proforma", getProformaByCompanyHandler)
 		admin.GET("/company/:cid/stats", getCompanyRecruitStatsHandler)

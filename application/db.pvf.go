@@ -22,20 +22,7 @@ func updatePVF(ctx *gin.Context, jp *PVF) error {
 func fetchAllPvfForStudent(ctx *gin.Context, sid uint, rid uint, jps *[]PVF) error {
 	tx := db.WithContext(ctx).
 		Where("student_recruitment_cycle_id = ? AND recruitment_cycle_id = ?", sid, rid).
-		Select(
-			"id",
-			"company_university_name",
-			"role",
-			"duration",
-			"mentor_name",
-			"mentor_designation",
-			"mentor_email",
-			"is_verified",
-			"filename_mentor",
-			"filename_student",
-			"remarks",
-		).
-		Order("id ASC").
+		Order("id DESC").
 		Find(jps)
 	return tx.Error
 }
@@ -61,6 +48,7 @@ func fetchPvfForStudent(ctx *gin.Context, sid uint, rid uint, pid uint, jps *PVF
 func fetchPvfForAdmin(ctx *gin.Context, rid uint, pid uint, jps *PVF) error {
 	tx := db.WithContext(ctx).
 		Where("recruitment_cycle_id = ? AND id = ?", rid, pid).
+		Order("id DESC").
 		Find(jps)
 	return tx.Error
 }
@@ -98,6 +86,8 @@ func deletePVF(ctx *gin.Context, pid uint) error {
 	tx := db.WithContext(ctx).Where("id = ?", pid).Delete(&PVF{})
 	return tx.Error
 }
+
+// func fetchAllStudentPvfForAdmin(ctx *gin.Context)
 
 func updatePVFForStudent(ctx *gin.Context, sid uint, jp *PVF) (bool, error) {
 	tx := db.WithContext(ctx).Where("id = ? AND student_recruitment_cycle_id = ?", jp.ID, sid).Updates(jp)

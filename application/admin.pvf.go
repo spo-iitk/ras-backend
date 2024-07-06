@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
@@ -67,20 +66,37 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+		pvf.IsApproved.Valid = true
+		pvf.IsApproved.Bool = true
 
-		token, err := middleware.GeneratePVFToken("akshat23@iitk.ac.in", pid, rid) // for testing
-		// token, err := middleware.GeneratePVFToken(pvf.MentorEmail, pid, rid)
+		err = updatePVF(ctx, &pvf)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// token, err := middleware.GeneratePVFToken("akshat23@iitk.ac.in", pid, rid) // for testing
+		token, err := middleware.GeneratePVFToken(pvf.MentorEmail, pid, rid)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		logrus.Infof("A Token %s with  id %d", token, pid) // to be removed
+		// logrus.Infof("A Token %s with  id %d", token, pid) // to be removed
+		message := "Dear " + pvf.MentorName + ",\n\n" +
+			pvf.Name + " (email: " + pvf.IITKEmail + ") has requested your verification for a project/internship they completed under your guidance.\n\n" +
+			"To verify the details and electronically sign the Project Verification Form (PVF), please click the link below (valid upto 3days):\n\n\n" +
+			"https://placement.iitk.ac.in/verify?token=" + token + "&rcid=" + util.ParseString(rid) + "\n\n" +
+			"Your prompt response is appreciated to ensure timely processing of " + pvf.Name + "'s placement applications.\n\n" +
+			"Please note:\n" +
+			"The PVF verifies the student's involvement and contributions to the project/internship. " +
+			"Only projects/internships conducted with IIT Kanpur faculty or external organizations require verification. " +
+			"If you have any questions regarding the PVF process, please don't hesitate to contact the Students' Placement Office at spo@iitk.ac.in.\n\n" +
+			"Thank you for your time and support."
 
-		// hardcoded email
-		mail_channel <- mail.GenerateMail("iitkakshat@gmail.com",
-			"Verification requested on RAS",
-			"Dear "+pvf.MentorName+"PVF ID :"+util.ParseString(pid)+"Token :  "+token+",\n\nWe got your request for registration on Recruitment Automation System, IIT Kanpur. We will get back to you soon. For any queries, please get in touch with us at spo@iitk.ac.in.")
+		mail_channel <- mail.GenerateMail(pvf.MentorEmail,
+			"Project Verification Required for "+pvf.Name+"'s Internship/Project",
+			message,
+		)
 
 		// mail_channel <- mail.GenerateMail("spo@iitk.ac.in",
 		// 	"Registration requested on RAS",
@@ -144,4 +160,26 @@ func putPVFHandlerForAdmin(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"status": "Updated PVF with id " + util.ParseString(jp.ID)})
+}
+
+func getAllStudentPvfHandler(ctx *gin.Context) {
+	rid, err := util.ParseUint(ctx.Param("rid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	sid, err := util.ParseUint(ctx.Param("sid"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var pvfs []PVF
+	err = fetchAllPvfForStudent(ctx, sid, rid, &pvfs)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, pvfs)
+
 }

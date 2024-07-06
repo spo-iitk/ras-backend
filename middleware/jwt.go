@@ -72,7 +72,7 @@ func validateToken(encodedToken string) (string, uint, error) {
 }
 
 func GeneratePVFToken(email string, pid uint, rid uint) (string, error) {
-	var jwtExpiration = 10080 // 7days
+	var jwtExpiration = 4320 // 3days
 
 	claims := CustomPVFClaims{
 		email,

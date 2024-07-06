@@ -129,6 +129,9 @@ type ApplicationResume struct {
 
 type PVF struct {
 	gorm.Model
+	RollNo                    string       `json:"roll_no"`
+	Name                      string       `json:"name"`
+	IITKEmail                 string       `json:"iitk_email"`
 	StudentRecruitmentCycleID uint         `json:"student_recruitment_cycle_id" gorm:"index;->;<-:create"`
 	CompanyUniversityName     string       `json:"company_university_name"`
 	Role                      string       `json:"role"`
