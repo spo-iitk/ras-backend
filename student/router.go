@@ -28,6 +28,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/:sid/verify", verifyStudentHandler)
 		admin.GET("/:sid/history", ras.PlaceHolderController)
 
+		admin.POST("/:sid/clarification", postClarificationHandler(mail_channel))
 		admin.GET("/:sid/documents", getDocumentHandler)
 		admin.PUT("/document/:docid/verify", putDocumentVerifyHandler(mail_channel))
 		admin.GET("/documents", getAllDocumentHandler)
