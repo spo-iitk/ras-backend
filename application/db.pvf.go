@@ -26,6 +26,13 @@ func fetchAllPvfForStudent(ctx *gin.Context, sid uint, rid uint, jps *[]PVF) err
 		Find(jps)
 	return tx.Error
 }
+func fetchAllUnverifiedPvfForStudent(ctx *gin.Context, sid uint, rid uint, jps *[]PVF) error {
+	tx := db.WithContext(ctx).
+		Where("student_recruitment_cycle_id = ? AND recruitment_cycle_id = ? AND is_verified is null", sid, rid).
+		Order("id DESC").
+		Find(jps)
+	return tx.Error
+}
 func fetchPvfForStudent(ctx *gin.Context, sid uint, rid uint, pid uint, jps *PVF) error {
 	tx := db.WithContext(ctx).
 		Where("student_recruitment_cycle_id = ? AND recruitment_cycle_id = ? AND id = ?", sid, rid, pid).
