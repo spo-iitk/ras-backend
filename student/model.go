@@ -1,6 +1,8 @@
 package student
 
 import (
+	"database/sql"
+
 	"gorm.io/gorm"
 )
 
@@ -39,4 +41,13 @@ type Student struct {
 	FriendPhone                  string  `json:"friend_phone"`
 	IsEditable                   bool    `json:"is_editable" gorm:"default:true"`
 	IsVerified                   bool    `json:"is_verified" gorm:"default:false"`
+}
+
+type StudentDocument struct {
+	gorm.Model
+	StudentID     uint	`json:"sid"`
+	Type          string `json:"type"`
+	Path          string `json:"path"`
+	Verified      sql.NullBool `json:"verified" gorm:"default:NULL"`
+	ActionTakenBy string `json:"action_taken_by"`
 }
