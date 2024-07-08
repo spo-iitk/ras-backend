@@ -111,6 +111,62 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 	}
 }
 
+func sendVerificationLinkForStudentAllPvfHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		sid, err := util.ParseUint(ctx.Param("sid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		rid, err := util.ParseUint(ctx.Param("rid"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		var pvfs []PVF
+
+		err = fetchAllUnverifiedPvfForStudent(ctx, sid, rid, &pvfs)
+
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		for _, pvf := range pvfs {
+			pvf.IsApproved.Valid = true
+			pvf.IsApproved.Bool = true
+
+			err = updatePVF(ctx, &pvf)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			token, err := middleware.GeneratePVFToken(pvf.MentorEmail, pvf.ID, rid)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			message := "Dear " + pvf.MentorName + ",\n\n" +
+				pvf.Name + " (email: " + pvf.IITKEmail + ") has requested your verification for a project/internship they completed under your guidance.\n\n" +
+				"To verify the details and electronically sign the Project Verification Form (PVF), please click the link below (valid upto 3 days):\n\n\n" +
+				"https://placement.iitk.ac.in/verify?token=" + token + "&rcid=" + util.ParseString(rid) + "\n\n" +
+				"Your prompt response is appreciated to ensure timely processing of " + pvf.Name + "'s placement applications.\n\n" +
+				"Please note:\n" +
+				"The PVF verifies the student's involvement and contributions to the project/internship. " +
+				"Only projects/internships conducted with IIT Kanpur faculty or external organizations require verification. " +
+				"If you have any questions regarding the PVF process, please don't hesitate to contact the Students' Placement Office at spo@iitk.ac.in.\n\n" +
+				"Thank you for your time and support."
+
+			mail_channel <- mail.GenerateMail(pvf.MentorEmail,
+				"Project Verification Required for "+pvf.Name+"'s Internship/Project",
+				message,
+			)
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{"status": "Successfully Requested for All PVFs"})
+	}
+}
 func deletePVFHandler(ctx *gin.Context) {
 	pid, err := util.ParseUint(ctx.Param("pid"))
 	if err != nil {
