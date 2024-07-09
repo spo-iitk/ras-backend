@@ -20,6 +20,7 @@ type AllResumeResponse struct {
 	Verified      sql.NullBool `json:"verified"`
 	ActionTakenBy string       `json:"action_taken_by"`
 	RollNo        string       `json:"roll_no"`
+	ResumeType    ResumeType   `json:"resume_type"`
 }
 
 func getAllResumesHandler(ctx *gin.Context) {
