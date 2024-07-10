@@ -33,6 +33,6 @@ func getDocumentsByType(ctx *gin.Context, documents *[]StudentDocument, docType 
 
 func updateDocumentVerify(ctx *gin.Context, docid uint, verified bool, user string) (bool, error){
 	var document StudentDocument
-	tx := db.WithContext(ctx).Model(&document).Clauses(clause.Returning{}).Where("id = ?", docid).Update("verified", verified).Update("action_taken_by", user)
+	tx := db.WithContext(ctx).Model(&document).Clauses(clause.Returning{}).Where("id = ?", docid).Updates(map[string]interface{}{"verified": verified, "action_taken_by": user})
 	return tx.RowsAffected == 1, tx.Error
 }
