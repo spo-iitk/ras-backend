@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   database:
-    image: postgres
+    image: postgres:14.7
     restart: always
     environment:
       - POSTGRES_USER=postgres
