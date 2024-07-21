@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/smtp"
 	"strings"
@@ -51,19 +52,67 @@ func batchEmails(to []string, batch int) [][]string {
 }
 
 func Service(mailQueue chan Mail) {
-	addr := fmt.Sprintf("%s:%s", host, port)
-	auth := smtp.PlainAuth("", user, pass, host)
+		addr := fmt.Sprintf("%s:%s", host, port)
+		auth := smtp.PlainAuth("", user, pass, host)
 
-	for mail := range mailQueue {
-		message := mail.BuildMessage()
-		to := append(mail.To, webteam)
-		batches:= batchEmails(to, batch); 
-		for _, emailBatch:= range batches {
-			if err := smtp.SendMail(addr, auth, sender, emailBatch, message); err != nil {
-				logrus.Errorf("Error sending mail: %v", emailBatch)
-				logrus.Errorf("Error: %v", err)
-			}
-			time.Sleep(1 * time.Second)
+		tlsConfig := &tls.Config{
+			InsecureSkipVerify: true, // Change this to verify server certificate in production
 		}
-	}
+		conn, err := tls.Dial("tcp", addr, tlsConfig)
+		if err != nil {
+			logrus.Errorf("Error dialing SMTPS server: %v", err)
+		}
+
+		client, err := smtp.NewClient(conn, host)
+		if err != nil {
+			logrus.Errorf("Error creating SMTP client: %v", err)
+		}
+
+
+		if err := client.Auth(auth); err != nil {
+			logrus.Errorf("Error authenticating: %v", err)
+		}
+
+		for mail := range mailQueue {
+			message := mail.BuildMessage()
+			to := append(mail.To, webteam)
+			batches := batchEmails(to, batch)
+			for _, emailBatch := range batches {
+				
+				// if err := client.StartTLS(tlsConfig); err != nil {
+				// 	logrus.Errorf("Error starting TLS: %v", err)
+				// 	continue
+				// }
+				if err := client.Mail(sender); err != nil {
+					logrus.Errorf("Error setting sender: %v", err)
+				}
+
+				for _, recipient := range emailBatch {
+					if err := client.Rcpt(recipient); err != nil {
+						logrus.Errorf("Error setting recipient %s: %v", recipient, err)
+						continue
+					}
+				}
+
+				// Send the email body
+				w, err := client.Data()
+				if err != nil {
+					logrus.Errorf("Error creating data writer: %v", err)
+					continue
+				}
+				_, err = w.Write(message)
+				if err != nil {
+					logrus.Errorf("Error writing email body: %v", err)
+				}
+				err = w.Close()
+				if err != nil {
+					logrus.Errorf("Error closing data writer: %v", err)
+				}
+				time.Sleep(1 * time.Second)
+			}
+		}
+
+		if err := client.Quit(); err != nil {
+			logrus.Errorf("Error closing connection: %v", err)
+		}
 }
