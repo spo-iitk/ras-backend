@@ -48,11 +48,14 @@ func main() {
 	})
 
 	g.Go(func() error {
-		return adminStudentServer().ListenAndServe()
+		return adminStudentServer(mail_channel).ListenAndServe()
 	})
 
 	g.Go(func() error {
 		return adminCompanyServer().ListenAndServe()
+	})
+	g.Go(func() error {
+		return verificationServer().ListenAndServe()
 	})
 
 	log.Println("Starting Server...")

@@ -97,9 +97,9 @@ func makeStudentEdiatableHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	user := middleware.GetUserID(ctx)
-	
+
 	logrus.Infof("A student with id %d is made editable by %v", editableStudentRequest.ID, user)
 	ctx.JSON(http.StatusOK, gin.H{"status": "Successfully made student editable"})
 }

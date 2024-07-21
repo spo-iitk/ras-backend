@@ -6,7 +6,6 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
-	_ "github.com/spo-iitk/ras-backend/config"
 )
 
 var (
@@ -18,6 +17,12 @@ var (
 type CustomClaims struct {
 	UserID string `json:"user_id"`
 	RoleID uint   `json:"role_id"`
+	jwt.StandardClaims
+}
+type CustomPVFClaims struct {
+	Email string `json:"email"`
+	Pid   uint   `json:"pid"`
+	Rid   uint   `json:"rid"`
 	jwt.StandardClaims
 }
 
@@ -64,4 +69,38 @@ func validateToken(encodedToken string) (string, uint, error) {
 	}
 
 	return claims.UserID, claims.RoleID, nil
+}
+
+func GeneratePVFToken(email string, pid uint, rid uint) (string, error) {
+	var jwtExpiration = 4320 // 3days
+
+	claims := CustomPVFClaims{
+		email,
+		pid,
+		rid,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Duration(jwtExpiration) * time.Minute).Unix(),
+			IssuedAt:  jwt.TimeFunc().Unix(),
+			Issuer:    "ras",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(signingKey)
+	return tokenString, err
+}
+
+func validatePVFToken(encodedToken string) (string, uint, uint, error) {
+
+	claims := &CustomPVFClaims{}
+	_, err := jwt.ParseWithClaims(encodedToken, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
+			return nil, fmt.Errorf("invalid token %s", token.Header["alg"])
+		}
+		return []byte(signingKey), nil
+	})
+
+	if err != nil {
+		return "", 20, 20, err
+	}
+	return claims.Email, claims.Pid, claims.Rid, nil
 }
