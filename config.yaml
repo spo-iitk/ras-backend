@@ -1,5 +1,5 @@
 MAIL:
-  HOST: "smtp.cc.iitk.ac.in"
+  HOST: "mmtp.iitk.ac.in"
   PORT: "25"
   BATCH: 200
 JWT:
