@@ -159,21 +159,6 @@ func fetchProforma(ctx *gin.Context, pid uint, jp *Proforma) error {
 func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 	tx := db.WithContext(ctx).
 		Where("id = ? AND is_approved = ? AND deadline > 0", pid, true).
-		Select(
-			"id",
-			"company_name",
-			"eligibility",
-			"deadline",
-			"role",
-			"profile",
-			"cpi_cutoff",
-			"tentative_job_location",
-			"job_description",
-			"cost_to_company",
-			"package_details",
-			"bond_details",
-			"medical_requirements",
-		).
 		First(jp)
 	return tx.Error
 }
