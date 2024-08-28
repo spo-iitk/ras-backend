@@ -7,10 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/application"
+	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 )
 
-func verificationServer() *http.Server {
+func verificationServer(mail_channel chan mail.Mail) *http.Server {
 	PORT := viper.GetString("PORT.VERIFICATION")
 	fmt.Print(PORT)
 	engine := gin.New()
@@ -19,7 +20,7 @@ func verificationServer() *http.Server {
 	engine.Use(gin.CustomRecovery(recoveryHandler))
 	engine.Use(gin.Logger())
 
-	application.PvfVerificationRouter(engine)
+	application.PvfVerificationRouter(mail_channel, engine)
 
 	server := &http.Server{
 		Addr:         ":" + PORT,
