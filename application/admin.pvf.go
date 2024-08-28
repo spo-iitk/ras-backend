@@ -88,8 +88,8 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 			"https://placement.iitk.ac.in/verify?token=" + token + "&rcid=" + util.ParseString(rid) + "\n\n" +
 			"Your prompt response is appreciated to ensure timely processing of " + pvf.Name + "'s placement applications.\n\n" +
 			"Please note:\n" +
-			"The PVF verifies the student's involvement and contributions to the project/internship. " +
-			"Only projects/internships conducted with IIT Kanpur faculty or external organizations require verification. " +
+			"The PVF verifies the student's involvement and contributions to the project/internship. \n" +
+			"Only projects/internships conducted with IIT Kanpur faculty or external organizations require verification. \n" +
 			"If you have any questions regarding the PVF process, please don't hesitate to contact the Students' Placement Office at spo@iitk.ac.in.\n\n" +
 			"Thank you for your time and support."
 
@@ -183,39 +183,54 @@ func deletePVFHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "deleted PVF"})
 }
 
-func putPVFHandlerForAdmin(ctx *gin.Context) {
-	var jp PVF
+func putPVFHandlerForAdmin(mail_channel chan mail.Mail) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var pvf PVF
 
-	rid, err := util.ParseUint(ctx.Param("rid"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		// rid, err := util.ParseUint(ctx.Param("rid"))
+		// if err != nil {
+		// 	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// 	return
+		// }
 
-	err = ctx.ShouldBindJSON(&jp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		err := ctx.ShouldBindJSON(&pvf)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	if jp.ID == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "id is required"})
-		return
-	}
+		if pvf.ID == 0 {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+			return
+		}
 
-	var oldJp PVF
-	err = fetchPvfForAdmin(ctx, rid, jp.ID, &oldJp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		var oldPvf PVF
 
-	err = updatePVF(ctx, &jp)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		// err = fetchPvfForAdmin(ctx, rid, oldPvf.ID, &oldPvf)
+		err = fetchPVF(ctx, pvf.ID, &oldPvf)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		err = updatePVF(ctx, &pvf)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		message := "Dear " + oldPvf.Name + ",\n\n" +
+
+			"Action has been taken on your Project Verification Form. Kindly check the status on the RAS Portal." +
+			"\n\n" +
+			"Regards,\n" +
+			"Students' Placement Team, IIT kanpur"
+		// logrus.Infof("EmaIL : %s OR %s", pvf.IITKEmail, oldPvf.IITKEmail)
+		mail_channel <- mail.GenerateMail(oldPvf.IITKEmail,
+			"Project Verification Update for "+oldPvf.Name+"'s Internship/Project",
+			message,
+		)
+		ctx.JSON(http.StatusOK, gin.H{"status": "Updated PVF with id " + util.ParseString(pvf.ID)})
 	}
-	ctx.JSON(http.StatusOK, gin.H{"status": "Updated PVF with id " + util.ParseString(jp.ID)})
 }
 
 func getAllStudentPvfHandler(ctx *gin.Context) {

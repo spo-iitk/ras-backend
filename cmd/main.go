@@ -55,7 +55,7 @@ func main() {
 		return adminCompanyServer().ListenAndServe()
 	})
 	g.Go(func() error {
-		return verificationServer().ListenAndServe()
+		return verificationServer(mail_channel).ListenAndServe()
 	})
 
 	log.Println("Starting Server...")
