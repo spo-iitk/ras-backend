@@ -179,6 +179,7 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 			"perks",
 			"package_details",
 			"bond_details",
+			"eligibility",
 		).
 		First(jp)
 	return tx.Error
