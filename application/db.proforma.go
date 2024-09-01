@@ -165,6 +165,7 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 			"deleted_at",
 			"updated_at",
 			"company_name",
+			"eligibility",
 			"profile",
 			"role",
 			"skill_set",
