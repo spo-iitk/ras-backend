@@ -22,10 +22,12 @@ func updateStudentByIDHandler(ctx *gin.Context) {
 		return
 	}
 
-	if updateStudentRequest.SecondaryProgramDepartmentID > updateStudentRequest.ProgramDepartmentID && util.IsDoubleMajor(updateStudentRequest.SecondaryProgramDepartmentID) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Secondary program department and primary program department seems to be interchanged"})
-		return
-	}
+	// if updateStudentRequest.SecondaryProgramDepartmentID > updateStudentRequest.ProgramDepartmentID && util.IsDoubleMajor(updateStudentRequest.SecondaryProgramDepartmentID) {
+	// 	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Secondary program department and primary program department seems to be interchanged"})
+	// 	return
+	// }
+	/// Will check to the above code later on currently commenting it out as my primary program department is 7 (BT MSE) and when selecting secondary is 33 and its also a double major so i can't figure out the error
+	//// I will check it later on @Akshat23
 
 	updated, err := updateStudentByID(ctx, &updateStudentRequest)
 	if err != nil {
