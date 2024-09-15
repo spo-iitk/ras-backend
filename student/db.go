@@ -29,7 +29,7 @@ func getStudentByEmail(ctx *gin.Context, student *Student, email string) error {
 }
 
 func FetchStudents(ctx *gin.Context, students *[]Student, ids []string) error {
-	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ? AND is_editable = ?", ids, ids, true,false).Find(students)
+	tx := db.WithContext(ctx).Where("(iitk_email IN ? OR roll_no IN ?) AND is_verified = ? AND is_editable = ?", ids, ids, true, false).Find(students)
 	return tx.Error
 }
 
@@ -43,8 +43,14 @@ func getLimitedStudents(ctx *gin.Context, students *[]Student, lastFetchedId uin
 	return tx.Error
 }
 
+// / Dont know why the program department  and secondary id is omitted and not written in update query so i have added it in the update query
+//
+//	func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
+//		tx := db.WithContext(ctx).Where("id = ?", student.ID).Select("*").Omit("id", "created_at", "updated_at", "deleted_at", "iitk_email", "roll_no", "is_verified", "is_editable", "program_department_id", "secondary_program_department_id").Updates(Student{Name: student.Name, Specialization: student.Specialization, Preference: student.Preference, Gender: student.Gender, Disablity: student.Disablity, DOB: student.DOB, ExpectedGraduationYear: student.ExpectedGraduationYear, PersonalEmail: student.PersonalEmail, Phone: student.Phone, AlternatePhone: student.AlternatePhone, WhatsappNumber: student.WhatsappNumber, CurrentCPI: student.CurrentCPI, UGCPI: student.UGCPI, TenthBoard: student.TenthBoard, TenthYear: student.TenthYear, TenthMarks: student.TenthMarks, TwelfthBoard: student.TwelfthBoard, TwelfthYear: student.TwelfthYear, TwelfthMarks: student.TwelfthMarks, EntranceExam: student.EntranceExam, EntranceExamRank: student.EntranceExamRank, Category: student.Category, CategoryRank: student.CategoryRank, CurrentAddress: student.CurrentAddress, PermanentAddress: student.PermanentAddress, FriendName: student.FriendName, FriendPhone: student.FriendPhone, IsVerified: student.IsVerified, IsEditable: student.IsEditable})
+//		return tx.RowsAffected > 0, tx.Error
+//	}
 func updateStudentByID(ctx *gin.Context, student *Student) (bool, error) {
-	tx := db.WithContext(ctx).Where("id = ?", student.ID).Select("*").Omit("id", "created_at", "updated_at", "deleted_at", "iitk_email", "roll_no", "is_verified", "is_editable", "program_department_id", "secondary_program_department_id").Updates(Student{Name: student.Name, Specialization: student.Specialization, Preference: student.Preference, Gender: student.Gender, Disablity: student.Disablity, DOB: student.DOB, ExpectedGraduationYear: student.ExpectedGraduationYear, PersonalEmail: student.PersonalEmail, Phone: student.Phone, AlternatePhone: student.AlternatePhone, WhatsappNumber: student.WhatsappNumber, CurrentCPI: student.CurrentCPI, UGCPI: student.UGCPI, TenthBoard: student.TenthBoard, TenthYear: student.TenthYear, TenthMarks: student.TenthMarks, TwelfthBoard: student.TwelfthBoard, TwelfthYear: student.TwelfthYear, TwelfthMarks: student.TwelfthMarks, EntranceExam: student.EntranceExam, EntranceExamRank: student.EntranceExamRank, Category: student.Category, CategoryRank: student.CategoryRank, CurrentAddress: student.CurrentAddress, PermanentAddress: student.PermanentAddress, FriendName: student.FriendName, FriendPhone: student.FriendPhone, IsVerified: student.IsVerified, IsEditable: student.IsEditable})
+	tx := db.WithContext(ctx).Where("id = ?", student.ID).Select("*").Omit("id", "created_at", "updated_at", "deleted_at", "iitk_email", "roll_no", "is_verified", "is_editable").Updates(Student{ProgramDepartmentID: student.ProgramDepartmentID, SecondaryProgramDepartmentID: student.SecondaryProgramDepartmentID, Name: student.Name, Specialization: student.Specialization, Preference: student.Preference, Gender: student.Gender, Disablity: student.Disablity, DOB: student.DOB, ExpectedGraduationYear: student.ExpectedGraduationYear, PersonalEmail: student.PersonalEmail, Phone: student.Phone, AlternatePhone: student.AlternatePhone, WhatsappNumber: student.WhatsappNumber, CurrentCPI: student.CurrentCPI, UGCPI: student.UGCPI, TenthBoard: student.TenthBoard, TenthYear: student.TenthYear, TenthMarks: student.TenthMarks, TwelfthBoard: student.TwelfthBoard, TwelfthYear: student.TwelfthYear, TwelfthMarks: student.TwelfthMarks, EntranceExam: student.EntranceExam, EntranceExamRank: student.EntranceExamRank, Category: student.Category, CategoryRank: student.CategoryRank, CurrentAddress: student.CurrentAddress, PermanentAddress: student.PermanentAddress, FriendName: student.FriendName, FriendPhone: student.FriendPhone, IsVerified: student.IsVerified, IsEditable: student.IsEditable})
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -71,7 +77,7 @@ func updateStudentByEmail(ctx *gin.Context, student *Student, email string) (boo
 	} else {
 		tx = db.WithContext(ctx).Model(&Student{}).
 			Where("iitk_email = ? AND is_editable = ?", email, true).
-			Updates(&Student{Specialization: student.Specialization,Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear,PersonalEmail: student.PersonalEmail,Phone: student.Phone,AlternatePhone: student.AlternatePhone,WhatsappNumber: student.WhatsappNumber,CurrentAddress: student.CurrentAddress,PermanentAddress: student.PermanentAddress,FriendName: student.FriendName,FriendPhone: student.FriendPhone})
+			Updates(&Student{Specialization: student.Specialization, Preference: student.Preference, ExpectedGraduationYear: student.ExpectedGraduationYear, PersonalEmail: student.PersonalEmail, Phone: student.Phone, AlternatePhone: student.AlternatePhone, WhatsappNumber: student.WhatsappNumber, CurrentAddress: student.CurrentAddress, PermanentAddress: student.PermanentAddress, FriendName: student.FriendName, FriendPhone: student.FriendPhone})
 	}
 	if tx.Error != nil {
 		return false, tx.Error
