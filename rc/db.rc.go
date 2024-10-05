@@ -5,7 +5,7 @@ import (
 )
 
 func fetchAllRCs(ctx *gin.Context, rc *[]RecruitmentCycle) error {
-	tx := db.WithContext(ctx).Find(rc)
+	tx := db.WithContext(ctx).Order("is_active DESC").Find(rc)
 	return tx.Error
 }
 
