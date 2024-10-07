@@ -13,6 +13,60 @@ const (
 	INTERNSHIP RecruitmentCycleType = "Internship"
 )
 
+type Proforma struct {
+	gorm.Model
+	CompanyRecruitmentCycleID uint         `json:"company_recruitment_cycle_id" gorm:"index;->;<-:create"`
+	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
+	CompanyID                 uint         `json:"company_id" gorm:"index;->;<-:create"`
+	CompanyName               string       `json:"company_name"`
+	ActionTakenBy             string       `json:"action_taken_by"`
+	IsApproved                sql.NullBool `json:"is_approved" gorm:"index;default:NULL"`
+	Deadline                  uint         `json:"deadline" gorm:"default:0"` // 0 implies unpublished
+	Eligibility               string       `json:"eligibility"`
+	CPICutoff                 float64      `json:"cpi_cutoff" gorm:"default:0"`
+	HideDetails               bool         `json:"hide_details" gorm:"default:true"`
+	ActiveHR                  string       `json:"active_hr"`
+	Role                      string       `json:"role"`
+	Profile                   string       `json:"profile"`
+	TentativeJobLocation      string       `json:"tentative_job_location"`
+	JobDescription            string       `json:"job_description"`
+	CostToCompany             string       `json:"cost_to_company"`
+	PackageDetails            string       `json:"package_details"`
+	BondDetails               string       `json:"bond_details"`
+	MedicalRequirements       string       `json:"medical_requirements"`
+	AdditionalEligibility     string       `json:"additional_eligibility"`
+	MessageForCordinator      string       `json:"message_for_cordinator"`
+	PostalAddress             string       `json:"postal_address"`
+	EstablishmentDate         string       `json:"establishment_date"`
+	TotalEmployees            string       `json:"total_employees"`
+	SocialMedia               string       `json:"social_media"`
+	Website                   string       `json:"website"`
+	Turnover                  string       `json:"turnover"`
+	TypeOfOrg                 string       `json:"type_of_org"`
+	HeadOffice                string       `json:"head_office"`
+	MinHires                  string       `json:"min_hires"`
+	TotalHires                string       `json:"total_hires"`
+	SkillSet                  string       `json:"skill_set"`
+	PWD                       string       `json:"pwd"`
+	CPICriteria               string       `json:"cpi_criteria"`
+	BacklogEligibility        string       `json:"backlog_eligibility"`
+	CTCINR                    string       `json:"ctc_inr"`
+	CTCFR                     string       `json:"ctc_fr"`
+	Gross                     string       `json:"gross"`
+	TakeHome                  string       `json:"take_home"`
+	Base                      string       `json:"base"`
+	JoiningBonus              string       `json:"joining_bonus"`
+	RelocationBonus           string       `json:"relocation_bonus"`
+	FirstCTC                  string       `json:"first_ctc"`
+	MedicalAllowance          string       `json:"medical_allowance"`
+	RetentionBonus            string       `json:"retention_bonus"`
+	Deductions                string       `json:"deductions"`
+	Perks                     string       `json:"perks"`
+	Accommodation             string       `json:"accommodation"`
+	PPOConfirmingDate         string       `json:"ppo_confirming_date"`
+	InternshipPeriod          string       `json:"internship_period"`
+}
+
 type RecruitmentCycle struct {
 	gorm.Model
 	IsActive            bool                 `json:"is_active" gorm:"default:true"`
@@ -72,6 +126,7 @@ type Notice struct {
 	Attachment         string           `json:"attachment"`
 	CreatedBy          string           `json:"created_by"`
 	LastReminderAt     int64            `json:"last_reminder_at" gorm:"default:0"`
+	Deadline           uint             `json:"deadline" gorm:"default:0"`
 }
 
 type StudentRecruitmentCycleType string
