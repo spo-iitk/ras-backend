@@ -162,13 +162,6 @@ func deleteStudentFromEventHandler(ctx *gin.Context) {
 		return
 	}
 
-	var req postStudentsByEventRequest
-	err = ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	studentID, err := util.ParseUint(ctx.Param("sid"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid student ID"})
@@ -207,13 +200,6 @@ func deleteAllStudentsFromEventHandler(ctx *gin.Context) {
 	err = fetchEvent(ctx, eventID, &evnt)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	var req postStudentsByEventRequest
-	err = ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
