@@ -136,6 +136,11 @@ func postStudentsByEventHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			msg += " in the profile of " + proforma.Profile
 
 			mail_channel <- mail.GenerateMails(req.Emails, "Congratulations", msg)
+		} else if evnt.Name == string(WALKIN) {
+			msg := "Dear student" + "\n\n"
+			msg += "You have been selected for the walk in interview for the profile " + proforma.Profile + " by " + proforma.CompanyName + "."
+
+			mail_channel <- mail.GenerateMails(req.Emails, "Update on Application", msg)
 		} else {
 			msg := "Dear student" + "\n\n"
 			msg += "You have advanced to the stage of " + evnt.Name + " for the recruitment process of profile "
