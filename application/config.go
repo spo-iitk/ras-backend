@@ -53,4 +53,5 @@ const (
 	ApplicationSubmitted EventType = "Application"
 	Recruited            EventType = "Recruited"
 	PIOPPOACCEPTED       EventType = "PIO-PPO"
+	WALKIN				 EventType = "Walk-In"
 )
