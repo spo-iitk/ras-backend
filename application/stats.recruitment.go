@@ -127,6 +127,26 @@ func getStatsHandler(ctx *gin.Context) {
 		return
 	}
 
+	var secondaryBranchStats []rc.StatsBranchResponse
+	err = rc.FetchRegisteredStudentCountBySecondaryBranch(ctx, rid, &secondaryBranchStats)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	for _, secondary := range secondaryBranchStats {
+		found := false
+		for i, primary := range branchStats {
+			if primary.ProgramDepartmentID == secondary.ProgramDepartmentID {
+				branchStats[i].Total += secondary.Total
+				found = true
+				break
+			}
+		}
+		if !found {
+			branchStats = append(branchStats, secondary)
+		}
+	}
+
 	var srids []uint
 	for _, stat := range stats {
 		srids = append(srids, stat.StudentRecruitmentCycleID)
@@ -175,7 +195,7 @@ func getStatsHandler(ctx *gin.Context) {
 		if res.Type == string(PIOPPOACCEPTED) {
 			branchMap[res.ProgramDepartmentID].PreOffer++
 			if res.SecondaryProgramDepartmentID != 0 {
-				branchMap[res.SecondaryProgramDepartmentID].PreOffer++
+				branchMap[res.SecondaryProgramDepartmentID].Recruited++
 			}
 		}
 	}
