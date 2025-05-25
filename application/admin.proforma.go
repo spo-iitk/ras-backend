@@ -108,7 +108,8 @@ func putProformaHandler(ctx *gin.Context) {
 			Description: fmt.Sprintf(
 				"A new opening has been created for the profile of %s in the company %s",
 				jp.Profile, jp.CompanyName),
-			Tags: fmt.Sprintf("opening,%s,%s", jp.Role, jp.CompanyName),
+			Tags:     fmt.Sprintf("opening,%s,%s", jp.Role, jp.CompanyName),
+			Deadline: jp.Deadline,
 		})
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -117,6 +118,7 @@ func putProformaHandler(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "Proforma with id " + util.ParseString(jp.ID) + " has been published"})
 	} else {
+
 		ctx.JSON(http.StatusOK, gin.H{"status": "Updated proforma with id " + util.ParseString(jp.ID)})
 	}
 }
@@ -166,6 +168,7 @@ func postProformaHandler(ctx *gin.Context) {
 	user := middleware.GetUserID(ctx)
 
 	logrus.Infof("%v created a proforma with id %d", user, jp.ID)
+
 	ctx.JSON(http.StatusOK, gin.H{"pid": jp.ID})
 }
 

@@ -72,6 +72,7 @@ type Notice struct {
 	Attachment         string           `json:"attachment"`
 	CreatedBy          string           `json:"created_by"`
 	LastReminderAt     int64            `json:"last_reminder_at" gorm:"default:0"`
+	Deadline           uint             `json:"deadline" gorm:"default:0"`
 }
 
 type StudentRecruitmentCycleType string

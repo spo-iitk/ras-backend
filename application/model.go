@@ -72,6 +72,7 @@ type ApplicationQuestion struct {
 	gorm.Model
 	ProformaID uint                    `json:"proforma_id" gorm:"index;->;<-:create"`
 	Proforma   Proforma                `json:"-" gorm:"foreignkey:ProformaID"`
+	Event      string                  `json:"event"`
 	Type       ApplicationQuestionType `json:"type"`
 	Question   string                  `json:"question"`
 	Options    string                  `json:"options"` //csv
