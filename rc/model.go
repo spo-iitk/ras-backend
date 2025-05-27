@@ -117,6 +117,7 @@ type StudentRecruitmentCycleResume struct {
 	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
 	ActionTakenBy             string                  `json:"action_taken_by"`
 	ResumeType                ResumeType              `json:"resume_type"` // New field
+	Tag                       string                  `json:"resume_tag"`  //New field to add roles
 }
 
 type CompanyHistory struct {
