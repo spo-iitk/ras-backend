@@ -17,7 +17,7 @@ func getStudentRCHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-git
+
 	ctx.JSON(http.StatusOK, rcs)
 }
 
