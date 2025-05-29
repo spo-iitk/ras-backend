@@ -135,7 +135,9 @@ func Service(mailQueue chan Mail) {
 				logrus.Errorf("SMTP close error: %v", err)
 			}
 
-			client.Quit()
+			if err = client.Quit(); err != nil {
+				logrus.Errorf("SMTP quit failed: %v", err)
+			}
 
 			time.Sleep(1 * time.Second)
 		}
