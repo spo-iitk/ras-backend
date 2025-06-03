@@ -1,9 +1,12 @@
 package application
 
 import (
+	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
@@ -68,6 +71,12 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 		}
 		pvf.IsApproved.Valid = true
 		pvf.IsApproved.Bool = true
+
+		var jwtExpiration = viper.GetInt("PVF.EXPIRATION")
+		pvf.PVFExpiry = sql.NullTime{
+			Time:  time.Now().Add(time.Duration(jwtExpiration) * time.Minute),
+			Valid: true,
+		}
 
 		err = updatePVF(ctx, &pvf)
 		if err != nil {
@@ -134,6 +143,12 @@ func sendVerificationLinkForStudentAllPvfHandler(mail_channel chan mail.Mail) gi
 		for _, pvf := range pvfs {
 			pvf.IsApproved.Valid = true
 			pvf.IsApproved.Bool = true
+
+			var jwtExpiration = viper.GetInt("PVF.EXPIRATION")
+			pvf.PVFExpiry = sql.NullTime{
+				Time:  time.Now().Add(time.Duration(jwtExpiration) * time.Minute),
+				Valid: true,
+			}
 
 			err = updatePVF(ctx, &pvf)
 			if err != nil {
