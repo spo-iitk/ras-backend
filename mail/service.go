@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/smtp"
 	"strings"
@@ -78,10 +79,66 @@ func Service(mailQueue chan Mail) {
 		to := append(mail.To, webteam)
 		batches := batchEmails(to, batch)
 		for _, emailBatch := range batches {
-			if err := smtp.SendMail(addr, auth, sender, emailBatch, message); err != nil {
-				logrus.Errorf("Error sending mail: %v", emailBatch)
-				logrus.Errorf("Error: %v", err)
+
+			tlsconfig := &tls.Config{
+				InsecureSkipVerify: true,
+				ServerName: host,
 			}
+
+			conn, err := tls.Dial("tcp", addr, tlsconfig)
+			if err != nil {
+				logrus.Errorf("TLS dial error: %v", err)
+				continue
+			}
+
+			client, err := smtp.NewClient(conn, host)
+			if err != nil {
+				logrus.Errorf("SMTP client creation error %v", err)
+				client.Close()
+				continue
+			}
+
+			if err = client.Auth(auth); err != nil {
+				logrus.Errorf("SMTP auth error: %v", err)
+				client.Close()
+				continue
+			}
+
+			if err = client.Mail(sender); err != nil {
+				logrus.Errorf("SMTP sender error: %v", err)
+				client.Close()
+				continue
+			}
+
+			for _, addr := range emailBatch {
+				if err = client.Rcpt(addr); err != nil {
+					logrus.Errorf("SMTP recipient error (%s): %v", addr, err)
+					client.Close()
+					continue
+				}
+			}
+
+			w, err := client.Data()
+			if err != nil {
+				logrus.Errorf("SMTP data error: %v", err)
+				client.Close()
+				continue
+			}
+
+			_, err = w.Write(message)
+			if err != nil {
+				logrus.Errorf("SMTP write error: %v", err)
+			}
+
+			err = w.Close()
+			if err != nil {
+				logrus.Errorf("SMTP close error: %v", err)
+			}
+
+			if err = client.Quit(); err != nil {
+				logrus.Errorf("SMTP quit failed: %v", err)
+			}
+
 			time.Sleep(1 * time.Second)
 		}
 	}
