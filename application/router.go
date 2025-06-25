@@ -9,6 +9,11 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 
 	admin := r.Group("/api/admin/application/rc/:rid")
 	{
+		admin.GET("/magic-sheet", getAllMagicSheetsHandler)
+		admin.POST("/magic-sheet", createMagicSheetHandler)
+		admin.PUT("/magic-sheet/:id", updateMagicSheetHandler)
+		admin.DELETE("/magic-sheet/:id", deleteMagicSheetHandler)
+
 		admin.GET("/count", getApplicationCountHandler)
 		admin.GET("/stats", getStatsHandler)
 		admin.POST("/pio-ppo", postPPOPIOHandler)
