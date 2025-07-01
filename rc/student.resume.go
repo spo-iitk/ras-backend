@@ -10,6 +10,7 @@ import (
 type ResumeRequest struct {
 	Resume     string     `json:"resume"`
 	ResumeType ResumeType `json:"resume_type"`
+	ResumeTag  string     `json:"resume_tag"`
 }
 
 func postStudentResumeHandler(ctx *gin.Context) {
@@ -32,7 +33,7 @@ func postStudentResumeHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = addStudentResume(ctx, request.Resume, sid, rid, request.ResumeType) // Include resumeType in the function call
+	err = addStudentResume(ctx, request.Resume, sid, rid, request.ResumeType, request.ResumeTag) // Include resumeType in the function call
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
