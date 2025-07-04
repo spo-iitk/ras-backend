@@ -146,4 +146,5 @@ type PVF struct {
 	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
 	FilenameStudent           string       `json:"filename_student"`
 	FilenameMentor            string       `json:"filename_mentor"`
+	PVFExpiry                 sql.NullTime `json:"pvf_expiry"`
 }
