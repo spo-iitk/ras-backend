@@ -186,7 +186,7 @@ func getStatsHandler(ctx *gin.Context) {
 			CompanyName:                  stat.CompanyName,
 			Profile:                      stat.Profile,
 			Type:                         stat.Type,
-			
+			Time:                         stat.Time,
 		}
 		studentResponse = append(studentResponse, res)
 
