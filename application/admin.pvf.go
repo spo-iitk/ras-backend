@@ -91,7 +91,7 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 		}
 
 		// logrus.Infof("A Token %s with  id %d", token, pid) // to be removed
-		message := "Dear " + pvf.MentorName + ",\n\n" +
+		message := pvf.MentorDesignation + " " + pvf.MentorName + ",\n\n" +
 			pvf.Name + " (email: " + pvf.IITKEmail + ") has requested your verification for a project/internship they completed under your guidance.\n\n" +
 			"To verify the details and electronically sign the Project Verification Form (PVF), please click the link below (valid upto 3days):\n\n\n" +
 			"https://placement.iitk.ac.in/verify?token=" + token + "&rcid=" + util.ParseString(rid) + "\n\n" +
