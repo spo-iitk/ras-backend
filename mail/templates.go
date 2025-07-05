@@ -13,7 +13,7 @@ const (
 				<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="margin-top:10px;width:100%">
 				  <tbody>
 					<tr>
-					  <td><img alt="Recruitment Automation System &lt;br /&gt; Indian Institute of Technology, Kanpur" height="75" src="https://i.ibb.co/h7HMySr/Screenshot-from-2024-04-06-07-02-51.png" style="display:block;outline:none;border:none;text-decoration:none" width="475" /></td>
+					  <td><img alt="Recruitment Automation System &lt;br /&gt; Indian Institute of Technology, Kanpur" height="75" src="https://raw.githubusercontent.com/spo-iitk/ras-backend/main/.github/images/logo.png" style="display:block;outline:none;border:none;text-decoration:none" width="475" /></td>
 					</tr>
 				  </tbody>
 				</table>
@@ -68,16 +68,16 @@ const (
 		  </tbody>
 		</table>
 	  </body>
-	</html>`	
+	</html>`
 
 	// OTPTemplate and RecruitedTemplate are incomplete.
-	
+
 	OTPTemplate = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <html dir="ltr" lang="en">
 <!-- OTP email template content -->
 </html>`
-	
+
 	RecruitedTemplate = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 	<html dir="ltr" lang="en">

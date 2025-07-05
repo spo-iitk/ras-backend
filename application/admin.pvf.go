@@ -1,9 +1,12 @@
 package application
 
 import (
+	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/middleware"
 	"github.com/spo-iitk/ras-backend/util"
@@ -69,6 +72,12 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 		pvf.IsApproved.Valid = true
 		pvf.IsApproved.Bool = true
 
+		var jwtExpiration = viper.GetInt("PVF.EXPIRATION")
+		pvf.PVFExpiry = sql.NullTime{
+			Time:  time.Now().Add(time.Duration(jwtExpiration) * time.Minute),
+			Valid: true,
+		}
+
 		err = updatePVF(ctx, &pvf)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -82,7 +91,7 @@ func sendVerificationLinkForPvfHandler(mail_channel chan mail.Mail) gin.HandlerF
 		}
 
 		// logrus.Infof("A Token %s with  id %d", token, pid) // to be removed
-		message := "Dear " + pvf.MentorName + ",\n\n" +
+		message := pvf.MentorDesignation + " " + pvf.MentorName + ",\n\n" +
 			pvf.Name + " (email: " + pvf.IITKEmail + ") has requested your verification for a project/internship they completed under your guidance.\n\n" +
 			"To verify the details and electronically sign the Project Verification Form (PVF), please click the link below (valid upto 3days):\n\n\n" +
 			"https://placement.iitk.ac.in/verify?token=" + token + "&rcid=" + util.ParseString(rid) + "\n\n" +
@@ -134,6 +143,12 @@ func sendVerificationLinkForStudentAllPvfHandler(mail_channel chan mail.Mail) gi
 		for _, pvf := range pvfs {
 			pvf.IsApproved.Valid = true
 			pvf.IsApproved.Bool = true
+
+			var jwtExpiration = viper.GetInt("PVF.EXPIRATION")
+			pvf.PVFExpiry = sql.NullTime{
+				Time:  time.Now().Add(time.Duration(jwtExpiration) * time.Minute),
+				Valid: true,
+			}
 
 			err = updatePVF(ctx, &pvf)
 			if err != nil {
