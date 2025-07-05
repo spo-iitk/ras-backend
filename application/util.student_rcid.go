@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/middleware"
@@ -16,8 +17,11 @@ func extractStudentRCID(ctx *gin.Context) (uint, error) {
 		return 0, err
 	}
 
-	if !rc.IsRCActive(ctx, rid) {
-		return 0, errors.New("recruitment cycle is not active")
+	// Bypass RC active check only if the request path ends with /stats
+	if !strings.HasSuffix(ctx.Request.URL.Path, "/stats") {
+		if !rc.IsRCActive(ctx, rid) {
+			return 0, errors.New("recruitment cycle is not active")
+		}
 	}
 
 	user_email := middleware.GetUserID(ctx)
