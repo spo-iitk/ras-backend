@@ -5,6 +5,9 @@ WORKDIR $GOPATH/src/github.com/spo-iitk/ras-backend
 
 RUN apt-get update
 RUN apt-get install -y vim nginx git
+# Set timezone to Asia/Kolkata
+ENV TZ=Asia/Kolkata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN git config --global user.name "SPO Web Team"
 RUN git config --global user.email "pas@iitk.ac.in"
