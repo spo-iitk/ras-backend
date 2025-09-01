@@ -78,14 +78,22 @@ func insertCalenderApplicationDeadline(proforma *Proforma, event *ProformaEvent)
 	}
 
 	cID := getCalenderID(proforma.RecruitmentCycleID)
-
+	if cID == "" {
+		logrus.Errorf("No Calendar ID found for RC ID %d", proforma.RecruitmentCycleID)
+		return
+	}
 	if event.CalID == "" {
-		cevent, err := cal_srv.Events.Insert(cID, cevent).Do()
+		insertedEvent, err := cal_srv.Events.Insert(cID, cevent).Do()
 		if err != nil {
 			logrus.Errorf("Unable to create event. %v", err)
+			return
+		}
+		if insertedEvent == nil {
+			logrus.Error("Google Calendar API returned nil event")
+			return
 		}
 
-		event.CalID = cevent.Id
+		event.CalID = insertedEvent.Id
 		err = updateEventCalID(event)
 		if err != nil {
 			logrus.Errorf("Unable to update event. %v", err)
