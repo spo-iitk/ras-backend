@@ -55,56 +55,56 @@ func insertCalenderEvent(event *ProformaEvent, proforma *Proforma, loc *time.Loc
 	}
 }
 
-func insertCalenderApplicationDeadline(proforma *Proforma, event *ProformaEvent) {
-	time_zone := "Asia/Kolkata"
-	loc, _ := time.LoadLocation(time_zone)
+// func insertCalenderApplicationDeadline(proforma *Proforma, event *ProformaEvent) {
+// 	time_zone := "Asia/Kolkata"
+// 	loc, _ := time.LoadLocation(time_zone)
 
-	cevent := &calendar.Event{
-		Summary:  fmt.Sprintf("Application Deadline: %s - %s", proforma.Profile, proforma.CompanyName),
-		Location: "Recruitment Automation System",
-		Description: fmt.Sprintf(
-			"A new opening has been created for the profile of %s in the company %s. Application is due %s\nhttps://placement.iitk.ac.in/student/rc/%d/proforma/%d",
-			proforma.Profile, proforma.CompanyName,
-			time.UnixMilli(int64(proforma.Deadline)).In(loc).Format("2006-01-02 15:04"),
-			proforma.RecruitmentCycleID, proforma.ID),
-		Start: &calendar.EventDateTime{
-			DateTime: time.UnixMilli(int64(proforma.Deadline)).In(loc).Format(time.RFC3339),
-			TimeZone: time_zone,
-		},
-		End: &calendar.EventDateTime{
-			DateTime: time.UnixMilli(int64(proforma.Deadline)).In(loc).Format(time.RFC3339),
-			TimeZone: time_zone,
-		},
-	}
+// 	cevent := &calendar.Event{
+// 		Summary:  fmt.Sprintf("Application Deadline: %s - %s", proforma.Profile, proforma.CompanyName),
+// 		Location: "Recruitment Automation System",
+// 		Description: fmt.Sprintf(
+// 			"A new opening has been created for the profile of %s in the company %s. Application is due %s\nhttps://placement.iitk.ac.in/student/rc/%d/proforma/%d",
+// 			proforma.Profile, proforma.CompanyName,
+// 			time.UnixMilli(int64(proforma.Deadline)).In(loc).Format("2006-01-02 15:04"),
+// 			proforma.RecruitmentCycleID, proforma.ID),
+// 		Start: &calendar.EventDateTime{
+// 			DateTime: time.UnixMilli(int64(proforma.Deadline)).In(loc).Format(time.RFC3339),
+// 			TimeZone: time_zone,
+// 		},
+// 		End: &calendar.EventDateTime{
+// 			DateTime: time.UnixMilli(int64(proforma.Deadline)).In(loc).Format(time.RFC3339),
+// 			TimeZone: time_zone,
+// 		},
+// 	}
 
-	cID := getCalenderID(proforma.RecruitmentCycleID)
-	if cID == "" {
-		logrus.Errorf("No Calendar ID found for RC ID %d", proforma.RecruitmentCycleID)
-		return
-	}
-	if event.CalID == "" {
-		insertedEvent, err := cal_srv.Events.Insert(cID, cevent).Do()
-		if err != nil {
-			logrus.Errorf("Unable to create event. %v", err)
-			return
-		}
-		if insertedEvent == nil {
-			logrus.Error("Google Calendar API returned nil event")
-			return
-		}
+// 	cID := getCalenderID(proforma.RecruitmentCycleID)
+// 	if cID == "" {
+// 		logrus.Errorf("No Calendar ID found for RC ID %d", proforma.RecruitmentCycleID)
+// 		return
+// 	}
+// 	if event.CalID == "" {
+// 		insertedEvent, err := cal_srv.Events.Insert(cID, cevent).Do()
+// 		if err != nil {
+// 			logrus.Errorf("Unable to create event. %v", err)
+// 			return
+// 		}
+// 		if insertedEvent == nil {
+// 			logrus.Error("Google Calendar API returned nil event")
+// 			return
+// 		}
 
-		event.CalID = insertedEvent.Id
-		err = updateEventCalID(event)
-		if err != nil {
-			logrus.Errorf("Unable to update event. %v", err)
-		}
-	}
+// 		event.CalID = insertedEvent.Id
+// 		err = updateEventCalID(event)
+// 		if err != nil {
+// 			logrus.Errorf("Unable to update event. %v", err)
+// 		}
+// 	}
 
-	_, err := cal_srv.Events.Update(cID, event.CalID, cevent).Do()
-	if err != nil {
-		logrus.Errorf("Unable to update event. %v", err)
-	}
-}
+// 	_, err := cal_srv.Events.Update(cID, event.CalID, cevent).Do()
+// 	if err != nil {
+// 		logrus.Errorf("Unable to update event. %v", err)
+// 	}
+// }
 
 func getCalenderID(rid uint) (cID string) {
 	cID = viper.GetString(fmt.Sprintf("CALENDAR.CID%d", rid))

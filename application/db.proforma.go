@@ -1,7 +1,8 @@
 package application
 
 import (
-	"bytes"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -197,33 +198,44 @@ func fetchProformaForStudent(ctx *gin.Context, pid uint, jp *Proforma) error {
 }
 
 func fetchProformaForEligibleStudent(ctx *gin.Context, rid uint, student *rc.StudentRecruitmentCycle, jps *[]Proforma) error {
-
-	eligibility := bytes.Repeat([]byte("_"), 118)
-	eligibility[student.ProgramDepartmentID] = byte('1')
-
-	secondary_eligibility := bytes.Repeat([]byte("_"), 118)
-	secondary_eligibility[student.SecondaryProgramDepartmentID] = byte('1')
-
 	subQuery := db.WithContext(ctx).Model(&ApplicationResume{}).
 		Where("student_recruitment_cycle_id = ?", student.ID).
 		Select("proforma_id")
 
 	tx := db.WithContext(ctx).
 		Where(
-			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND (eligibility LIKE ? or eligibility like ?) AND cpi_cutoff <= ? AND id NOT IN (?)",
-			rid, true, time.Now().UnixMilli(), string(eligibility)+"%", string(secondary_eligibility)+"%", student.CPI, subQuery).
-		Select(
-			"id",
-			"company_name",
-			"eligibility",
-			"deadline",
-			"role",
-			"profile",
-			"cpi_cutoff",
-		).
+			"recruitment_cycle_id = ? AND is_approved = ? AND deadline > ? AND cpi_cutoff <= ? AND id NOT IN (?)",
+			rid, true, time.Now().UnixMilli(), student.CPI, subQuery,
+		)
+	var eligibilityClauses []string
+	var eligibilityArgs []interface{}
+
+	// Note: We add 1 because SQL SUBSTRING is 1-indexed
+	eligibilityClauses = append(eligibilityClauses, "SUBSTRING(eligibility FROM ? FOR 1) = '1'")
+	eligibilityArgs = append(eligibilityArgs, student.ProgramDepartmentID+1)
+
+	eligibilityClauses = append(eligibilityClauses, "SUBSTRING(eligibility FROM ? FOR 1) = '1'")
+	eligibilityArgs = append(eligibilityArgs, student.SecondaryProgramDepartmentID+1)
+
+	if len(eligibilityClauses) > 0 {
+		eligibilityCondition := strings.Join(eligibilityClauses, " OR ")
+		tx = tx.Where(fmt.Sprintf("(%s)", eligibilityCondition), eligibilityArgs...)
+	}
+
+	// @AkshatGupta15
+	err := tx.Select(
+		"id",
+		"company_name",
+		"eligibility",
+		"deadline",
+		"role",
+		"profile",
+		"cpi_cutoff",
+	).
 		Order("deadline").
-		Find(jps)
-	return tx.Error
+		Find(jps).Error
+
+	return err
 }
 
 func createProforma(ctx *gin.Context, jp *Proforma) error {

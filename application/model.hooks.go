@@ -38,9 +38,9 @@ func (jp *Proforma) AfterUpdate(tx *gorm.DB) (err error) {
 			return
 		}
 
-		if jp.Deadline > 0 {
-			go insertCalenderApplicationDeadline(jp, &event)
-		}
+		// if jp.Deadline > 0 {
+		// 	go insertCalenderApplicationDeadline(jp, &event)
+		// }
 	}
 	return
 }
