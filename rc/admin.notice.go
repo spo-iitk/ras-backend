@@ -55,7 +55,6 @@ func CreateNotice(ctx *gin.Context, id uint, notice *Notice) error {
 	notice.RecruitmentCycleID = uint(id)
 	notice.LastReminderAt = 0
 	notice.CreatedBy = middleware.GetUserID(ctx)
-
 	return createNotice(ctx, notice)
 }
 
@@ -134,7 +133,14 @@ func postReminderHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			return
 		}
 
-		mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, notice.Description)
+		mailBody := notice.Description
+		if notice.Deadline > 0 {
+			deadlineTime := time.Unix(int64(notice.Deadline)/1000, 0)
+                        deadlineStr := deadlineTime.Format("02 Jan 2006 15:04")
+			mailBody += "\n\nDeadline: " + deadlineStr
+		}
+
+		mail_channel <- mail.GenerateMails(emails, "Notice: "+notice.Title, mailBody)
 
 		ctx.JSON(http.StatusOK, gin.H{"status": "mail sent"})
 	}

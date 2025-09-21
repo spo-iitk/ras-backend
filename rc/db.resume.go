@@ -5,12 +5,13 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func addStudentResume(ctx *gin.Context, resume string, sid uint, rid uint, resumeType ResumeType) error {
+func addStudentResume(ctx *gin.Context, resume string, sid uint, rid uint, resumeType ResumeType, resumeTag string) error {
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycleResume{}).Create(&StudentRecruitmentCycleResume{
 		StudentRecruitmentCycleID: sid,
 		Resume:                    resume,
 		RecruitmentCycleID:        rid,
 		ResumeType:                resumeType,
+		Tag:                       resumeTag, // ← Store the tag
 	})
 	return tx.Error
 }
@@ -45,6 +46,6 @@ func FetchFirstResume(ctx *gin.Context, sid uint) (uint, string, error) {
 func updateResumeVerify(ctx *gin.Context, rsid uint, verified bool, user string) (bool, uint, error) {
 	var resume StudentRecruitmentCycleResume
 	tx := db.WithContext(ctx).Model(&resume).Clauses(clause.Returning{}).
-		Where("id = ?", rsid).Updates(map[string]interface{}{"verified": verified,"action_taken_by": user})
+		Where("id = ?", rsid).Updates(map[string]interface{}{"verified": verified, "action_taken_by": user})
 	return tx.RowsAffected == 1, resume.StudentRecruitmentCycleID, tx.Error
 }

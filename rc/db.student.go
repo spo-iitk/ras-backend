@@ -131,8 +131,16 @@ type StatsBranchResponse struct {
 
 func FetchRegisteredStudentCountByBranch(ctx *gin.Context, rid uint, res *[]StatsBranchResponse) error {
 	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).
-		Where("recruitment_cycle_id = ?", rid).Group("program_department_id").
+		Where("recruitment_cycle_id = ? AND program_department_id IS NOT NULL AND program_department_id != 0", rid).Group("program_department_id").
 		Select("program_department_id, count(*) as total, 0 as pre_offer, 0 as recruited").
+		Scan(&res)
+	return tx.Error
+}
+
+func FetchRegisteredStudentCountBySecondaryBranch(ctx *gin.Context, rid uint, res *[]StatsBranchResponse) error {
+	tx := db.WithContext(ctx).Model(&StudentRecruitmentCycle{}).
+		Where("recruitment_cycle_id = ? AND secondary_program_department_id IS NOT NULL AND secondary_program_department_id != 0", rid).Group("secondary_program_department_id").
+		Select("secondary_program_department_id as program_department_id, count(*) as total, 0 as pre_offer, 0 as recruited").
 		Scan(&res)
 	return tx.Error
 }

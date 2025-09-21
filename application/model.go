@@ -72,6 +72,7 @@ type ApplicationQuestion struct {
 	gorm.Model
 	ProformaID uint                    `json:"proforma_id" gorm:"index;->;<-:create"`
 	Proforma   Proforma                `json:"-" gorm:"foreignkey:ProformaID"`
+	Event      string                  `json:"event"`
 	Type       ApplicationQuestionType `json:"type"`
 	Question   string                  `json:"question"`
 	Options    string                  `json:"options"` //csv
@@ -145,4 +146,5 @@ type PVF struct {
 	RecruitmentCycleID        uint         `json:"recruitment_cycle_id" gorm:"index;->;<-:create"`
 	FilenameStudent           string       `json:"filename_student"`
 	FilenameMentor            string       `json:"filename_mentor"`
+	PVFExpiry                 sql.NullTime `json:"pvf_expiry"`
 }

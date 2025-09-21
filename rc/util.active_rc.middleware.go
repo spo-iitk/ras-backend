@@ -9,7 +9,7 @@ import (
 func checkAdminAccessToRC() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		roleID := ctx.GetInt("roleID")
-		if(roleID > 101 && !checkIsActiveRC(ctx)){
+		if roleID > 101 && !checkIsActiveRC(ctx) {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}

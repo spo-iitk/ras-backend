@@ -72,7 +72,7 @@ func validateToken(encodedToken string) (string, uint, error) {
 }
 
 func GeneratePVFToken(email string, pid uint, rid uint) (string, error) {
-	var jwtExpiration = 4320 // 3days
+	var jwtExpiration = viper.GetInt("PVF.EXPIRATION")
 
 	claims := CustomPVFClaims{
 		email,

@@ -38,7 +38,7 @@ func godLoginHandler(c *gin.Context) {
 		return
 	}
 
-	if !isActive {
+	if !isActive && role != constants.GOD {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Admin is not active"})
 		return
 	}

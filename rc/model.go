@@ -72,6 +72,7 @@ type Notice struct {
 	Attachment         string           `json:"attachment"`
 	CreatedBy          string           `json:"created_by"`
 	LastReminderAt     int64            `json:"last_reminder_at" gorm:"default:0"`
+	Deadline           uint             `json:"deadline" gorm:"default:0"`
 }
 
 type StudentRecruitmentCycleType string
@@ -116,6 +117,7 @@ type StudentRecruitmentCycleResume struct {
 	Verified                  sql.NullBool            `json:"verified" gorm:"default:NULL"`
 	ActionTakenBy             string                  `json:"action_taken_by"`
 	ResumeType                ResumeType              `json:"resume_type"` // New field
+	Tag                       string                  `json:"resume_tag"`  //New field to add roles
 }
 
 type CompanyHistory struct {
