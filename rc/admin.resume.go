@@ -3,7 +3,6 @@ package rc
 import (
 	"database/sql"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -63,18 +62,6 @@ type putResumeVerifyRequest struct {
 
 func putResumeVerifyHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		const layout = "2006-01-02 15:04:05"
-		deadlineStr := "2025-11-08 23:59:59"
-		deadline, _ := time.Parse(layout, deadlineStr)
-
-		if time.Now().After(deadline) {
-			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"error":      "Resume verification deadline is over",
-				"deadline":   deadlineStr,
-				"serverTime": time.Now().Format(layout),
-			})
-			return
-		}
 
 		rsid, err := util.ParseUint(ctx.Param("rsid"))
 		if err != nil {
