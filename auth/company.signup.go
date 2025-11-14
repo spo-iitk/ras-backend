@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/mail"
+	"gorm.io/gorm"
 )
 
 func companySignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
@@ -17,6 +19,18 @@ func companySignUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+		var existing User
+		if err := db.Where("user_id = ?", signupReq.Email).First(&existing).Error; err == nil {
+			ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{
+				"error": "User already registered with this email",
+			})
+			return
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+			return
+		}
+
 
 		id, err := createCompany(ctx, &signupReq)
 		if err != nil {
