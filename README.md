@@ -93,7 +93,7 @@ The five services are:
 - Recruitment Cycle Service
 - Application Service
 
-Hence five diffrent databases are used. The databases and users are created automatically using the script at `container/init.sql`. The database schema is defined in the `model.go` folder of each service.
+Hence five different databases are used. The databases and users are created automatically using the script at `container/init.sql`. The database schema is defined in the `model.go` folder of each service.
 
 The code for the portal exposes nine port corresponding to the nine sub services. The nginx reverse proxy is configured to route requests to the appropriate service.
 The routing can be found in the `container/nginx.conf` file.
