@@ -76,6 +76,8 @@ type ApplicationQuestion struct {
 	Type       ApplicationQuestionType `json:"type"`
 	Question   string                  `json:"question"`
 	Options    string                  `json:"options"` //csv
+	Mandatory          bool                          `json:"mandatory" gorm:"default:false"`
+
 }
 
 type ApplicationQuestionAnswer struct {
