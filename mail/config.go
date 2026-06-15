@@ -20,7 +20,7 @@ func init() {
 	logrus.Info("Initializing mailer")
 
 	user = viper.GetString("MAIL.USER")
-	sender = user + "@gmail.com"
+	sender = user + "@iitk.ac.in"
 
 	pass = viper.GetString("MAIL.PASS")
 	host = viper.GetString("MAIL.HOST")
