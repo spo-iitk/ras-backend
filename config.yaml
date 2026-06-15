@@ -1,6 +1,6 @@
 MAIL:
-  HOST: "patra.iitk.ac.in"
-  PORT: "587"
+  HOST: "smtp.gmail.com"
+  PORT: "465"
   BATCH: 200
 JWT:
   EXPIRATION:
