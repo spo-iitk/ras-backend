@@ -2,6 +2,7 @@ package application
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spo-iitk/ras-backend/rc"
@@ -13,6 +14,7 @@ type statsResponse struct {
 	CompanyName               string `json:"company_name"`
 	Profile                   string `json:"profile"`
 	Type                      string `json:"type"`
+	Time                      time.Time `json:"time"`
 }
 
 type statsRecruitmentResponse struct {
@@ -25,6 +27,7 @@ type statsRecruitmentResponse struct {
 	CompanyName                  string `json:"company_name"`
 	Profile                      string `json:"profile"`
 	Type                         string `json:"type"`
+	Time                         time.Time `json:"time"`
 }
 
 type companyRecruitResponce struct {
@@ -98,6 +101,7 @@ func getCompanyRecruitStatsHandler(ctx *gin.Context) {
 			CompanyName:                  stat.CompanyName,
 			Profile:                      stat.Profile,
 			Type:                         stat.Type,
+			Time:                         stat.Time,
 		}
 		studentResponse = append(studentResponse, res)
 	}
@@ -182,6 +186,7 @@ func getStatsHandler(ctx *gin.Context) {
 			CompanyName:                  stat.CompanyName,
 			Profile:                      stat.Profile,
 			Type:                         stat.Type,
+			Time:                         stat.Time,
 		}
 		studentResponse = append(studentResponse, res)
 

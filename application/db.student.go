@@ -11,7 +11,7 @@ func getCompanyRecruitmentStats(ctx *gin.Context, cid uint, stats *[]statsRespon
 	tx := db.WithContext(ctx).Model(&EventStudent{}).
 		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{Recruited, PIOPPOACCEPTED}).
 		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.company_recruitment_cycle_id = ?", cid).
-		Select("event_students.student_recruitment_cycle_id, proformas.company_name, proformas.profile ,proforma_events.name as type").
+		Select("event_students.student_recruitment_cycle_id, proformas.company_name, proformas.profile ,proforma_events.name as type,proforma_events.created_at as time").
 		Order("event_students.student_recruitment_cycle_id").
 		Find(stats)
 	return tx.Error
@@ -69,7 +69,7 @@ func getRecruitmentStats(ctx *gin.Context, rid uint, stats *[]statsResponse) err
 	tx := db.WithContext(ctx).Model(&EventStudent{}).
 		Joins("JOIN proforma_events ON proforma_events.name IN ? AND proforma_events.id = event_students.proforma_event_id", []EventType{Recruited, PIOPPOACCEPTED}).
 		Joins("JOIN proformas ON proformas.id = proforma_events.proforma_id AND proformas.recruitment_cycle_id = ?", rid).
-		Select("event_students.student_recruitment_cycle_id, proformas.company_name, proformas.profile ,proforma_events.name as type").
+		Select("event_students.student_recruitment_cycle_id, proformas.company_name, proformas.profile ,proforma_events.name as type,proforma_events.created_at as time").
 		Order("event_students.student_recruitment_cycle_id").
 		Find(stats)
 	return tx.Error
