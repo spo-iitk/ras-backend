@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/spo-iitk/ras-backend/mail"
+	"gorm.io/gorm"
 )
 
 const charset = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -36,6 +38,20 @@ func otpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+
+
+		var existing User
+		if err := db.Where("user_id = ?", otpReq.UserID).First(&existing).Error; err == nil {
+			ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{
+				"error": "User already registered with this email",
+			})
+			return
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+			return
+		}
+
+
 
 		otp := generateOTP()
 

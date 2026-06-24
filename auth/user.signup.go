@@ -1,12 +1,14 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spo-iitk/ras-backend/mail"
 	"github.com/spo-iitk/ras-backend/student"
+	"gorm.io/gorm"
 )
 
 type signUpRequest struct {
@@ -21,6 +23,17 @@ type signUpRequest struct {
 func signUpHandler(mail_channel chan mail.Mail) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var signupReq signUpRequest
+
+		var existing User
+		if err := db.Where("user_id = ?", signupReq.UserID).First(&existing).Error; err == nil {
+			ctx.AbortWithStatusJSON(http.StatusConflict, gin.H{
+				"error": "User already registered with this email",
+			})
+			return
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+			return
+		}
 
 		if err := ctx.ShouldBindJSON(&signupReq); err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
