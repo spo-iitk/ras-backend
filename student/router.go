@@ -24,7 +24,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.GET("/limited", getLimitedStudentsHandler)
 		admin.PUT("", updateStudentByIDHandler)
 		admin.GET("/:sid", getStudentByIDHandler)
-		admin.PUT("/:sid/editable",makeStudentEdiatableHandler)
+		admin.PUT("/:sid/editable", makeStudentEdiatableHandler)
 		admin.PUT("/:sid/verify", verifyStudentHandler)
 		admin.GET("/:sid/history", ras.PlaceHolderController)
 
@@ -33,5 +33,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/document/:docid/verify", putDocumentVerifyHandler(mail_channel))
 		admin.GET("/documents", getAllDocumentHandler)
 		admin.GET("/documents/type/:type", getAllDocumentHandlerByType)
+		admin.GET("/:sid/data", getStudentDataHandler)
+		admin.GET("/:sid/resume", getStudentResumeHandler)
 	}
 }
