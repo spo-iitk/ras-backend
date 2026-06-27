@@ -33,7 +33,7 @@ func AdminRouter(mail_channel chan mail.Mail, r *gin.Engine) {
 		admin.PUT("/document/:docid/verify", putDocumentVerifyHandler(mail_channel))
 		admin.GET("/documents", getAllDocumentHandler)
 		admin.GET("/documents/type/:type", getAllDocumentHandlerByType)
-		admin.GET("/:sid/data", getStudentDataHandler)
+
 		admin.GET("/:sid/resume", getStudentResumeHandler)
 	}
 }
